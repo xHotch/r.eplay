@@ -1,9 +1,8 @@
-CREATE TABLE IF NOT EXISTS qanda
+CREATE TABLE IF NOT EXISTS match
 (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  question TEXT NOT NULL,
-  answer TEXT NOT NULL
+  dateTime TIMESTAMP NOT NULL,
+  teamRedGoals INT DEFAULT 0 NOT NULL,
+  teamBlueGoals INT DEFAULT 0 NOT NUll,
+  teamSize int NOT NULL
 );
-
-INSERT INTO qanda (question, answer) VALUES
-('question of life, the universe, and everything', '42');
