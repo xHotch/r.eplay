@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS playerInMatch
 (
   playerid BIGINT,
   matchid  BIGINT,
-  FOREIGN KEY (playerid) REFERENCES player(id),
+  FOREIGN KEY (playerid) REFERENCES matchPlayer(id),
   FOREIGN KEY (matchid) REFERENCES match(id),
   PRIMARY KEY (playerid,matchid)
 );
