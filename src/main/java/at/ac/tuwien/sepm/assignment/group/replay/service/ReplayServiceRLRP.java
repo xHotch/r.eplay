@@ -28,11 +28,37 @@ public class ReplayServiceRLRP implements ReplayService {
     private File replayToJsonParser;
     private File parserDirectory;
     private File fileDirectory;
+    private String parserDir;
+    private String fileDir;
 
     public ReplayServiceRLRP() {
-        parserDirectory=setupUserDirectory("parser");
-        fileDirectory=setupUserDirectory("files");
+        parserDir="parser";
+        fileDir="files";
+        parserDirectory=setupUserDirectory(parserDir);
+        fileDirectory=setupUserDirectory(fileDir);
         replayToJsonParser=setupParser();
+    }
+
+    public ReplayServiceRLRP(String parserDir, String fileDir) {
+        this.parserDir=parserDir;
+        this.fileDir=fileDir;
+        parserDirectory=setupUserDirectory(parserDir);
+        fileDirectory=setupUserDirectory(fileDir);
+        replayToJsonParser=setupParser();
+    }
+
+    public File getParserDirectory() {
+        if (parserDirectory==null){
+            setupUserDirectory(parserDir);
+        }
+        return parserDirectory;
+    }
+
+    public File getFileDirectory() {
+        if (fileDirectory==null){
+            setupUserDirectory(fileDir);
+        }
+        return fileDirectory;
     }
 
     @Override
@@ -41,26 +67,21 @@ public class ReplayServiceRLRP implements ReplayService {
         File replayFile = copyReplayFile(file);
         File jsonFile;
         try {
-            String[] cmd = {replayToJsonParser.getAbsolutePath(), replayFile.getAbsolutePath(), "--fileoutput"};
+            String[] cmd = {replayToJsonParser.getAbsolutePath(), replayFile.getAbsolutePath()};
             Process proc = new ProcessBuilder(cmd).start();
 
+            StreamReader errorSteam = new StreamReader(proc.getErrorStream(), "ERROR");
 
-            InputStream stderr = proc.getErrorStream();
-            InputStreamReader isr = new InputStreamReader(stderr);
-            BufferedReader br = new BufferedReader(isr);
+            errorSteam.start();
+            jsonFile = new File(parserDirectory, FilenameUtils.getBaseName(replayFile.getName()) + ".json");
 
-            String line;
-
-            while ( (line = br.readLine()) != null) {
-                LOG.error(line);
-            }
+            Files.copy(proc.getInputStream(),jsonFile.getAbsoluteFile().toPath());
 
             int exitVal = proc.waitFor();
-            LOG.debug("Process exitValue: {} ", exitVal);
+            LOG.debug("Parser process finished with exitValue : {} ", exitVal);
 
-            if (exitVal==0){
-                jsonFile = new File(parserDirectory + FilenameUtils.getBaseName(replayFile.getName()) + ".json");
-            } else {
+
+            if (exitVal!=0){
                 LOG.error("Could not parse replay file: {}", replayFile.getAbsolutePath());
                 throw new IllegalArgumentException("Could not parse replay file" + replayFile.getAbsolutePath());
             }
@@ -69,6 +90,8 @@ public class ReplayServiceRLRP implements ReplayService {
             LOG.error("Cought Exception while parsing .replay file : {}", e.getMessage());
             throw new ServiceException("Cought Exception while parsing .replay file : {}", e);
         }
+
+        LOG.debug("Created JSON File at: {}", jsonFile.getAbsolutePath());
         return jsonFile;
     }
 
@@ -87,7 +110,6 @@ public class ReplayServiceRLRP implements ReplayService {
                 LOG.error("Error setting up {} Directory", folder);
             }
         }
-
         return directory;
     }
 
@@ -126,13 +148,10 @@ public class ReplayServiceRLRP implements ReplayService {
      * @return The file after it has been copied.
      */
     private File copyReplayFile(File replayFile){
-
-        if (!FilenameUtils.getExtension(replayFile.getName()).equals(".replay")){
+        if (!FilenameUtils.getExtension(replayFile.getName()).equals("replay")){
             throw new IllegalArgumentException("File not .replay");
         }
-
         File file;
-
         do {
             String uniqueName = createUniqueName();
             file = new File(fileDirectory, uniqueName);
@@ -146,6 +165,10 @@ public class ReplayServiceRLRP implements ReplayService {
         return file;
     }
 
+    /**
+     * Method to create a unique filename
+     * @return a random Filename for the replay file
+     */
     private String createUniqueName(){
         long millis = System.currentTimeMillis();
         String datetime = new Date().toString();
@@ -154,4 +177,39 @@ public class ReplayServiceRLRP implements ReplayService {
         String rndchars = RandomStringUtils.randomAlphanumeric(8);
         return rndchars + "_" + datetime + "_" + millis +".replay";
     }
+
+    /**
+     * Class to simultaneously read error output while parsing .replay file
+     *
+     * @author Philipp Hochhauser
+     */
+    private class StreamReader extends Thread
+    {
+        InputStream is;
+        String type;
+
+        StreamReader(InputStream is, String type)
+        {
+            this.is = is;
+            this.type = type;
+        }
+
+        @Override
+        public void run()
+        {
+            try {
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line;
+                if (type.equals("ERROR"))
+                    while ((line = br.readLine()) != null){
+                        LOG.error(line);
+                    }
+            } catch (IOException ioe)
+            {
+                LOG.error("Cought IOException while reading output from process");
+            }
+        }
+    }
+
 }
