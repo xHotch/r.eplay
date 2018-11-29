@@ -4,17 +4,14 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.PersistenceException;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
-import org.h2.jdbc.JdbcSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.SynchronousQueue;
 
 @Component
 public class JDBCMatchDAO implements MatchDAO {
@@ -117,7 +114,6 @@ public class JDBCMatchDAO implements MatchDAO {
 
     public List<MatchDTO> readMatches() throws PersistenceException {
         LOG.trace("Called - readMatches");
-
         List<MatchDTO> result = new LinkedList<>();
         try (Connection connection = jdbcConnectionManager.getConnection();
              PreparedStatement ps = connection.prepareStatement(READ_ALL_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
@@ -154,10 +150,8 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private List<MatchPlayerDTO> readMatchPlayers(int matchId, Connection connection) throws PersistenceException{
         LOG.trace("Called - readMatchPlayers");
-
         List<MatchPlayerDTO> result = new LinkedList<>();
-        try (/*Connection connection = jdbcConnectionManager.getConnection();*/
-             PreparedStatement ps1 = connection.prepareStatement(READ_ALLPLAYERS_FROM_MATCH, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps1 = connection.prepareStatement(READ_ALLPLAYERS_FROM_MATCH, Statement.RETURN_GENERATED_KEYS);
                 PreparedStatement ps2 = connection.prepareStatement(READ_PLAYERS_FROM_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
 
             // retrieve all rows from the playerInMatch table that matches matchId
