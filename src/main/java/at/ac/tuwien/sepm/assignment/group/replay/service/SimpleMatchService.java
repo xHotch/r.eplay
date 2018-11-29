@@ -3,7 +3,9 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,18 @@ public class SimpleMatchService implements MatchService {
         this.matchDAO = matchDAO;
     }
 
+    @Override
+    public void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException {
+        LOG.trace("Called - createMatch");
+        matchDTOValidator(matchDTO);
+        try {
+            matchDAO.createMatch(matchDTO);
+        } catch (MatchPersistenceException e) {
+            String msg = "Failed to create match";
+            LOG.error(msg, e);
+            throw new MatchServiceException(msg,e);
+        }
+    }
 
     private void matchDTOValidator(MatchDTO matchDTO) throws MatchValidationException {
         LOG.trace("Called - matchDTOValidator");
@@ -32,8 +46,7 @@ public class SimpleMatchService implements MatchService {
         if (matchDTO.getDateTime() == null) errMsg += "No MatchDate\n";
         if (matchDTO.getTeamBlueGoals() < 0) errMsg += "Team blue goals negative\n";
         if (matchDTO.getTeamRedGoals() < 0) errMsg += "Team blue goals negative\n";
-        if (matchDTO.getPlayerData() == null || matchDTO.getPlayerData().isEmpty())
-            errMsg += "No players found in match\n";
+        if (matchDTO.getPlayerData() == null || matchDTO.getPlayerData().isEmpty()) errMsg += "No players found in match\n";
         else {
             if (matchDTO.getPlayerData().size() != matchDTO.getTeamSize() * 2) errMsg += "Team size does not equal player list\n";
             int blueGoals = 0;
