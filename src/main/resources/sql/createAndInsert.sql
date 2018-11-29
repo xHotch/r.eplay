@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS playerInMatch;
+DROP TABLE IF EXISTS matchPlayer;
+DROP TABLE IF EXISTS match_;
+--TODO DELETE ABOVE BEFORE RELEASE
+
 CREATE TABLE IF NOT EXISTS match_
 (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -23,7 +28,7 @@ CREATE TABLE IF NOT EXISTS playerInMatch
 (
   playerid BIGINT,
   matchid  BIGINT,
-  --FOREIGN KEY (playerid) REFERENCES matchPlayer(id),
-  --FOREIGN KEY (matchid) REFERENCES match_(id),
-  --PRIMARY KEY (playerid,matchid)
+  FOREIGN KEY (playerid) REFERENCES matchPlayer(id),
+  FOREIGN KEY (matchid) REFERENCES match_(id),
+  PRIMARY KEY (playerid,matchid)
 );
