@@ -1,6 +1,25 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.PersistenceException;
+
+import java.util.List;
+
 /**
- * @author Daniel Klampfl
+ *
  */
-public interface MatchDAO {}
+public interface MatchDAO {
+
+    /**
+     * Creates a new match in the storage from matchDao
+     * @param matchDTO the match data to store
+     */
+    void createMatch(MatchDTO matchDTO) throws PersistenceException;
+
+    /**
+     * Reads all matches that are currently stored in the database
+     * @throws PersistenceException throws persistence exception if something failed
+     * while reading the matches from the database.
+     */
+    List<MatchDTO> readMatches() throws PersistenceException;
+}

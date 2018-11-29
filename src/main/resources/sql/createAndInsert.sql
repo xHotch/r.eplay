@@ -1,9 +1,34 @@
-CREATE TABLE IF NOT EXISTS qanda
+DROP TABLE IF EXISTS playerInMatch;
+DROP TABLE IF EXISTS matchPlayer;
+DROP TABLE IF EXISTS match_;
+--TODO DELETE ABOVE BEFORE RELEASE
+
+CREATE TABLE IF NOT EXISTS match_
 (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  question TEXT NOT NULL,
-  answer TEXT NOT NULL
+  dateTime TIMESTAMP NOT NULL,
+  teamRedGoals INT NOT NULL,
+  teamBlueGoals INT NOT NUll,
+  teamSize INT NOT NULL
 );
 
-INSERT INTO qanda (question, answer) VALUES
-('question of life, the universe, and everything', '42');
+CREATE TABLE IF NOT EXISTS matchPlayer
+(
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name TEXT NOT NULL,
+  team INT NOT NULL,
+  score INT NOT NULL,
+  goals INT NOT NULL,
+  assists INT NOT NULL,
+  saves INT NOT NULL,
+  shots INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS playerInMatch
+(
+  playerid BIGINT,
+  matchid  BIGINT,
+  FOREIGN KEY (playerid) REFERENCES matchPlayer(id),
+  FOREIGN KEY (matchid) REFERENCES match_(id),
+  PRIMARY KEY (playerid,matchid)
+);
