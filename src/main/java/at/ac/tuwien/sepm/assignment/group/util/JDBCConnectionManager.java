@@ -22,6 +22,7 @@ public class JDBCConnectionManager {
     private Connection connection;
 
     public Connection getConnection() throws SQLException {
+        closeConnection();
         if (connection == null) {
             connection = DriverManager.getConnection(connectionString);
         }

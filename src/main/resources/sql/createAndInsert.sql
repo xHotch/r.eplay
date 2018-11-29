@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS match
+CREATE TABLE IF NOT EXISTS match_
 (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   dateTime TIMESTAMP NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS playerInMatch
 (
   playerid BIGINT,
   matchid  BIGINT,
-  FOREIGN KEY (playerid) REFERENCES matchPlayer(id),
-  FOREIGN KEY (matchid) REFERENCES match(id),
-  PRIMARY KEY (playerid,matchid)
+  --FOREIGN KEY (playerid) REFERENCES matchPlayer(id),
+  --FOREIGN KEY (matchid) REFERENCES match_(id),
+  --PRIMARY KEY (playerid,matchid)
 );
