@@ -4,31 +4,18 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
-import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
-import com.sun.javafx.reflect.FieldUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.SpringProperties;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.sql.DataSourceDefinition;
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -136,14 +123,14 @@ public class MatchDAO_DTOTest {
         // create the match in the database
         try {
             matchDAO.createMatch(matchDTO);
-        } catch (PersistenceException e){
+        } catch (MatchPersistenceException e) {
             LOG.error("could not create match (TEST)");
         }
 
         // retrieve match from the database
         try {
             retrievedMatches = matchDAO.readMatches();
-        } catch (PersistenceException e){
+        } catch (MatchPersistenceException e) {
             LOG.trace("Persistence exception while reading the matches. (TEST)");
         }
 

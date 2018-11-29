@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class JDBCMatchDAO implements MatchDAO {
     }
 
     @Override
-    public void createMatch(MatchDTO matchDTO) throws PersistenceException {
+    public void createMatch(MatchDTO matchDTO) throws MatchPersistenceException {
         LOG.trace("Called - createMatch");
         int matchID;
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS)) {
@@ -47,12 +47,12 @@ public class JDBCMatchDAO implements MatchDAO {
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of match";
                 LOG.error(msg, e);
-                throw new PersistenceException(msg, e);
+                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not create match";
             LOG.error(msg, e);
-            throw new PersistenceException(msg, e);
+            throw new MatchPersistenceException(msg, e);
         }
         for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
             int playerID;
@@ -61,7 +61,7 @@ public class JDBCMatchDAO implements MatchDAO {
         }
     }
 
-    private int createMatchPlayer(MatchPlayerDTO matchPlayerDTO) throws PersistenceException {
+    private int createMatchPlayer(MatchPlayerDTO matchPlayerDTO) throws MatchPersistenceException {
         LOG.trace("Called - createMatchPlayer");
         int matchPlayerID;
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
@@ -82,17 +82,17 @@ public class JDBCMatchDAO implements MatchDAO {
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of matchPlayer";
                 LOG.error(msg, e);
-                throw new PersistenceException(msg, e);
+                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not create matchPlayer";
             LOG.error(msg, e);
-            throw new PersistenceException(msg, e);
+            throw new MatchPersistenceException(msg, e);
         }
         return matchPlayerID;
     }
 
-    public void linkPlayerMatch(int playerId, int matchId) throws PersistenceException {
+    public void linkPlayerMatch(int playerId, int matchId) throws MatchPersistenceException {
         LOG.trace("Called - linkPlayerMatch");
         try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER_IN_MATCH)) {
 
@@ -104,11 +104,11 @@ public class JDBCMatchDAO implements MatchDAO {
         } catch (SQLException e) {
             String msg = "Could not link match with player";
             LOG.error(msg, e);
-            throw new PersistenceException(msg, e);
+            throw new MatchPersistenceException(msg, e);
         }
     }
 
-    public List<MatchDTO> readMatches() throws PersistenceException {
+    public List<MatchDTO> readMatches() throws MatchPersistenceException {
         LOG.trace("Called - readMatches");
         List<MatchDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_ALL_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
@@ -133,17 +133,17 @@ public class JDBCMatchDAO implements MatchDAO {
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of match";
                 LOG.error(msg, e);
-                throw new PersistenceException(msg, e);
+                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not read match";
             LOG.error(msg, e);
-            throw new PersistenceException(msg, e);
+            throw new MatchPersistenceException(msg, e);
         }
         return result;
     }
 
-    private List<MatchPlayerDTO> readMatchPlayers(int matchId) throws PersistenceException{
+    private List<MatchPlayerDTO> readMatchPlayers(int matchId) throws MatchPersistenceException {
         LOG.trace("Called - readMatchPlayers");
         List<MatchPlayerDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_PLAYERS_FROM_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
@@ -167,12 +167,12 @@ public class JDBCMatchDAO implements MatchDAO {
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of match players";
                 LOG.error(msg, e);
-                throw new PersistenceException(msg, e);
+                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not read match players";
             LOG.error(msg, e);
-            throw new PersistenceException(msg, e);
+            throw new MatchPersistenceException(msg, e);
         }
         return result;
     }
