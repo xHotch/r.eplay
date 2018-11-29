@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.sql.DataSourceDefinition;
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class MatchDAO_DTOTest {
         matchDTO = new MatchDTO();
 
         // set the time
-        matchDTO.setDateTime(LocalDateTime.now());
+        matchDTO.setDateTime(LocalDate.now().atStartOfDay());
 
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
@@ -109,14 +110,14 @@ public class MatchDAO_DTOTest {
             jdbcConnectionManager = (JDBCConnectionManager) context.getBean("JDBCConnectionManager");
             connection = jdbcConnectionManager.getConnection();
             // drop all the tables for clean tests
-            PreparedStatement dropMatch = connection.prepareStatement("DROP TABLE IF EXISTS MATCH_");
-            PreparedStatement dropMatchPlayer = connection.prepareStatement("DROP TABLE IF EXISTS MATCHPLAYER");
             PreparedStatement dropPlayerInMatch = connection.prepareStatement("DROP TABLE IF EXISTS PLAYERINMATCH");
+            PreparedStatement dropMatchPlayer = connection.prepareStatement("DROP TABLE IF EXISTS MATCHPLAYER");
+            PreparedStatement dropMatch = connection.prepareStatement("DROP TABLE IF EXISTS MATCH_");
 
             // execute
-            dropMatch.execute();
-            dropMatchPlayer.execute();
             dropPlayerInMatch.execute();
+            dropMatchPlayer.execute();
+            dropMatch.execute();
 
         } catch (SQLException e) {
 
@@ -130,7 +131,7 @@ public class MatchDAO_DTOTest {
     }
 
     @Test
-    public void test1(){
+    public void matchCreateAndReadTest(){
 
         // create the match in the database
         try {
@@ -140,7 +141,6 @@ public class MatchDAO_DTOTest {
         }
 
         // retrieve match from the database
-
         try {
             retrievedMatches = matchDAO.readMatches();
         } catch (PersistenceException e){
@@ -160,13 +160,10 @@ public class MatchDAO_DTOTest {
 
 
         // verify player data ...
-        int count = 0;
         for (MatchPlayerDTO player:match.getPlayerData()) {
             MatchPlayerDTO compare;
-            if(count == 0)
-                compare = playerRED;
-            else
-                compare = playerBLUE;
+            if (player.getTeam() == 3) compare = playerRED;
+            else compare = playerBLUE;
 
             Assert.assertThat(player.getName(), is(compare.getName()));
             Assert.assertThat(player.getTeam(), is(compare.getTeam()));
@@ -175,8 +172,6 @@ public class MatchDAO_DTOTest {
             Assert.assertThat(player.getSaves(), is(compare.getSaves()));
             Assert.assertThat(player.getScore(), is(compare.getScore()));
             Assert.assertThat(player.getShots(), is(compare.getShots()));
-
-            count++;
         }
     }
 
