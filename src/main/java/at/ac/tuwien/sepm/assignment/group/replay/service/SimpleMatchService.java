@@ -54,7 +54,7 @@ public class SimpleMatchService implements MatchService {
             int countTeamBlue = 0;
             int countTeamRed = 0;
             for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
-                errMsg = matchPlayerDTOValidator(player);
+                errMsg += matchPlayerDTOValidator(player);
                 if (player.getTeam() == 0) {
                     countTeamBlue++;
                     blueGoals += player.getGoals();

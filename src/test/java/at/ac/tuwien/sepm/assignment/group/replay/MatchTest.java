@@ -5,7 +5,12 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
+import org.hamcrest.CoreMatchers;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -16,10 +21,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Brief description of the test runs...
@@ -30,7 +38,7 @@ import static org.hamcrest.core.Is.is;
  *      - verify if the id's match with player and match.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MatchDAO_DTOTest {
+public class MatchTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -39,6 +47,8 @@ public class MatchDAO_DTOTest {
     private MatchDAO matchDAO;
 
     private MatchDTO matchDTO;
+
+    private MatchService matchService;
 
     private MatchPlayerDTO playerRED, playerBLUE;
 
@@ -84,6 +94,8 @@ public class MatchDAO_DTOTest {
 
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
+
+        matchService = new SimpleMatchService(matchDAO);
     }
 
     @After
@@ -159,6 +171,50 @@ public class MatchDAO_DTOTest {
             Assert.assertThat(player.getSaves(), is(compare.getSaves()));
             Assert.assertThat(player.getScore(), is(compare.getScore()));
             Assert.assertThat(player.getShots(), is(compare.getShots()));
+        }
+    }
+
+    @Test
+    public void validationMatchTest() throws MatchServiceException {
+        MatchDTO match = new MatchDTO();
+
+        match.setDateTime(null);
+        match.setTeamBlueGoals(-1);
+        match.setTeamRedGoals(-1);
+        match.setPlayerData(null);
+
+        try {
+            matchService.createMatch(match);
+            fail();
+        } catch (MatchValidationException e) {
+            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "Team blue goals negative\n" + "Team blue goals negative\n" + "No players found in match\n"));
+        }
+
+        match.setDateTime(LocalDateTime.now());
+        match.setTeamBlueGoals(1);
+        match.setTeamRedGoals(3);
+        match.setTeamSize(3);
+
+        MatchPlayerDTO playerRed = new MatchPlayerDTO();
+        MatchPlayerDTO playerBlue = new MatchPlayerDTO();
+
+        setPlayerVariables(playerRed,1,"",-1,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerBlue,2,"",-1,-1,-1,-1,-1,-1);
+
+        List<MatchPlayerDTO> players = new LinkedList<>();
+        players.add(playerBlue);
+        players.add(playerRed);
+
+        match.setPlayerData(players);
+
+        try {
+            matchService.createMatch(match);
+            fail();
+        } catch (MatchValidationException e) {
+            assertThat(e.getMessage(), CoreMatchers.is("Team size does not equal player list\n" +
+                "No Name\n" + "Invalid Team number\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
+                "No Name\n" + "Invalid Team number\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
+                "Blueteam goals does not macht\n" + "Redteam goals does not macht\n" + "Uneven teamsize\n"));
         }
     }
 
