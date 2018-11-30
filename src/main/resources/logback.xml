@@ -1,8 +1,7 @@
 <configuration>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>restaurantmanager.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/restaurantmanager-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/replay-%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
