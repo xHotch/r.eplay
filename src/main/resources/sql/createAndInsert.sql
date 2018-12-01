@@ -32,3 +32,10 @@ CREATE TABLE IF NOT EXISTS playerInMatch
   FOREIGN KEY (matchid) REFERENCES match_(id),
   PRIMARY KEY (playerid,matchid)
 );
+
+CREATE TABLE IF NOT EXISTS player
+(
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  plattformid BIGINT NOT NUll,
+);
