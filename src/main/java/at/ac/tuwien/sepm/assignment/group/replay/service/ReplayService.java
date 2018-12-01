@@ -1,12 +1,13 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 
-import at.ac.tuwien.sepm.assignment.group.universe.exceptions.ServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
 
 import java.io.File;
 
 /**
  * Service Interface that parses .replay files to .json files
+ *
  * @author Philipp Hochhauser
  */
 public interface ReplayService {
@@ -18,22 +19,9 @@ public interface ReplayService {
      * Needs to be run in seperate thread to not block main thread.
      *
      * @param replayFile The file that is parsed
-     * @throws ServiceException If the File could not be parsed
+     * @throws FileServiceException If the File could not be parsed
      */
-    File parseReplayFileToJson (File replayFile) throws ServiceException;
+    File parseReplayFileToJson(File replayFile) throws FileServiceException;
 
-
-    /**
-     * Method that returns the Directory the parser is saved in
-
-     * @return a File containing the Folder the Parser is extracted to
-     */
-    File getParserDirectory();
-
-    /**
-     * Method that returns the Directory the replay files are copied to
-     * @return a File containing the Folder the replay files are copied to
-     */
-    File getFileDirectory();
 
 }
