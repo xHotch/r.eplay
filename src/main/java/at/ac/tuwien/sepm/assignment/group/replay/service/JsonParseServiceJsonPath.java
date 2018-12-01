@@ -9,6 +9,7 @@ import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.List;
  *
  * @author Markus Kogelbauer
  */
+@Service
 public class JsonParseServiceJsonPath implements JsonParseService {
 
     //Logger
