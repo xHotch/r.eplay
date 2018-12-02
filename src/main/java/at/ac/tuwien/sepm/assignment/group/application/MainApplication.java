@@ -26,8 +26,8 @@ public final class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // setup application
-        primaryStage.setTitle("Universe Calculator");
-        primaryStage.setWidth(1366);
+        primaryStage.setTitle("R.EPLAY");
+        primaryStage.setWidth(1024);
         primaryStage.setHeight(768);
         primaryStage.centerOnScreen();
         primaryStage.setOnCloseRequest(event -> {
@@ -42,7 +42,7 @@ public final class MainApplication extends Application {
         // prepare fxml loader to inject controller
         SpringFXMLLoader springFXMLLoader = context.getBean(SpringFXMLLoader.class);
 
-        primaryStage.setScene(new Scene(springFXMLLoader.load("/fxml/universe.fxml", Parent.class)));
+        primaryStage.setScene(new Scene(springFXMLLoader.load("/fxml/mainwindow.fxml", Parent.class)));
 
         // show application
         primaryStage.show();

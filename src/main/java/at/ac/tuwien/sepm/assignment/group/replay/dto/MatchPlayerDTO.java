@@ -5,7 +5,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
  */
 public class MatchPlayerDTO {
 
-    private int id;
+    private int matchId;
+    private int playerId;
     private String name;
     private int team;
     private int score;
@@ -14,12 +15,20 @@ public class MatchPlayerDTO {
     private int shots;
     private int saves;
 
-    public int getId() {
-        return id;
+    public int getMatchId() {
+        return matchId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
     public String getName() {
