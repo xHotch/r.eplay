@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MainwindowController">
+  <tabs>
+    <Tab text="Matches">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView layoutX="85.0" layoutY="91.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
+                    <columns>
+                      <TableColumn prefWidth="100.0" text="Datum" />
+                      <TableColumn text="Matchtyp" />
+                        <TableColumn prefWidth="180.0" text="Spieler Team Blau" />
+                        <TableColumn prefWidth="180.0" text="Spieler Team Rot" />
+                    </columns>
+                  </TableView>
+                  <Button layoutX="564.0" layoutY="106.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
+                  <Button disable="true" layoutX="119.0" layoutY="517.0" mnemonicParsing="false" text="Match löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
+                  <Button disable="true" layoutX="210.0" layoutY="684.0" mnemonicParsing="false" text="Ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
+                  <Button layoutX="381.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchdetailsButtonClicked" text="Matchdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="360.0" />
+                  <CheckBox disable="true" layoutX="651.0" layoutY="498.0" mnemonicParsing="false" text="Spielername" AnchorPane.bottomAnchor="224.0" AnchorPane.rightAnchor="300.0" />
+                  <Label layoutX="537.0" layoutY="498.0" text="Spielername" AnchorPane.bottomAnchor="224.0" AnchorPane.rightAnchor="200.0" />
+                  <TextField disable="true" layoutX="611.0" layoutY="494.0" AnchorPane.bottomAnchor="220.0" AnchorPane.rightAnchor="45.0" />
+                  <CheckBox disable="true" layoutX="637.0" layoutY="538.0" mnemonicParsing="false" text="Zeitraum" AnchorPane.bottomAnchor="184.0" AnchorPane.rightAnchor="318.0" />
+                  <Label layoutX="541.0" layoutY="538.0" text="Von" AnchorPane.bottomAnchor="184.0" AnchorPane.rightAnchor="200.0" />
+                  <DatePicker disable="true" layoutX="597.0" layoutY="536.0" AnchorPane.bottomAnchor="180.0" AnchorPane.rightAnchor="20.0" />
+                  <Label layoutX="787.0" layoutY="538.0" text="Bis" AnchorPane.bottomAnchor="144.0" AnchorPane.rightAnchor="200.0" />
+                  <DatePicker disable="true" layoutX="810.0" layoutY="536.0" AnchorPane.bottomAnchor="140.0" AnchorPane.rightAnchor="20.0" />
+                  <CheckBox disable="true" layoutX="636.0" layoutY="618.0" mnemonicParsing="false" text="Matchtyp" AnchorPane.bottomAnchor="104.0" AnchorPane.rightAnchor="316.0" />
+                  <Label layoutX="552.0" layoutY="578.0" text="Matchtyp" AnchorPane.bottomAnchor="104.0" AnchorPane.rightAnchor="200.0" />
+                  <ChoiceBox disable="true" layoutX="610.0" layoutY="576.0" prefWidth="150.0" AnchorPane.bottomAnchor="100.0" AnchorPane.rightAnchor="44.0" />
+                  <Button disable="true" layoutX="670.0" layoutY="684.0" mnemonicParsing="false" text="Suchen" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="160.0" />
+                  <Button disable="true" layoutX="931.0" layoutY="684.0" mnemonicParsing="false" text="Suche zurücksetzen" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="20.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+      <Tab text="Spieler">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
+                     <columns>
+                        <TableColumn prefWidth="200.0" text="Name" />
+                        <TableColumn prefWidth="150.0" text="ID" />
+                        <TableColumn prefWidth="150.0" text="Platform" />
+                     </columns>
+                  </TableView>
+                  <Button layoutX="20.0" layoutY="672.0" mnemonicParsing="false" text="Spieler löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
+                  <Button disable="true" layoutX="154.0" layoutY="672.0" mnemonicParsing="false" text="Spieler bearbeiten" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
+                  <Button disable="true" layoutX="282.0" layoutY="672.0" mnemonicParsing="false" text="Team zuweisen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="280.0" />
+                  <Button disable="true" layoutX="409.0" layoutY="684.0" mnemonicParsing="false" text="Spielerdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="400.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+  </tabs>
+</TabPane>
