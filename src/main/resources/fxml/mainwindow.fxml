@@ -12,7 +12,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MainwindowController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MainwindowController">
   <tabs>
     <Tab text="Matches">
       <content>
@@ -26,7 +26,7 @@
                         <TableColumn prefWidth="180.0" text="Spieler Team Rot" />
                     </columns>
                   </TableView>
-                  <Button layoutX="564.0" layoutY="106.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
+                  <Button layoutX="564.0" layoutY="106.0" mnemonicParsing="false" onAction="#onUploadReplayButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
                   <Button disable="true" layoutX="119.0" layoutY="517.0" mnemonicParsing="false" text="Match löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
                   <Button disable="true" layoutX="210.0" layoutY="684.0" mnemonicParsing="false" text="Ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
                   <Button layoutX="381.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchdetailsButtonClicked" text="Matchdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="360.0" />
