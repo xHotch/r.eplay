@@ -54,7 +54,7 @@ public class MatchTest {
 
     private List<MatchDTO> retrievedMatches;
 
-    AnnotationConfigApplicationContext context;
+    private AnnotationConfigApplicationContext context;
 
     @Before
     public void setUp(){
@@ -65,35 +65,9 @@ public class MatchTest {
         // get the MatchDAO component from the spring framework
         matchDAO = (JDBCMatchDAO)context.getBean("JDBCMatchDAO");
 
-
-        // set up a match entity and define the object variables
-        matchDTO = new MatchDTO();
-
-        // set the time
-        matchDTO.setDateTime(LocalDate.now().atStartOfDay());
-
-        // add 2 players to the match list ... simulating a 1v1 match
-        List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
-
-        // create 2 players
-        playerRED = new MatchPlayerDTO();
-        playerBLUE = new MatchPlayerDTO();
-
-        // helper method to fill the player fields
-        setPlayerVariables(playerRED, 1, "Player 1", 3, 10, 2,3, 5, 1);
-        setPlayerVariables(playerBLUE, 2, "Player 2", 1, 15, 4,2, 3, 7);
-
-        playerMatchList.add(playerRED);
-        playerMatchList.add(playerBLUE);
-        matchDTO.setPlayerData(playerMatchList);
-
-        // set the remaining match variables
-        matchDTO.setTeamSize(1);
-
-        // will be used as container for the results from the db.
-        retrievedMatches = new LinkedList<>();
-
         matchService = new SimpleMatchService(matchDAO);
+
+        jdbcConnectionManager = (JDBCConnectionManager) context.getBean("JDBCConnectionManager");
     }
 
     @After
@@ -104,7 +78,6 @@ public class MatchTest {
         try {
 
             // get the connection manager component
-            jdbcConnectionManager = (JDBCConnectionManager) context.getBean("JDBCConnectionManager");
             connection = jdbcConnectionManager.getConnection();
             // drop all the tables for clean tests
             PreparedStatement dropPlayerInMatch = connection.prepareStatement("DROP TABLE IF EXISTS PLAYERINMATCH");
@@ -128,7 +101,45 @@ public class MatchTest {
     }
 
     @Test
-    public void matchCreateAndReadTest() throws MatchPersistenceException {
+    public void matchCreateAndReadTest() throws MatchPersistenceException, SQLException {
+        // set up a match entity and define the object variables
+        matchDTO = new MatchDTO();
+
+        // set the time
+        matchDTO.setDateTime(LocalDate.now().atStartOfDay());
+
+        // add 2 players to the match list ... simulating a 1v1 match
+        List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
+
+        // create 2 players
+        playerRED = new MatchPlayerDTO();
+        playerBLUE = new MatchPlayerDTO();
+
+        // helper method to fill the player fields
+        setPlayerVariables(playerRED, 1,1, "Player 1", 3, 10, 2,3, 5, 1);
+        setPlayerVariables(playerBLUE, 1,2, "Player 2", 1, 15, 4,2, 3, 7);
+
+        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?");
+        ps.setInt(1,1);
+        ps.setString(2,"Player red");
+        ps.setInt(3,345456);
+        ps.executeUpdate();
+        ps.setInt(1,2);
+        ps.setString(2,"Player blue");
+        ps.setInt(3,345333);
+        ps.executeUpdate();
+
+        if (!ps.isClosed()) ps.close();
+
+        playerMatchList.add(playerRED);
+        playerMatchList.add(playerBLUE);
+        matchDTO.setPlayerData(playerMatchList);
+
+        // set the remaining match variables
+        matchDTO.setTeamSize(1);
+
+        // will be used as container for the results from the db.
+        retrievedMatches = new LinkedList<>();
 
         // create the match in the database
         matchDAO.createMatch(matchDTO);
@@ -182,8 +193,8 @@ public class MatchTest {
         MatchPlayerDTO playerRed = new MatchPlayerDTO();
         MatchPlayerDTO playerBlue = new MatchPlayerDTO();
 
-        setPlayerVariables(playerRed,1,"",-1,-1,-1,-1,-1,-1);
-        setPlayerVariables(playerBlue,2,"",-1,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerRed,1,2,"",-1,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerBlue,1, 4,"",-1,-1,-1,-1,-1,-1);
 
         List<MatchPlayerDTO> players = new LinkedList<>();
         players.add(playerBlue);
@@ -203,8 +214,9 @@ public class MatchTest {
     }
 
     // helper class to populate the player's variables
-    public void setPlayerVariables(MatchPlayerDTO player, int id, String name, int team, int score, int goals, int assists, int shots, int saves){
-        player.setMatchId(id);
+    public void setPlayerVariables(MatchPlayerDTO player, int matchId, int playerId, String name, int team, int score, int goals, int assists, int shots, int saves){
+        player.setMatchId(matchId);
+        player.setPlayerId(playerId);
         player.setName(name);
         player.setTeam(team);
         player.setScore(score);
