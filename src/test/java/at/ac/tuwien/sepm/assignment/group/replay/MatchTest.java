@@ -88,8 +88,6 @@ public class MatchTest {
         matchDTO.setPlayerData(playerMatchList);
 
         // set the remaining match variables
-        matchDTO.setTeamBlueGoals(2);
-        matchDTO.setTeamRedGoals(4);
         matchDTO.setTeamSize(1);
 
         // will be used as container for the results from the db.
@@ -130,21 +128,13 @@ public class MatchTest {
     }
 
     @Test
-    public void matchCreateAndReadTest(){
+    public void matchCreateAndReadTest() throws MatchPersistenceException {
 
         // create the match in the database
-        try {
-            matchDAO.createMatch(matchDTO);
-        } catch (MatchPersistenceException e) {
-            LOG.error("could not create match (TEST)");
-        }
+        matchDAO.createMatch(matchDTO);
 
         // retrieve match from the database
-        try {
-            retrievedMatches = matchDAO.readMatches();
-        } catch (MatchPersistenceException e) {
-            LOG.trace("Persistence exception while reading the matches. (TEST)");
-        }
+        retrievedMatches = matchDAO.readMatches();
 
         // check if the received database entries match the stuff in the setUp() method.
         // not using a loop here because only one match was inserted before.
@@ -153,8 +143,6 @@ public class MatchTest {
         // assert things
         Assert.assertThat(match.getId(), is(1));
         Assert.assertThat(match.getDateTime(), is(matchDTO.getDateTime()));
-        Assert.assertThat(match.getTeamBlueGoals(), is(matchDTO.getTeamBlueGoals()));
-        Assert.assertThat(match.getTeamRedGoals(), is(matchDTO.getTeamRedGoals()));
         Assert.assertThat(match.getTeamSize(), is(matchDTO.getTeamSize()));
 
 
@@ -179,20 +167,16 @@ public class MatchTest {
         MatchDTO match = new MatchDTO();
 
         match.setDateTime(null);
-        match.setTeamBlueGoals(-1);
-        match.setTeamRedGoals(-1);
         match.setPlayerData(null);
 
         try {
             matchService.createMatch(match);
             fail();
         } catch (MatchValidationException e) {
-            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "Team blue goals negative\n" + "Team blue goals negative\n" + "No players found in match\n"));
+            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "No players found in match\n"));
         }
 
         match.setDateTime(LocalDateTime.now());
-        match.setTeamBlueGoals(1);
-        match.setTeamRedGoals(3);
         match.setTeamSize(3);
 
         MatchPlayerDTO playerRed = new MatchPlayerDTO();
@@ -214,13 +198,13 @@ public class MatchTest {
             assertThat(e.getMessage(), CoreMatchers.is("Team size does not equal player list\n" +
                 "No Name\n" + "Invalid Team number\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
                 "No Name\n" + "Invalid Team number\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
-                "Blueteam goals does not macht\n" + "Redteam goals does not macht\n" + "Uneven teamsize\n"));
+                "Uneven teamsize\n"));
         }
     }
 
     // helper class to populate the player's variables
     public void setPlayerVariables(MatchPlayerDTO player, int id, String name, int team, int score, int goals, int assists, int shots, int saves){
-        player.setId(id);
+        player.setMatchId(id);
         player.setName(name);
         player.setTeam(team);
         player.setScore(score);

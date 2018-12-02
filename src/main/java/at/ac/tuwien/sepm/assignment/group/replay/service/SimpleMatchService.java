@@ -44,28 +44,20 @@ public class SimpleMatchService implements MatchService {
         String errMsg = "";
 
         if (matchDTO.getDateTime() == null) errMsg += "No MatchDate\n";
-        if (matchDTO.getTeamBlueGoals() < 0) errMsg += "Team blue goals negative\n";
-        if (matchDTO.getTeamRedGoals() < 0) errMsg += "Team blue goals negative\n";
         if (matchDTO.getPlayerData() == null || matchDTO.getPlayerData().isEmpty()) errMsg += "No players found in match\n";
         else {
             if (matchDTO.getPlayerData().size() != matchDTO.getTeamSize() * 2) errMsg += "Team size does not equal player list\n";
-            int blueGoals = 0;
-            int redGoals = 0;
             int countTeamBlue = 0;
             int countTeamRed = 0;
             for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
                 errMsg += matchPlayerDTOValidator(player);
                 if (player.getTeam() == 0) {
                     countTeamBlue++;
-                    blueGoals += player.getGoals();
                 }
                 if (player.getTeam() == 1) {
                     countTeamRed++;
-                    redGoals += player.getGoals();
                 }
             }
-            if (matchDTO.getTeamBlueGoals() != blueGoals) errMsg += "Blueteam goals does not macht\n";
-            if (matchDTO.getTeamRedGoals() != redGoals) errMsg += "Redteam goals does not macht\n";
             if (matchDTO.getTeamSize() != countTeamBlue || matchDTO.getTeamSize() != countTeamRed) errMsg += "Uneven teamsize\n";
         }
         if (!errMsg.equals("")) {
