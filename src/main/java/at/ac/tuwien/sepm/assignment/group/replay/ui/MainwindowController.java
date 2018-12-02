@@ -14,12 +14,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
+/**
+ * Main Window Controller.
+ * @author Bernhard Bayer
+ */
 @Component
 public class MainwindowController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    //AnnotationConfigApplicationContext matchdetailsContext;
     @Autowired
     AnnotationConfigApplicationContext matchdetailsContext;
 
@@ -31,8 +34,13 @@ public class MainwindowController {
 
     }
 
+    /**
+     * Opens a new Match Detail window.
+     * @param actionEvent Actionevent from the button
+     */
     public void onMatchdetailsButtonClicked(ActionEvent actionEvent) {
 
+        LOG.info("Match Details button clicked");
         LOG.debug("Opening Match Details window");
 
         Stage matchdetailsStage = new Stage();
@@ -44,8 +52,6 @@ public class MainwindowController {
         matchdetailsStage.setOnCloseRequest(event -> {
             LOG.debug("Match Details window closed");
         });
-
-        //matchdetailsContext = new AnnotationConfigApplicationContext("at.ac.tuwien.sepm.assignment.group");
 
         // prepare fxml loader to inject controller
         SpringFXMLLoader springFXMLLoader = matchdetailsContext.getBean(SpringFXMLLoader.class);
@@ -63,7 +69,9 @@ public class MainwindowController {
 
         //Get data to match detail window
         //To get data to match detail window create a setter method in MatchdetailController and call it here
-        //matchdetailController.setString("test");
+        //e.g.: matchdetailController.setString("test");
+
+        //TODO
 
     }
 }
