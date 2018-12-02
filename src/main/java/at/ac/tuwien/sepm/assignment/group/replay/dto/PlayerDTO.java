@@ -9,6 +9,7 @@ public class PlayerDTO {
     private int id;
     private String name;
     private long plattformid;
+    private boolean shown;
 
     public int getId() {
         return id;
@@ -34,9 +35,17 @@ public class PlayerDTO {
         this.plattformid = plattformid;
     }
 
+    public boolean isShown() {
+        return shown;
+    }
+
+    public void setShown(boolean shown) {
+        this.shown = shown;
+    }
+
     @Override
     public String toString() {
-        return "PlayerDTO{" + "id=" + id + ", name='" + name + '\'' + ", plattformid=" + plattformid + '}';
+        return "PlayerDTO{" + "id=" + id + ", name='" + name + '\'' + ", plattformid=" + plattformid + ", shown=" + shown + '}';
     }
 
     @Override

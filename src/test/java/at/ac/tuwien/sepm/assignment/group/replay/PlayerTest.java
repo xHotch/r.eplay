@@ -104,6 +104,10 @@ public class PlayerTest {
         //set with psnId length
         player2.setPlattformid(1234567891011121314L);
 
+        //setShown to true so the readPlayers method gets the retrieves the players afterwards
+        player1.setShown(true);
+        player2.setShown(true);
+
         playerService.createPlayer(player1);
         playerService.createPlayer(player2);
 
@@ -138,6 +142,38 @@ public class PlayerTest {
 
         playerService.createPlayer(player1);
     }
+
+    /**
+     * This test tries to delete a player. The DAO should delete it without an error.
+     **/
+    @Test
+    public void deletePlayerShouldPersist() throws PlayerPersistenceException, PlayerServiceException, PlayerValidationException {
+        player1.setName("Player 1");
+        player1.setPlattformid(123456789101112L);
+        player1.setShown(true);
+
+        playerService.createPlayer(player1);
+
+        // get all players
+        retrievedPlayers = playerDAO.readPlayers();
+
+        //check if player was saved correctly
+        Assert.assertTrue(retrievedPlayers.contains(player1));
+
+        List<PlayerDTO> playersToDelete = new LinkedList<>();
+        playersToDelete.add(player1);
+
+        playerService.deletePlayers(playersToDelete);
+
+        //retrieve players again
+        retrievedPlayers = playerDAO.readPlayers();
+
+        //check if player was deleted correctly
+        Assert.assertFalse(retrievedPlayers.contains(player1));
+    }
+
+
+
 
 
 }

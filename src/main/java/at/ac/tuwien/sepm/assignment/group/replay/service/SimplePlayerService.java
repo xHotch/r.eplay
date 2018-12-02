@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 /**
  * @author Gabriel Aichinger
@@ -36,6 +37,25 @@ public class SimplePlayerService implements PlayerService {
             LOG.error(msg, e);
             throw new PlayerServiceException(msg, e);
         }
+    }
+
+    @Override
+    public void deletePlayers(List<PlayerDTO> playersToDelete) throws PlayerValidationException, PlayerServiceException {
+        LOG.trace("Called - deletePlayer");
+        if (playersToDelete == null || playersToDelete.isEmpty()) {
+            throw new PlayerValidationException("productsToDelete is null or empty");
+        }
+        for (PlayerDTO p : playersToDelete) {
+            try {
+                playerDAO.deletePlayer(p);
+            } catch (PlayerPersistenceException e) {
+                String msg = "Failed to delete player";
+                LOG.error(msg, e);
+                throw new PlayerServiceException(msg, e);
+            }
+
+        }
+
     }
 
     private void playerDTOValidator(PlayerDTO playerDTO) throws PlayerValidationException {

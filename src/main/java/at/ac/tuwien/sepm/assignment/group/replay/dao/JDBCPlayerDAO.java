@@ -19,9 +19,10 @@ import java.util.List;
 public class JDBCPlayerDAO implements PlayerDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String INSERT_PLAYER = "INSERT INTO player SET name = ?, plattformid = ?";
+    private static final String INSERT_PLAYER = "INSERT INTO player SET name = ?, plattformid = ?, shown = ?";
 
-    private static final String READ_ALL_PLAYERS = "SELECT * FROM player";
+    private static final String READ_ALL_PLAYERS = "SELECT * FROM player WHERE shown = true";
+    private static final String DELETE_PLAYER = "UPDATE player SET shown = 0 WHERE id = ?";
 
     private final Connection connection;
 
@@ -37,6 +38,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, playerDTO.getName());
             ps.setLong(2, playerDTO.getPlattformid());
+            ps.setBoolean(3, playerDTO.isShown());
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -68,6 +70,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                     player.setId(rs.getInt("id"));
                     player.setName(rs.getString("name"));
                     player.setPlattformid(rs.getLong("plattformid"));
+                    player.setShown(rs.getBoolean("shown"));
 
                     result.add(player);
                     LOG.debug("Added player to the result list!");
@@ -83,5 +86,23 @@ public class JDBCPlayerDAO implements PlayerDAO {
             throw new PlayerPersistenceException(msg, e);
         }
         return result;
+    }
+
+    @Override
+    public void deletePlayer(PlayerDTO playerToDelete) throws PlayerPersistenceException {
+        LOG.trace("Called - deletePlayer");
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(DELETE_PLAYER, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setInt(1,playerToDelete.getId());
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            String msg = "Could not delete player";
+            LOG.error(msg, e);
+            throw new PlayerPersistenceException(msg, e);
+        }
     }
 }

@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerValidationException;
+
+import java.util.List;
 
 /**
  * Player Service for validating, calculating of statistics, creating and reading for a player
@@ -19,4 +22,14 @@ public interface PlayerService {
      * @throws PlayerServiceException    if the dao method throws an error.
      */
     void createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException;
+
+    /**
+     * Validates list of players to be deleted and deletes all players of the list that the method is called with
+     *
+     * @param players players to delete
+     * @throws PlayerValidationException if the list of players to delete is empty
+     * @throws PlayerPersistenceException throws persistence exception if something failed
+     *                                    while deleting a player in the database
+     */
+    void deletePlayers(List<PlayerDTO> players) throws PlayerValidationException, PlayerServiceException;
 }
