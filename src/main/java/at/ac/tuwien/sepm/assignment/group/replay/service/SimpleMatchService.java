@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Daniel Klampfl
@@ -36,6 +38,18 @@ public class SimpleMatchService implements MatchService {
             String msg = "Failed to create match";
             LOG.error(msg, e);
             throw new MatchServiceException(msg,e);
+        }
+    }
+
+    @Override
+    public List<MatchDTO> getMatches() throws MatchServiceException{
+        LOG.trace("Called - getMatches");
+        try {
+            return matchDAO.readMatches();
+        } catch (MatchPersistenceException e){
+            String message = "Could not get matches from DAO";
+            LOG.error(message);
+            throw new MatchServiceException(message,e);
         }
     }
 

@@ -18,12 +18,12 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="85.0" layoutY="91.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
+                  <TableView fx:id="tableViewMatches" layoutX="85.0" layoutY="91.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
                     <columns>
-                      <TableColumn prefWidth="100.0" text="Datum" />
-                      <TableColumn text="Matchtyp" />
-                        <TableColumn prefWidth="180.0" text="Spieler Team Blau" />
-                        <TableColumn prefWidth="180.0" text="Spieler Team Rot" />
+                      <TableColumn fx:id="tableColumnMatchDate" prefWidth="100.0" text="Datum" />
+                      <TableColumn fx:id="tableColumnMatchType" text="Matchtyp" />
+                        <TableColumn fx:id="tableColumnPlayersBlue" prefWidth="180.0" text="Spieler Team Blau" />
+                        <TableColumn fx:id="tableColumnPlayersRed" prefWidth="180.0" text="Spieler Team Rot" />
                     </columns>
                   </TableView>
                   <Button layoutX="564.0" layoutY="106.0" mnemonicParsing="false" onAction="#onUploadReplayButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
@@ -43,6 +43,7 @@
                   <ChoiceBox disable="true" layoutX="610.0" layoutY="576.0" prefWidth="150.0" AnchorPane.bottomAnchor="100.0" AnchorPane.rightAnchor="44.0" />
                   <Button disable="true" layoutX="670.0" layoutY="684.0" mnemonicParsing="false" text="Suchen" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="160.0" />
                   <Button disable="true" layoutX="931.0" layoutY="684.0" mnemonicParsing="false" text="Suche zurücksetzen" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="20.0" />
+                  <Button layoutX="677.0" layoutY="255.0" mnemonicParsing="false" onAction="#onAddTestButtonClicked" prefHeight="25.0" prefWidth="250.0" text="add test match" />
                </children></AnchorPane>
       </content>
     </Tab>

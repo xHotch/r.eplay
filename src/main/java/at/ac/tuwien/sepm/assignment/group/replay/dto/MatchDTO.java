@@ -47,6 +47,27 @@ public class MatchDTO {
         this.teamRedGoals = teamRedGoals;
     }
 
+    public String getTeamRedPlayers(){
+        return getTeamPlayers(0);
+    }
+
+    public String getTeamBluePlayers(){
+        return getTeamPlayers(1);
+    }
+
+    private String getTeamPlayers(int team){
+
+        StringBuilder players = new StringBuilder();
+
+        for (MatchPlayerDTO player : playerData){
+            if (player.getTeam() == team) {
+                players.append(player.getName() + " ");
+            }
+        }
+
+        return players.toString();
+    }
+
     public int getTeamSize() {
         return teamSize;
     }

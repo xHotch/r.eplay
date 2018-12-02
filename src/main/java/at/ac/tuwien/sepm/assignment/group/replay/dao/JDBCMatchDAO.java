@@ -151,7 +151,6 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setInt(1,matchId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    rs.next();
                     MatchPlayerDTO matchPlayer = new MatchPlayerDTO();
                     matchPlayer.setId(rs.getInt("id"));
                     matchPlayer.setName(rs.getString("name"));

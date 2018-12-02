@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
 
+import java.util.List;
+
 /**
  * Match Service for validating, calculating of statistics, creating and reading for a match
  *
@@ -19,4 +21,6 @@ public interface MatchService {
      * @throws MatchServiceException    if the dao method throws an error.
      */
     void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException;
+
+    List<MatchDTO> getMatches() throws MatchServiceException;
 }
