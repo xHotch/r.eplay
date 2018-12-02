@@ -72,6 +72,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 matchPlayer.setScore(ctx.read("$.Properties.PlayerStats[" + i + "].Score"));
                 matchPlayer.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
                 matchPlayer.setTeam(ctx.read("$.Properties.PlayerStats[" + i + "].Team"));
+                long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
+                if (id == 0) {
+                    LOG.error("A player has no id");
+                    throw new FileServiceException("A player has no id");
+                }
+                matchPlayer.setPlattformId(id);
                 playerList.add(matchPlayer);
             }
             match.setPlayerData(playerList);

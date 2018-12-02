@@ -19,21 +19,23 @@ public class JsonParseServiceTest {
 
     private File jsonFile;
     private File badJsonFile;
+    private File goodReplay;
 
     @Before
     public void setUp() {
         jsonFile = new File(getClass().getResource("/testJson/kurzesreplay.json").getFile());
         badJsonFile = new File(getClass().getResource("/testJson/keinreplay.json").getFile());
+        goodReplay = new File(getClass().getResource("/testJson/goodReplay.json").getFile());
     }
 
     @Test
     public void testParseMatchReturnsCorrectMatchDto() {
         JsonParseService jps = new JsonParseServiceJsonPath();
         try {
-            MatchDTO match = jps.parseMatch(jsonFile);
-            Assert.assertThat(match.getTeamSize(), is(2));
-            Assert.assertThat(match.getReadId(), is("8F9288E34524733E26DDBEA88E33A0F9"));
-            Assert.assertThat(match.getDateTime(), is(LocalDateTime.of(2018, 10, 8, 21, 28, 38)));
+            MatchDTO match = jps.parseMatch(goodReplay);
+            Assert.assertThat(match.getTeamSize(), is(3));
+            Assert.assertThat(match.getReadId(), is("2F2200D4435F2EF5691E298320832A4B"));
+            Assert.assertThat(match.getDateTime(), is(LocalDateTime.of(2018, 12, 2, 17, 7, 28)));
         } catch (FileServiceException e) {
             fail();
         }

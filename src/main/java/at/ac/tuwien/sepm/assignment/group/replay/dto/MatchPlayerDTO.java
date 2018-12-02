@@ -14,6 +14,7 @@ public class MatchPlayerDTO {
     private int assists;
     private int shots;
     private int saves;
+    private long plattformId; //only to pass the id after reading it from json
 
     public int getMatchId() {
         return matchId;
@@ -85,5 +86,13 @@ public class MatchPlayerDTO {
 
     public void setSaves(int saves) {
         this.saves = saves;
+    }
+
+    public long getPlattformId() {
+        return plattformId;
+    }
+
+    public void setPlattformId(long plattformId) {
+        this.plattformId = plattformId;
     }
 }
