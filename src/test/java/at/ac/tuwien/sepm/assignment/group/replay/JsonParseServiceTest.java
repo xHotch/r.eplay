@@ -32,8 +32,7 @@ public class JsonParseServiceTest {
         try {
             MatchDTO match = jps.parseMatch(jsonFile);
             Assert.assertThat(match.getTeamSize(), is(2));
-            Assert.assertThat(match.getTeamBlueGoals(), is(1));
-            Assert.assertThat(match.getTeamRedGoals(), is(0));
+            Assert.assertThat(match.getReadId(), is("8F9288E34524733E26DDBEA88E33A0F9"));
             Assert.assertThat(match.getDateTime(), is(LocalDateTime.of(2018, 10, 8, 21, 28, 38)));
         } catch (FileServiceException e) {
             fail();

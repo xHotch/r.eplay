@@ -17,7 +17,7 @@ import java.util.List;
 public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?";
+    private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?";
     private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
@@ -36,6 +36,7 @@ public class JDBCMatchDAO implements MatchDAO {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS)) {
             ps.setTimestamp(1, Timestamp.valueOf(matchDTO.getDateTime()));
             ps.setInt(2, matchDTO.getTeamSize());
+            ps.setString(3, matchDTO.getReadId());
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -93,6 +94,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     match.setId(rs.getInt("id"));
                     match.setDateTime(rs.getTimestamp("dateTime").toLocalDateTime());
                     match.setTeamSize(rs.getInt("teamSize"));
+                    match.setReadId(rs.getString("readId"));
 
                     // retrieve the players from the match
                     List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match.getId());

@@ -11,6 +11,7 @@ public class MatchDTO {
     private int id;
     private LocalDateTime dateTime;
     private int teamSize;
+    private String readId; //match id from json file
     private List<MatchPlayerDTO> playerData;
 
     public int getId() {
@@ -35,6 +36,14 @@ public class MatchDTO {
 
     public void setTeamSize(int teamSize) {
         this.teamSize = teamSize;
+    }
+
+    public String getReadId() {
+        return readId;
+    }
+
+    public void setReadId(String readId) {
+        this.readId = readId;
     }
 
     public List<MatchPlayerDTO> getPlayerData() {

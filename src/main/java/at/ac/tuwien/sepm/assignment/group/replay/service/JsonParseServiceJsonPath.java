@@ -60,18 +60,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             String dateTime = ctx.read("$.Properties.Date");
             DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
             match.setDateTime(LocalDateTime.parse(dateTime, dtFormatter));
-            try {
-                match.setTeamBlueGoals(ctx.read("$.Properties.Team0Score"));
-            } catch (PathNotFoundException e) {
-                match.setTeamBlueGoals(0);
-            }
-            try {
-                match.setTeamBlueGoals(ctx.read("$.Properties.Team1Score"));
-            } catch (PathNotFoundException e) {
-                match.setTeamRedGoals(0);
-            }
             match.setTeamSize(ctx.read("$.Properties.TeamSize"));
-
+            match.setReadId(ctx.read("$.Properties.Id"));
             List<MatchPlayerDTO> playerList = new ArrayList<>();
             for (int i = 0; i < match.getTeamSize() * 2; i++) {
                 MatchPlayerDTO matchPlayer = new MatchPlayerDTO();

@@ -138,6 +138,8 @@ public class MatchTest {
         // set the remaining match variables
         matchDTO.setTeamSize(1);
 
+        matchDTO.setReadId("Test");
+
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
 
@@ -155,7 +157,7 @@ public class MatchTest {
         Assert.assertThat(match.getId(), is(1));
         Assert.assertThat(match.getDateTime(), is(matchDTO.getDateTime()));
         Assert.assertThat(match.getTeamSize(), is(matchDTO.getTeamSize()));
-
+        Assert.assertThat(match.getReadId(), is(matchDTO.getReadId()));
 
         // verify player data ...
         for (MatchPlayerDTO player:match.getPlayerData()) {
