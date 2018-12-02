@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchdetailController">
   <tabs>
     <Tab text="Grunddaten">
       <content>
@@ -20,7 +20,7 @@
                   <Label layoutX="189.0" layoutY="33.0" text="Matchdauer:" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="20.0" />
                   <Label layoutX="210.0" layoutY="30.0" text="Team Blau:" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="20.0" />
                   <Label layoutX="310.0" layoutY="30.0" text="Team Rot:" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="37.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="50.0" />
+                  <Label fx:id="label_gameMode" layoutX="37.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="50.0" />
                   <Label layoutX="124.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="50.0" />
                   <Label layoutX="229.0" layoutY="74.0" text="Label" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="50.0" />
                   <Label layoutX="210.0" layoutY="60.0" text="Label" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="50.0" />
