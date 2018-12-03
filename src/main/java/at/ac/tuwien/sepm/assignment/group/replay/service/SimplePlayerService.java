@@ -58,6 +58,20 @@ public class SimplePlayerService implements PlayerService {
 
     }
 
+    @Override
+    public List<PlayerDTO> getPlayers() throws PlayerServiceException {
+        LOG.trace("Called - getPlayers");
+        List<PlayerDTO> result;
+        try {
+            result = playerDAO.readPlayers();
+        } catch (PlayerPersistenceException e) {
+            String msg = "Failed to get players";
+            LOG.error(msg, e);
+            throw new PlayerServiceException(msg, e);
+        }
+        return result;
+    }
+
     private void playerDTOValidator(PlayerDTO playerDTO) throws PlayerValidationException {
         LOG.trace("Called - playerDTOValidator");
         String errMsg = "";

@@ -50,14 +50,12 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
+                  <TableView fx:id="tableViewPlayers" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
                      <columns>
-                        <TableColumn prefWidth="200.0" text="Name" />
-                        <TableColumn prefWidth="150.0" text="ID" />
-                        <TableColumn prefWidth="150.0" text="Platform" />
+                        <TableColumn fx:id="tableColumnPlayerName" prefWidth="524.0" text="Name" />
                      </columns>
                   </TableView>
-                  <Button layoutX="20.0" layoutY="672.0" mnemonicParsing="false" text="Spieler löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
+                  <Button layoutX="20.0" layoutY="672.0" mnemonicParsing="false" onAction="#onDeletePlayerButtonClicked" text="Spieler löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
                   <Button disable="true" layoutX="154.0" layoutY="672.0" mnemonicParsing="false" text="Spieler bearbeiten" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
                   <Button disable="true" layoutX="282.0" layoutY="672.0" mnemonicParsing="false" text="Team zuweisen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="280.0" />
                   <Button disable="true" layoutX="409.0" layoutY="684.0" mnemonicParsing="false" text="Spielerdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="400.0" />
