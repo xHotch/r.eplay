@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchdetailController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchdetailController">
   <tabs>
     <Tab text="Grunddaten">
       <content>
@@ -17,26 +17,26 @@
                <children>
                   <Label layoutX="36.0" layoutY="33.0" text="Spielmodus:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
                   <Label layoutX="104.0" layoutY="25.0" text="Datum:" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="189.0" layoutY="33.0" text="Matchdauer:" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="210.0" layoutY="30.0" text="Team Blau:" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="310.0" layoutY="30.0" text="Team Rot:" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="20.0" />
-                  <Label fx:id="label_gameMode" layoutX="37.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="50.0" />
-                  <Label layoutX="124.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="50.0" />
-                  <Label layoutX="229.0" layoutY="74.0" text="Label" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="50.0" />
-                  <Label layoutX="210.0" layoutY="60.0" text="Label" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="50.0" />
-                  <Label layoutX="310.0" layoutY="60.0" text="Label" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="50.0" />
+                  <Label layoutX="249.0" layoutY="20.0" text="Matchdauer:" AnchorPane.leftAnchor="249.0" AnchorPane.topAnchor="20.0" />
+                  <Label layoutX="349.0" layoutY="20.0" text="Team Blau:" AnchorPane.leftAnchor="349.0" AnchorPane.topAnchor="20.0" />
+                  <Label layoutX="449.0" layoutY="20.0" text="Team Rot:" AnchorPane.leftAnchor="449.0" AnchorPane.topAnchor="20.0" />
+                  <Label fx:id="labelGameMode" layoutX="37.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="50.0" />
+                  <Label fx:id="labelDate" layoutX="124.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="50.0" />
+                  <Label fx:id="labelMatchDuration" layoutX="249.0" layoutY="50.0" text="Label" AnchorPane.leftAnchor="249.0" AnchorPane.topAnchor="50.0" />
+                  <Label fx:id="labelTeamBlue" layoutX="349.0" layoutY="50.0" text="Label" AnchorPane.leftAnchor="349.0" AnchorPane.topAnchor="50.0" />
+                  <Label fx:id="labelTeamRed" layoutX="449.0" layoutY="50.0" text="Label" AnchorPane.leftAnchor="449.0" AnchorPane.topAnchor="50.0" />
                   <Label layoutX="34.0" layoutY="120.0" text="Team Blau" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="120.0">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Label>
-                  <TableView layoutX="14.0" layoutY="191.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
+                  <TableView fx:id="tableTeamBlue" layoutX="14.0" layoutY="191.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
                     <columns>
-                      <TableColumn prefWidth="160.0" text="Spieler" />
-                      <TableColumn prefWidth="75.0" text="Tore" />
-                        <TableColumn prefWidth="75.0" text="Schüsse" />
-                        <TableColumn prefWidth="75.0" text="Saves" />
-                        <TableColumn prefWidth="75.0" text="Assists" />
+                      <TableColumn fx:id="playerNameBlue" prefWidth="160.0" text="Spieler" />
+                      <TableColumn fx:id="playerGoalsBlue" prefWidth="75.0" text="Tore" />
+                        <TableColumn fx:id="playerShotsBlue" prefWidth="75.0" text="Schüsse" />
+                        <TableColumn fx:id="playerSavesBlue" prefWidth="75.0" text="Saves" />
+                        <TableColumn fx:id="playerAssistsBlue" prefWidth="75.0" text="Assists" />
                     </columns>
                   </TableView>
                   <Button layoutX="22.0" layoutY="367.0" mnemonicParsing="false" text="Spieler speichern" AnchorPane.bottomAnchor="320.0" AnchorPane.leftAnchor="20.0" />
@@ -45,13 +45,13 @@
                         <Font size="25.0" />
                      </font>
                   </Label>
-                  <TableView layoutX="20.0" layoutY="449.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                  <TableView fx:id="tableTeamRed" layoutX="20.0" layoutY="449.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                      <columns>
-                        <TableColumn prefWidth="160.0" text="Spieler" />
-                        <TableColumn prefWidth="75.0" text="Tore" />
-                        <TableColumn prefWidth="75.0" text="Schüsse" />
-                        <TableColumn prefWidth="75.0" text="Saves" />
-                        <TableColumn prefWidth="75.0" text="Assists" />
+                        <TableColumn fx:id="playerNameRed" prefWidth="160.0" text="Spieler" />
+                        <TableColumn fx:id="playerGoalsRed" prefWidth="75.0" text="Tore" />
+                        <TableColumn fx:id="playerShotsRed" prefWidth="75.0" text="Schüsse" />
+                        <TableColumn fx:id="playerSavesRed" prefWidth="75.0" text="Saves" />
+                        <TableColumn fx:id="playerAssistsRed" prefWidth="75.0" text="Assists" />
                      </columns>
                   </TableView>
                   <Button layoutX="22.0" layoutY="663.0" mnemonicParsing="false" text="Spieler speichern" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />

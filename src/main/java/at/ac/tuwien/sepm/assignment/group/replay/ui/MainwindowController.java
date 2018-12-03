@@ -132,16 +132,12 @@ public class MainwindowController {
             LOG.error("Loading Match Details fxml failed: " + e.getMessage());
         }
 
+        // load match details for the new window
+        matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
         // show application
         matchdetailsStage.show();
         matchdetailsStage.toFront();
         LOG.debug("Opening Match Details window complete");
-
-        //Get data to match detail window
-        //To get data to match detail window create a setter method in MatchdetailController and call it here
-        //e.g.: matchdetailController.setString("test");
-
-        //TODO
 
     }
 
