@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCPlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
@@ -37,6 +40,8 @@ public class PlayerTest {
     private JDBCConnectionManager jdbcConnectionManager;
     private PlayerDAO playerDAO;
     private PlayerDTO player1, player2;
+    private MatchPlayerDTO matchPlayer1;
+    private MatchDAO matchDAO;
     private PlayerService playerService;
     private List<PlayerDTO> retrievedPlayers;
 
@@ -51,10 +56,16 @@ public class PlayerTest {
         // get the PlayerDAO component from the spring framework
         playerDAO = (JDBCPlayerDAO) context.getBean("JDBCPlayerDAO");
 
+        // get the MatchDAO component from the spring framework
+        matchDAO = (JDBCMatchDAO) context.getBean("JDBCMatchDAO");
 
-        //create two player entities
+
+
+        //create players
         player1 = new PlayerDTO();
         player2 = new PlayerDTO();
+
+        matchPlayer1 = new MatchPlayerDTO();
 
         // will be used as container for the results from the db.
         retrievedPlayers = new LinkedList<>();
@@ -172,7 +183,34 @@ public class PlayerTest {
         Assert.assertFalse(retrievedPlayers.contains(player1));
     }
 
+    /**
+     * This test tries to show a player.
+     **/
+    @Test
+    public void showPlayerShouldPersist() throws PlayerPersistenceException, PlayerServiceException, PlayerValidationException {
 
+        //set values for playerDTO
+        player1.setName("Player 1");
+        player1.setPlattformid(123456789101112L);
+        player1.setShown(false);
+
+        playerService.createPlayer(player1);
+
+        //retrieve player
+        retrievedPlayers = playerDAO.readPlayers();
+
+        //check that player is not shown
+        Assert.assertFalse(retrievedPlayers.contains(player1));
+
+        //show player
+        playerService.showPlayer(player1);
+
+        //retrieve players again
+        retrievedPlayers = playerDAO.readPlayers();
+
+        //check if player is shown
+        Assert.assertTrue(retrievedPlayers.contains(player1));
+    }
 
 
 

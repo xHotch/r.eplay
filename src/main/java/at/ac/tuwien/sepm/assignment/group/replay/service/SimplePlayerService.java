@@ -72,6 +72,17 @@ public class SimplePlayerService implements PlayerService {
         return result;
     }
 
+    @Override
+    public void showPlayer(PlayerDTO player) throws PlayerServiceException {
+        LOG.trace("Called - showPlayer");
+        try {
+            playerDAO.showPlayer(player);
+        } catch (PlayerPersistenceException e) {
+            String msg = "Failed to add player";
+            LOG.error(msg, e);
+            throw new PlayerServiceException(msg, e);        }
+    }
+
     private void playerDTOValidator(PlayerDTO playerDTO) throws PlayerValidationException {
         LOG.trace("Called - playerDTOValidator");
         String errMsg = "";

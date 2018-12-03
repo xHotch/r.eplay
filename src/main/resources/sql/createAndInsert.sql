@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS player
 (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
-  plattformid BIGINT NOT NUll,
-  shown BOOLEAN NOT NULL
+plattformid BIGINT NOT NUll,
+shown BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS matchPlayer
@@ -31,14 +31,7 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   saves INT NOT NULL,
   shots INT NOT NULL,
   FOREIGN KEY (playerid) REFERENCES player(id),
-  FOREIGN KEY (matchid) REFERENCES match_(id),
-  PRIMARY KEY (playerid,matchid)
+FOREIGN KEY (matchid) REFERENCES match_(id),
+PRIMARY KEY (playerid,matchid)
 );
 
-CREATE TABLE IF NOT EXISTS player
-(
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  plattformid BIGINT NOT NUll,
-  shown BOOLEAN NOT NULL
-);

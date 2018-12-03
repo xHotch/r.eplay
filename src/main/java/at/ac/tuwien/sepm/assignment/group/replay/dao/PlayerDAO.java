@@ -14,9 +14,9 @@ public interface PlayerDAO {
      * Creates a new player in the storage for playerDao
      *
      * @param playerDTO the player data to store
+     * @return the generated id of the player
      * @throws PlayerPersistenceException throws persistence exception if something failed
      *                                    while storing a player into the database.
-     * @return the generated id of the player
      */
     int createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException;
 
@@ -34,4 +34,12 @@ public interface PlayerDAO {
      * @param playerToDelete player to delete
      */
     void deletePlayer(PlayerDTO playerToDelete) throws PlayerPersistenceException;
+
+    /**
+     * Adds player to the list of shown players
+     *
+     * @throws PlayerPersistenceException throws persistence exception if something failed
+     *                                    while updating the player entry.
+     */
+    void showPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException;
 }

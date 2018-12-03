@@ -22,7 +22,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
     private static final String INSERT_PLAYER = "INSERT INTO player SET name = ?, plattformid = ?, shown = ?";
 
     private static final String READ_ALL_PLAYERS = "SELECT * FROM player WHERE shown = true";
+
     private static final String DELETE_PLAYER = "UPDATE player SET shown = 0 WHERE id = ?";
+
+    private static final String SHOW_PLAYER = "UPDATE player SET shown = 1 WHERE id = ?";
 
     private static final String READ_PLAYER_BY_PLATFORMID = "Select id from player where plattformid = ?";
 
@@ -114,5 +117,24 @@ public class JDBCPlayerDAO implements PlayerDAO {
             LOG.error(msg, e);
             throw new PlayerPersistenceException(msg, e);
         }
+    }
+
+    @Override
+    public void showPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
+        LOG.trace("Called - showPlayer");
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setInt(1, playerDTO.getId());
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            String msg = "Could not update player to add it to the list of shown players";
+            LOG.error(msg, e);
+            throw new PlayerPersistenceException(msg, e);
+        }
+
     }
 }

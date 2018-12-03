@@ -42,4 +42,13 @@ public interface PlayerService {
      *                                while reading the players in the database
      */
     List<PlayerDTO> getPlayers() throws PlayerServiceException;
+
+    /**
+     * adds player to the list of shown players in the player tab
+     *
+     * @param player player to add
+     * @throws PlayerServiceException throws persistence exception if something failed
+     *                                while updating the player database entry
+     */
+    void showPlayer(PlayerDTO player) throws PlayerServiceException;
 }
