@@ -2,9 +2,11 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.application.Platform;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -61,6 +64,9 @@ public class MainwindowController {
 
     @Autowired
     MatchService matchService;
+
+    @Autowired
+    PlayerService playerService;
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -158,14 +164,6 @@ public class MainwindowController {
         });
     }
 
-    public void onAddTestButtonClicked(ActionEvent actionEvent){
-        try {
-            matchService.createMatch(addTestMatch());
-        } catch (Exception e){
-
-        }
-        updateMatchTable();
-    }
 
     /**
      * Method to show a simple Error Alert to the user
@@ -184,6 +182,12 @@ public class MainwindowController {
         alert.showAndWait();
     }
 
+
+
+    /**
+     * Method to update the Match Table
+     * Calls the showErrorMessage if an Exception occurs
+     */
     private void updateMatchTable(){
         try {
             ObservableList<MatchDTO> observableMatches = FXCollections.observableArrayList(matchService.getMatches());
@@ -192,19 +196,27 @@ public class MainwindowController {
             tableViewMatches.getSortOrder().add(tableColumnMatchDate);
             tableViewMatches.setItems(sortedMatches);
         } catch (MatchServiceException e){
-
+            LOG.error("Cought MatchServiceException {} ", e.getMessage());
+            showErrorMessage(e.getMessage());
         }
     }
 
+
+    /**
+     * FXML Initialize method.
+     * Calls methods to setup and update table;
+     */
     @FXML
     void initialize(){
 
         setupTable();
-
         updateMatchTable();
 
     }
 
+    /**
+     * Helper Method to setup up the Table Columns
+     */
     private void setupTable(){
         tableColumnMatchDate.setCellValueFactory(
             new PropertyValueFactory<MatchDTO,LocalDateTime>("dateTime"));
@@ -213,53 +225,9 @@ public class MainwindowController {
         tableColumnPlayersBlue.setCellValueFactory(
             new PropertyValueFactory<MatchDTO,String>("teamBluePlayers"));
 
-
         tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
         tableColumnMatchDate.setSortable(true);
         tableViewMatches.sort();
-    }
-
-
-    private MatchDTO addTestMatch(){
-
-        // set up a match entity and define the object variables
-        MatchDTO matchDTO = new MatchDTO();
-
-        // set the time
-        matchDTO.setDateTime(LocalDate.now().atStartOfDay());
-
-        // add 2 players to the match list ... simulating a 1v1 match
-        List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
-
-        // create 2 players
-        MatchPlayerDTO playerRED = new MatchPlayerDTO();
-        MatchPlayerDTO playerBLUE = new MatchPlayerDTO();
-
-        // helper method to fill the player fields
-        setPlayerVariables(playerRED, 1, "Player 1", 0, 10, 2,3, 5, 1);
-        setPlayerVariables(playerBLUE, 2, "Player 2", 1, 15, 4,2, 3, 7);
-
-        playerMatchList.add(playerRED);
-        playerMatchList.add(playerBLUE);
-        matchDTO.setPlayerData(playerMatchList);
-
-        // set the remaining match variables
-        matchDTO.setTeamBlueGoals(2);
-        matchDTO.setTeamRedGoals(4);
-        matchDTO.setTeamSize(1);
-
-        return matchDTO;
-    }
-
-    public void setPlayerVariables(MatchPlayerDTO player, int id, String name, int team, int score, int goals, int assists, int shots, int saves){
-        player.setId(id);
-        player.setName(name);
-        player.setTeam(team);
-        player.setScore(score);
-        player.setGoals(goals);
-        player.setAssists(assists);
-        player.setShots(shots);
-        player.setSaves(saves);
     }
 
 
