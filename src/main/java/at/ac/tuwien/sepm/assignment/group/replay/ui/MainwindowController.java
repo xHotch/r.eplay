@@ -152,7 +152,6 @@ public class MainwindowController {
         //Show open file dialog
         File inputFile = fileChooser.showOpenDialog(null);
         if (inputFile == null) {
-            updateMatchTable();
             LOG.info("File selection cancelled");
             return;
         }
@@ -173,6 +172,7 @@ public class MainwindowController {
                 LOG.debug("All players created");
                 matchService.createMatch(matchDto);
                 LOG.debug("match created");
+                Platform.runLater(() -> updateMatchTable());
             } catch (FileServiceException e) {
                 LOG.error("Cought File Service Exception");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
@@ -193,7 +193,7 @@ public class MainwindowController {
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             }
         });
-        updateMatchTable();
+
     }
 
 
