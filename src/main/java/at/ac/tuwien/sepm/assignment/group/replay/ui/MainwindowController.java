@@ -17,10 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -33,11 +30,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.sql.PreparedStatement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -82,8 +78,28 @@ public class MainwindowController {
     @FXML
     private TableColumn<MatchDTO, String> tableColumnPlayersRed;
 
+    //Player Tab
+    @FXML
+    private TableView<PlayerDTO> tableViewPlayers;
+    @FXML
+    private TableColumn<PlayerDTO, String> tableColumnPlayerName;
+
 
     public MainwindowController() {
+
+    }
+
+    /**
+     * FXML Initialize method.
+     * Calls methods to setup and update table;
+     */
+    @FXML
+    void initialize() {
+
+        setupMatchTable();
+        setupPlayerTable();
+        updateMatchTable();
+        updatePlayerTable();
 
     }
 
@@ -174,26 +190,77 @@ public class MainwindowController {
                 LOG.debug("match created");
                 Platform.runLater(() -> updateMatchTable());
             } catch (FileServiceException e) {
-                LOG.error("Cought File Service Exception");
+                LOG.error("Caught File Service Exception");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (PlayerServiceException e) {
-                LOG.error("Cought PlayerServiceException");
+                LOG.error("Caught PlayerServiceException");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (PlayerValidationException e) {
-                LOG.error("Cought PlayerValidationException");
+                LOG.error("Caught PlayerValidationException");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (MatchServiceException e) {
-                LOG.error("Cought MatchServiceException");
+                LOG.error("Caught MatchServiceException");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (MatchValidationException e) {
-                LOG.error("Cought MatchValidationException");
+                LOG.error("Caught MatchValidationException");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (MatchAlreadyExistsException e) {
-                LOG.error("Cought MatchAlreadyExistsException");
+                LOG.error("Caught MatchAlreadyExistsException");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             }
         });
 
+    }
+
+    /**
+     * Deletes selected players in the list.
+     *
+     * @param actionEvent Action event from the button
+     */
+    public void onDeletePlayerButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Delete player button clicked");
+        LOG.trace("Called - onDeletePlayerButtonClicked");
+
+        ObservableList<PlayerDTO> selectedPlayers;
+        selectedPlayers = tableViewPlayers.getSelectionModel().getSelectedItems();
+
+        if (selectedPlayers.isEmpty()) {
+            showErrorMessage("No player selected");
+            return;
+        }
+
+        //new list for delete method in service layer
+        List<PlayerDTO> playersToDelete = new LinkedList<>();
+        //get player names for info message
+        String playerNames = "";
+        int counter = 0;
+
+        for (PlayerDTO p : selectedPlayers) {
+            if (counter != 0) {
+                playerNames += ", ";
+            }
+            playerNames += p.getName();
+            playersToDelete.add(p);
+            counter++;
+        }
+        //let the user confirm the deletion
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Players");
+        alert.setContentText("Are you sure you want to delete the following players? \n" + playerNames);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            try {
+                playerService.deletePlayers(playersToDelete);
+            } catch (PlayerServiceException e) {
+                LOG.error("Caught PlayerServiceException");
+                showErrorMessage("Error while deleting player(s).");
+            } catch (PlayerValidationException e) {
+                LOG.error("Caught PlayerValidationException");
+                showErrorMessage("List of players to be deleted might be empty.");
+            }
+            updatePlayerTable();
+        }
     }
 
 
@@ -215,53 +282,59 @@ public class MainwindowController {
     }
 
 
-
     /**
      * Method to update the Match Table
      * Calls the showErrorMessage if an Exception occurs
      */
-    private void updateMatchTable(){
+    private void updateMatchTable() {
         try {
             ObservableList<MatchDTO> observableMatches = FXCollections.observableArrayList(matchService.getMatches());
             SortedList<MatchDTO> sortedMatches = new SortedList<>(observableMatches);
             sortedMatches.comparatorProperty().bind(tableViewMatches.comparatorProperty());
             tableViewMatches.getSortOrder().add(tableColumnMatchDate);
             tableViewMatches.setItems(sortedMatches);
-        } catch (MatchServiceException e){
-            LOG.error("Cought MatchServiceException {} ", e.getMessage());
+        } catch (MatchServiceException e) {
+            LOG.error("Caught MatchServiceException {} ", e.getMessage());
             showErrorMessage(e.getMessage());
         }
     }
 
-
     /**
-     * FXML Initialize method.
-     * Calls methods to setup and update table;
+     * Loads the players into the player table
+     * Calls the showErrorMessage if an Exception occurs
      */
-    @FXML
-    void initialize(){
+    private void updatePlayerTable() {
+        try {
+            ObservableList<PlayerDTO> observablePlayers = FXCollections.observableArrayList(playerService.getPlayers());
 
-        setupTable();
-        updateMatchTable();
-
+            tableViewPlayers.setItems(observablePlayers);
+        } catch (PlayerServiceException e) {
+            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
+            showErrorMessage(e.getMessage());
+        }
     }
 
     /**
-     * Helper Method to setup up the Table Columns
+     * Helper Method to setup up the Player Table Column
      */
-    private void setupTable(){
-        tableColumnMatchDate.setCellValueFactory(
-            new PropertyValueFactory<MatchDTO,LocalDateTime>("dateTime"));
-        tableColumnPlayersRed.setCellValueFactory(
-            new PropertyValueFactory<MatchDTO,String>("teamRedPlayers"));
-        tableColumnPlayersBlue.setCellValueFactory(
-            new PropertyValueFactory<MatchDTO,String>("teamBluePlayers"));
+    private void setupPlayerTable() {
+        tableColumnPlayerName.setCellValueFactory(new PropertyValueFactory<PlayerDTO, String>("name"));
+        tableViewPlayers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableColumnPlayerName.setStyle("-fx-alignment: CENTER;");
+    }
+
+    /**
+     * Helper Method to setup up the Match Table Columns
+     */
+    private void setupMatchTable() {
+        tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<MatchDTO, LocalDateTime>("dateTime"));
+        tableColumnPlayersRed.setCellValueFactory(new PropertyValueFactory<MatchDTO, String>("teamRedPlayers"));
+        tableColumnPlayersBlue.setCellValueFactory(new PropertyValueFactory<MatchDTO, String>("teamBluePlayers"));
 
         tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
         tableColumnMatchDate.setSortable(true);
         tableViewMatches.sort();
     }
-
 
 
 }

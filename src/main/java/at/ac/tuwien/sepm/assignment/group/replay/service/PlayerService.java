@@ -33,4 +33,13 @@ public interface PlayerService {
      *                                    while deleting a player in the database
      */
     void deletePlayers(List<PlayerDTO> players) throws PlayerValidationException, PlayerServiceException;
+
+    /**
+     * Retrieves all players of the database that should be shown in the player list
+     *
+     * @return list of all players in the database
+     * @throws PlayerServiceException throws persistence exception if something failed
+     *                                while reading the players in the database
+     */
+    List<PlayerDTO> getPlayers() throws PlayerServiceException;
 }
