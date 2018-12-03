@@ -5,40 +5,47 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
  */
 public class MatchPlayerDTO {
 
-    private int matchId;
-    private int playerId;
-    private String name;
+
+    private MatchDTO matchDTO;
+    private PlayerDTO playerDTO;
+
     private int team;
     private int score;
     private int goals;
     private int assists;
     private int shots;
     private int saves;
-    private long plattformId; //only to pass the id after reading it from json
+
+    public MatchDTO getMatchDTO() {
+        return matchDTO;
+    }
+
+    public void setMatchDTO(MatchDTO matchDTO) {
+        this.matchDTO = matchDTO;
+    }
+
+    public PlayerDTO getPlayerDTO() {
+        return playerDTO;
+    }
+
+    public void setPlayerDTO(PlayerDTO playerDTO) {
+        this.playerDTO = playerDTO;
+    }
 
     public int getMatchId() {
-        return matchId;
+        return matchDTO.getId();
     }
 
-    public void setMatchId(int matchId) {
-        this.matchId = matchId;
+
+    public long getPlayerId() {
+        return playerDTO.getId();
     }
 
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
 
     public String getName() {
-        return name;
+        return playerDTO.getName();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getTeam() {
         return team;
@@ -88,11 +95,4 @@ public class MatchPlayerDTO {
         this.saves = saves;
     }
 
-    public long getPlattformId() {
-        return plattformId;
-    }
-
-    public void setPlattformId(long plattformId) {
-        this.plattformId = plattformId;
-    }
 }

@@ -111,9 +111,9 @@ public class PlayerTest {
         player1.setName("Player 1");
         player2.setName("Player 2");
         //set with steamId length
-        player1.setPlattformid(12345678910111213L);
+        player1.setPlatformID(12345678910111213L);
         //set with psnId length
-        player2.setPlattformid(1234567891011121314L);
+        player2.setPlatformID(1234567891011121314L);
 
         //setShown to true so the readPlayers method gets the retrieves the players afterwards
         player1.setShown(true);
@@ -137,7 +137,7 @@ public class PlayerTest {
     public void createWithNegativeShouldThrowException() throws PlayerServiceException, PlayerValidationException {
 
         player1.setName("Player 1");
-        player1.setPlattformid(-1234);
+        player1.setPlatformID(-1234);
 
         playerService.createPlayer(player1);
     }
@@ -149,7 +149,7 @@ public class PlayerTest {
     public void createWithEmptyNameShouldThrowException() throws PlayerServiceException, PlayerValidationException {
 
         player1.setName("");
-        player1.setPlattformid(123456789);
+        player1.setPlatformID(123456789);
 
         playerService.createPlayer(player1);
     }
@@ -160,7 +160,7 @@ public class PlayerTest {
     @Test
     public void deletePlayerShouldPersist() throws PlayerPersistenceException, PlayerServiceException, PlayerValidationException {
         player1.setName("Player 1");
-        player1.setPlattformid(123456789101112L);
+        player1.setPlatformID(123456789101112L);
         player1.setShown(true);
 
         playerService.createPlayer(player1);
@@ -191,7 +191,7 @@ public class PlayerTest {
 
         //set values for playerDTO
         player1.setName("Player 1");
-        player1.setPlattformid(123456789101112L);
+        player1.setPlatformID(123456789101112L);
         player1.setShown(false);
 
         playerService.createPlayer(player1);

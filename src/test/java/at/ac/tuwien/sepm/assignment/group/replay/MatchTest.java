@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
@@ -115,17 +116,21 @@ public class MatchTest {
         playerRED = new MatchPlayerDTO();
         playerBLUE = new MatchPlayerDTO();
 
+        PlayerDTO playerB = new PlayerDTO();
+        PlayerDTO playerR = new PlayerDTO();
+
+
         // helper method to fill the player fields
-        setPlayerVariables(playerRED, 1,3, "Player 1", 3, 10, 2,3, 5, 1);
-        setPlayerVariables(playerBLUE, 1,4, "Player 2", 1, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,3, 10, 2,3, 5,1);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,1, 15, 4,2, 3, 7);
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
-        ps.setInt(1,3);
+        ps.setInt(1,1);
         ps.setString(2,"Player red");
         ps.setInt(3,345456);
         ps.setBoolean(4,true);
         ps.executeUpdate();
-        ps.setInt(1,4);
+        ps.setInt(1,2);
         ps.setString(2,"Player blue");
         ps.setInt(3,345333);
         ps.setBoolean(4,true);
@@ -161,19 +166,24 @@ public class MatchTest {
         playerRED = new MatchPlayerDTO();
         playerBLUE = new MatchPlayerDTO();
 
+        // create 2 players
+        PlayerDTO playerB = new PlayerDTO();
+        PlayerDTO playerR = new PlayerDTO();
+
         // helper method to fill the player fields
-        setPlayerVariables(playerRED, 1,1, "Player 1", 3, 10, 2,3, 5, 1);
-        setPlayerVariables(playerBLUE, 1,2, "Player 2", 1, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,3,3, 10, 2,3, 5);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,1, 15, 4,2, 3, 7);
+
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
-        ps.setInt(1,1);
-        ps.setString(2,"Player red");
+        ps.setLong(1,playerB.getId());
+        ps.setString(2,playerB.getName());
         ps.setInt(3,345456);
         ps.setBoolean(4,true);
 
         ps.executeUpdate();
-        ps.setInt(1,2);
-        ps.setString(2,"Player blue");
+        ps.setLong(1,playerR.getId());
+        ps.setString(2,playerR.getName());
         ps.setInt(3,345333);
         ps.setBoolean(4,true);
 
@@ -245,8 +255,11 @@ public class MatchTest {
         MatchPlayerDTO playerRed = new MatchPlayerDTO();
         MatchPlayerDTO playerBlue = new MatchPlayerDTO();
 
-        setPlayerVariables(playerRed,1,2,"",-1,-1,-1,-1,-1,-1);
-        setPlayerVariables(playerBlue,1, 4,"",-1,-1,-1,-1,-1,-1);
+        PlayerDTO playerB = new PlayerDTO();
+        PlayerDTO playerR = new PlayerDTO();
+
+        setPlayerVariables(playerRed,match,playerR,"",1,-1,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerBlue,match, playerB,"",2,-1,-1,-1,-1,-1,-1);
 
         List<MatchPlayerDTO> players = new LinkedList<>();
         players.add(playerBlue);
@@ -266,10 +279,13 @@ public class MatchTest {
     }
 
     // helper class to populate the player's variables
-    public void setPlayerVariables(MatchPlayerDTO player, int matchId, int playerId, String name, int team, int score, int goals, int assists, int shots, int saves){
-        player.setMatchId(matchId);
-        player.setPlayerId(playerId);
-        player.setName(name);
+    public void setPlayerVariables(MatchPlayerDTO player, MatchDTO match, PlayerDTO playerDTO, String name,int id,  int team, int score, int goals, int assists, int shots, int saves){
+        playerDTO.setName(name);
+        playerDTO.setId(id);
+
+
+        player.setMatchDTO(match);
+        player.setPlayerDTO(playerDTO);
         player.setTeam(team);
         player.setScore(score);
         player.setGoals(goals);

@@ -2,9 +2,9 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -64,20 +64,28 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             match.setReadId(ctx.read("$.Properties.Id"));
             List<MatchPlayerDTO> playerList = new ArrayList<>();
             for (int i = 0; i < match.getTeamSize() * 2; i++) {
+
+
+                PlayerDTO playerDTO = new PlayerDTO();
                 MatchPlayerDTO matchPlayer = new MatchPlayerDTO();
+
+                matchPlayer.setMatchDTO(match);
+                matchPlayer.setPlayerDTO(playerDTO);
+
                 matchPlayer.setAssists(ctx.read("$.Properties.PlayerStats[" + i + "].Assists"));
                 matchPlayer.setGoals(ctx.read("$.Properties.PlayerStats[" + i + "].Goals"));
                 matchPlayer.setSaves(ctx.read("$.Properties.PlayerStats[" + i + "].Saves"));
                 matchPlayer.setShots(ctx.read("$.Properties.PlayerStats[" + i + "].Shots"));
                 matchPlayer.setScore(ctx.read("$.Properties.PlayerStats[" + i + "].Score"));
-                matchPlayer.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
+                playerDTO.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
                 matchPlayer.setTeam(ctx.read("$.Properties.PlayerStats[" + i + "].Team"));
+
                 long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
                 if (id == 0) {
                     LOG.error("A player has no id");
                     throw new FileServiceException("A player has no id");
                 }
-                matchPlayer.setPlattformId(id);
+                playerDTO.setPlatformID(id);
                 playerList.add(matchPlayer);
             }
             match.setPlayerData(playerList);

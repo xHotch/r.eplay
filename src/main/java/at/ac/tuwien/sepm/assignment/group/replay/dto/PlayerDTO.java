@@ -6,16 +6,16 @@ import java.util.Objects;
  * @author Gabriel Aichinger
  */
 public class PlayerDTO {
-    private int id;
+    private long id;
     private String name;
-    private long plattformid;
+    private long platformID;
     private boolean shown;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -27,12 +27,12 @@ public class PlayerDTO {
         this.name = name;
     }
 
-    public long getPlattformid() {
-        return plattformid;
+    public long getPlatformID() {
+        return platformID;
     }
 
-    public void setPlattformid(long plattformid) {
-        this.plattformid = plattformid;
+    public void setPlatformID(long platformID) {
+        this.platformID = platformID;
     }
 
     public boolean isShown() {
@@ -45,7 +45,7 @@ public class PlayerDTO {
 
     @Override
     public String toString() {
-        return "PlayerDTO{" + "id=" + id + ", name='" + name + '\'' + ", plattformid=" + plattformid + ", shown=" + shown + '}';
+        return "PlayerDTO{" + "id=" + id + ", name='" + name + '\'' + ", platformID=" + platformID + ", shown=" + shown + '}';
     }
 
     @Override
@@ -53,11 +53,11 @@ public class PlayerDTO {
         if (this == o) return true;
         if (!(o instanceof PlayerDTO)) return false;
         PlayerDTO playerDTO = (PlayerDTO) o;
-        return getId() == playerDTO.getId() && getPlattformid() == playerDTO.getPlattformid() && Objects.equals(getName(), playerDTO.getName());
+        return getId() == playerDTO.getId() && getPlatformID() == playerDTO.getPlatformID() && Objects.equals(getName(), playerDTO.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getPlattformid());
+        return Objects.hash(getId(), getName(), getPlatformID());
     }
 }

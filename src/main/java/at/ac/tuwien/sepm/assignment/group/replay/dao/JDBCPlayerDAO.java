@@ -23,6 +23,8 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
     private static final String READ_ALL_PLAYERS = "SELECT * FROM player WHERE shown = true";
 
+    private static final String GET_PLAYER = "SELECT * FROM player WHERE id = ?";
+
     private static final String DELETE_PLAYER = "UPDATE player SET shown = 0 WHERE id = ?";
 
     private static final String SHOW_PLAYER = "UPDATE player SET shown = 1 WHERE id = ?";
@@ -37,25 +39,26 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
 
     @Override
-    public int createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
+    public long createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
         LOG.trace("Called - createPlayer");
 
         try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
             PreparedStatement ps2 = connection.prepareStatement(READ_PLAYER_BY_PLATFORMID);
-            ps2.setLong(1, playerDTO.getPlattformid());
+            ps2.setLong(1, playerDTO.getPlatformID());
             ResultSet rs2 = ps2.executeQuery();
             if (rs2.next()) {
                 return rs2.getInt("id");
             }
 
             ps.setString(1, playerDTO.getName());
-            ps.setLong(2, playerDTO.getPlattformid());
+            ps.setLong(2, playerDTO.getPlatformID());
             ps.setBoolean(3, playerDTO.isShown());
+
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
-                playerDTO.setId(rs.getInt("id"));
+                playerDTO.setId(rs.getLong("id"));
                 return playerDTO.getId();
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of player";
@@ -82,7 +85,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                     PlayerDTO player = new PlayerDTO();
                     player.setId(rs.getInt("id"));
                     player.setName(rs.getString("name"));
-                    player.setPlattformid(rs.getLong("plattformid"));
+                    player.setPlatformID(rs.getLong("plattformid"));
                     player.setShown(rs.getBoolean("shown"));
 
                     result.add(player);
@@ -108,7 +111,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
         try {
             PreparedStatement ps = connection.prepareStatement(DELETE_PLAYER, Statement.RETURN_GENERATED_KEYS);
 
-            ps.setInt(1,playerToDelete.getId());
+            ps.setLong(1,playerToDelete.getId());
 
             ps.executeUpdate();
 
@@ -126,10 +129,38 @@ public class JDBCPlayerDAO implements PlayerDAO {
         try {
             PreparedStatement ps = connection.prepareStatement(SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS);
 
-            ps.setInt(1, playerDTO.getId());
+            ps.setLong(1, playerDTO.getId());
 
             ps.executeUpdate();
 
+        } catch (SQLException e) {
+            String msg = "Could not update player to add it to the list of shown players";
+            LOG.error(msg, e);
+            throw new PlayerPersistenceException(msg, e);
+        }
+
+    }
+
+    @Override
+    public PlayerDTO get(int id) throws PlayerPersistenceException{
+        LOG.trace("Called - showPlayer");
+        PlayerDTO player = new PlayerDTO();
+        try (PreparedStatement ps = connection.prepareStatement(GET_PLAYER, Statement.RETURN_GENERATED_KEYS)){
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+                rs.next();
+
+                player = new PlayerDTO();
+                player.setId(rs.getInt("id"));
+                player.setName(rs.getString("name"));
+                player.setPlatformID(rs.getLong("plattformid"));
+                player.setShown(rs.getBoolean("shown"));
+
+                LOG.debug("Added player to the result list!");
+
+            return player;
         } catch (SQLException e) {
             String msg = "Could not update player to add it to the list of shown players";
             LOG.error(msg, e);
