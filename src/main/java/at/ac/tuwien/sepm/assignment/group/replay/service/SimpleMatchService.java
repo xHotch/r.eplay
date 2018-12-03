@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
@@ -29,7 +30,7 @@ public class SimpleMatchService implements MatchService {
     }
 
     @Override
-    public void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException {
+    public void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, MatchAlreadyExistsException {
         LOG.trace("Called - createMatch");
         matchDTOValidator(matchDTO);
         try {

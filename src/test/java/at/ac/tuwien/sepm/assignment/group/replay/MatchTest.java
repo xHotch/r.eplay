@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
@@ -101,7 +102,7 @@ public class MatchTest {
     }
 
     @Test
-    public void matchCreateAndReadTest() throws MatchPersistenceException, SQLException {
+    public void matchCreateAndReadTest() throws MatchPersistenceException, SQLException, MatchAlreadyExistsException {
         // set up a match entity and define the object variables
         matchDTO = new MatchDTO();
 
@@ -176,7 +177,7 @@ public class MatchTest {
     }
 
     @Test
-    public void validationMatchTest() throws MatchServiceException {
+    public void validationMatchTest() throws MatchServiceException, MatchAlreadyExistsException {
         MatchDTO match = new MatchDTO();
 
         match.setDateTime(null);

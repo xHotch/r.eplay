@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
@@ -23,6 +24,8 @@ public class JDBCMatchDAO implements MatchDAO {
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
 
+    private static final String READ_MATCH_BY_READID = "Select id from match_ where readId = ?";
+
     private final Connection connection;
 
     public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager) {
@@ -30,10 +33,17 @@ public class JDBCMatchDAO implements MatchDAO {
     }
 
     @Override
-    public void createMatch(MatchDTO matchDTO) throws MatchPersistenceException {
+    public void createMatch(MatchDTO matchDTO) throws MatchPersistenceException, MatchAlreadyExistsException {
         LOG.trace("Called - createMatch");
         int matchID;
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID);
+            ps2.setString(1, matchDTO.getReadId());
+            ResultSet rs2 = ps2.executeQuery();
+            if (rs2.next()) {
+                LOG.error("Match already exists");
+                throw new MatchAlreadyExistsException("Match already exists");
+            }
             ps.setTimestamp(1, Timestamp.valueOf(matchDTO.getDateTime()));
             ps.setInt(2, matchDTO.getTeamSize());
             ps.setString(3, matchDTO.getReadId());

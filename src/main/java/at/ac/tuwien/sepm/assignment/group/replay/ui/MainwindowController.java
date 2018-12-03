@@ -188,6 +188,9 @@ public class MainwindowController {
             } catch (MatchValidationException e) {
                 LOG.error("Cought MatchValidationException");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
+            } catch (MatchAlreadyExistsException e) {
+                LOG.error("Cought MatchAlreadyExistsException");
+                Platform.runLater(() -> showErrorMessage(e.getMessage()));
             }
         });
         updateMatchTable();
