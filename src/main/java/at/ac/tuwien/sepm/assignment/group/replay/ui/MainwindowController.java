@@ -1,13 +1,27 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -19,6 +33,11 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -42,6 +61,24 @@ public class MainwindowController {
 
     @Autowired
     ReplayService replayService;
+
+    @Autowired
+    MatchService matchService;
+
+    @Autowired
+    PlayerService playerService;
+
+    @FXML
+    private TableView<MatchDTO> tableViewMatches;
+    @FXML
+    private TableColumn<MatchDTO, LocalDateTime> tableColumnMatchDate;
+    @FXML
+    private TableColumn<MatchDTO, String> tableColumnMatchType;
+    @FXML
+    private TableColumn<MatchDTO, String> tableColumnPlayersBlue;
+    @FXML
+    private TableColumn<MatchDTO, String> tableColumnPlayersRed;
+
 
     public MainwindowController() {
 
@@ -127,6 +164,7 @@ public class MainwindowController {
         });
     }
 
+
     /**
      * Method to show a simple Error Alert to the user
      *
@@ -143,6 +181,55 @@ public class MainwindowController {
 
         alert.showAndWait();
     }
+
+
+
+    /**
+     * Method to update the Match Table
+     * Calls the showErrorMessage if an Exception occurs
+     */
+    private void updateMatchTable(){
+        try {
+            ObservableList<MatchDTO> observableMatches = FXCollections.observableArrayList(matchService.getMatches());
+            SortedList<MatchDTO> sortedMatches = new SortedList<>(observableMatches);
+            sortedMatches.comparatorProperty().bind(tableViewMatches.comparatorProperty());
+            tableViewMatches.getSortOrder().add(tableColumnMatchDate);
+            tableViewMatches.setItems(sortedMatches);
+        } catch (MatchServiceException e){
+            LOG.error("Cought MatchServiceException {} ", e.getMessage());
+            showErrorMessage(e.getMessage());
+        }
+    }
+
+
+    /**
+     * FXML Initialize method.
+     * Calls methods to setup and update table;
+     */
+    @FXML
+    void initialize(){
+
+        setupTable();
+        updateMatchTable();
+
+    }
+
+    /**
+     * Helper Method to setup up the Table Columns
+     */
+    private void setupTable(){
+        tableColumnMatchDate.setCellValueFactory(
+            new PropertyValueFactory<MatchDTO,LocalDateTime>("dateTime"));
+        tableColumnPlayersRed.setCellValueFactory(
+            new PropertyValueFactory<MatchDTO,String>("teamRedPlayers"));
+        tableColumnPlayersBlue.setCellValueFactory(
+            new PropertyValueFactory<MatchDTO,String>("teamBluePlayers"));
+
+        tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
+        tableColumnMatchDate.setSortable(true);
+        tableViewMatches.sort();
+    }
+
 
 
 }
