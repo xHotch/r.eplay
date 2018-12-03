@@ -100,6 +100,49 @@ public class MatchTest {
         }
 
     }
+    @Test(expected = MatchAlreadyExistsException.class)
+    public void sameMatchTest() throws SQLException, MatchPersistenceException, MatchAlreadyExistsException {
+        // set up a match entity and define the object variables
+        matchDTO = new MatchDTO();
+
+        // set the time
+        matchDTO.setDateTime(LocalDate.now().atStartOfDay());
+
+        // add 2 players to the match list ... simulating a 1v1 match
+        List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
+
+        // create 2 players
+        playerRED = new MatchPlayerDTO();
+        playerBLUE = new MatchPlayerDTO();
+
+        // helper method to fill the player fields
+        setPlayerVariables(playerRED, 1,1, "Player 1", 3, 10, 2,3, 5, 1);
+        setPlayerVariables(playerBLUE, 1,2, "Player 2", 1, 15, 4,2, 3, 7);
+
+        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?");
+        ps.setInt(1,1);
+        ps.setString(2,"Player red");
+        ps.setInt(3,345456);
+        ps.executeUpdate();
+        ps.setInt(1,2);
+        ps.setString(2,"Player blue");
+        ps.setInt(3,345333);
+        ps.executeUpdate();
+
+        if (!ps.isClosed()) ps.close();
+
+        playerMatchList.add(playerRED);
+        playerMatchList.add(playerBLUE);
+        matchDTO.setPlayerData(playerMatchList);
+
+        // set the remaining match variables
+        matchDTO.setTeamSize(1);
+
+        matchDTO.setReadId("Test");
+
+        matchDAO.createMatch(matchDTO);
+        matchDAO.createMatch(matchDTO);
+    }
 
     @Test
     public void matchCreateAndReadTest() throws MatchPersistenceException, SQLException, MatchAlreadyExistsException {
