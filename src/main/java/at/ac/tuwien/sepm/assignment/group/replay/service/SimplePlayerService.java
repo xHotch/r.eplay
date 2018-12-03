@@ -26,11 +26,11 @@ public class SimplePlayerService implements PlayerService {
     }
 
     @Override
-    public void createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException {
+    public int createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException {
         LOG.trace("Called - createPlayer");
         playerDTOValidator(playerDTO);
         try {
-            playerDAO.createPlayer(playerDTO);
+            return playerDAO.createPlayer(playerDTO);
         } catch (PlayerPersistenceException e) {
             String msg = "Failed to create player";
             LOG.error(msg, e);

@@ -3,8 +3,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.*;
+import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
@@ -61,6 +61,9 @@ public class MainwindowController {
 
     @Autowired
     ReplayService replayService;
+
+    @Autowired
+    JsonParseService jsonParseService;
 
     @Autowired
     MatchService matchService;
@@ -149,19 +152,45 @@ public class MainwindowController {
         //Show open file dialog
         File inputFile = fileChooser.showOpenDialog(null);
         if (inputFile == null) {
+            updateMatchTable();
             LOG.info("File selection cancelled");
             return;
         }
 
         executorService.submit(() -> {
             try {
-                replayService.parseReplayFileToJson(inputFile);
+                File json = replayService.parseReplayFileToJson(inputFile);
+                MatchDTO matchDto = jsonParseService.parseMatch(json);
+                LOG.debug("jsonParseFinished");
+                for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
+                    PlayerDTO pdto = new PlayerDTO();
+                    pdto.setName(mpdto.getName());
+                    pdto.setPlattformid(mpdto.getPlattformId());
 
+                    int id = playerService.createPlayer(pdto);
+                    mpdto.setPlayerId(id);
+                }
+                LOG.debug("All players created");
+                matchService.createMatch(matchDto);
+                LOG.debug("match created");
             } catch (FileServiceException e) {
                 LOG.error("Cought File Service Exception");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
+            } catch (PlayerServiceException e) {
+                LOG.error("Cought PlayerServiceException");
+                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+            } catch (PlayerValidationException e) {
+                LOG.error("Cought PlayerValidationException");
+                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+            } catch (MatchServiceException e) {
+                LOG.error("Cought MatchServiceException");
+                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+            } catch (MatchValidationException e) {
+                LOG.error("Cought MatchValidationException");
+                Platform.runLater(() -> showErrorMessage(e.getMessage()));
             }
         });
+        updateMatchTable();
     }
 
 

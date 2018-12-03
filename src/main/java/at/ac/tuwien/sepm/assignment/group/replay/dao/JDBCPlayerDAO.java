@@ -23,6 +23,8 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
     private static final String READ_ALL_PLAYERS = "SELECT * FROM player";
 
+    private static final String READ_PLAYER_BY_PLATFORMID = "Select id from player where plattformid = ?";
+
     private final Connection connection;
 
     public JDBCPlayerDAO(JDBCConnectionManager jdbcConnectionManager) {
@@ -31,10 +33,17 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
 
     @Override
-    public void createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
+    public int createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
         LOG.trace("Called - createPlayer");
 
         try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement ps2 = connection.prepareStatement(READ_PLAYER_BY_PLATFORMID);
+            ps2.setLong(1, playerDTO.getPlattformid());
+            ResultSet rs2 = ps2.executeQuery();
+            if (rs2.next()) {
+                return rs2.getInt("id");
+            }
+
             ps.setString(1, playerDTO.getName());
             ps.setLong(2, playerDTO.getPlattformid());
 
@@ -42,6 +51,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
                 playerDTO.setId(rs.getInt("id"));
+                return playerDTO.getId();
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of player";
                 LOG.error(msg, e);

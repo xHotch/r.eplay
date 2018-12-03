@@ -16,8 +16,9 @@ public interface PlayerDAO {
      * @param playerDTO the player data to store
      * @throws PlayerPersistenceException throws persistence exception if something failed
      *                                    while storing a player into the database.
+     * @return the generated id of the player
      */
-    void createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException;
+    int createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException;
 
     /**
      * Reads all players that are currently stored in the database

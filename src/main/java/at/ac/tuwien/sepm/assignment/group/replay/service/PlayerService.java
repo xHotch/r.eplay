@@ -15,8 +15,9 @@ public interface PlayerService {
      * Validates and creates the player in the database.
      *
      * @param playerDTO the player to validate and create.
+     * @return created id or the id from the existing player with the platformid
      * @throws PlayerValidationException if there is invalid data in the player.
      * @throws PlayerServiceException    if the dao method throws an error.
      */
-    void createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException;
+    int createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException;
 }
