@@ -27,4 +27,11 @@ public interface PlayerDAO {
      *                                    while reading the players from the database.
      */
     List<PlayerDTO> readPlayers() throws PlayerPersistenceException;
+
+    /**
+     * Deletes player entry in the database
+     *
+     * @param playerToDelete player to delete
+     */
+    void deletePlayer(PlayerDTO playerToDelete) throws PlayerPersistenceException;
 }
