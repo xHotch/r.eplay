@@ -118,12 +118,12 @@ public class MatchdetailController {
 
         for (MatchPlayerDTO player:matchPlayers) {
             // team blue
-            if(player.getTeam() == 0){
+            if(player.getTeam() == 1){
                 blueGoals += player.getGoals();
 
                 playerListBlue.add(player);
             }
-            if(player.getTeam() == 1){
+            if(player.getTeam() == 0){
                 redGoals += player.getGoals();
 
                 playerListRed.add(player);
@@ -137,15 +137,23 @@ public class MatchdetailController {
         tableTeamRed.setItems(playerListRed);
     }
 
-    public void onSavePlayerButtonClicked(ActionEvent actionEvent){
+    public void onSavePlayerButtonClicked(){
+        ObservableList<MatchPlayerDTO> playersTeamBlue = tableTeamBlue.getSelectionModel().getSelectedItems();
+        ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 
-        ObservableList<MatchPlayerDTO> playerDTO = tableTeamBlue.getSelectionModel().getSelectedItems();
-
-        for (MatchPlayerDTO matchPlayerDTO : playerDTO){
+        for (MatchPlayerDTO matchPlayer : playersTeamBlue){
             try {
-                playerService.showPlayer(matchPlayerDTO.getPlayerDTO());
+                playerService.showPlayer(matchPlayer.getPlayerDTO());
             } catch (PlayerServiceException e){
-                LOG.error("Cought PlayerServiceException" , e);
+                LOG.error("Caught PlayerServiceException" , e);
+            }
+        }
+
+        for (MatchPlayerDTO matchPlayer : playersTeamRed){
+            try {
+                playerService.showPlayer(matchPlayer.getPlayerDTO());
+            } catch (PlayerServiceException e){
+                LOG.error("Caught PlayerServiceException" , e);
             }
         }
         mainwindowController.updatePlayerTable();
@@ -155,17 +163,17 @@ public class MatchdetailController {
      * Helper Method to setup up the Player Table Columns
      */
     private void setUpPlayerTable() {
-        playerNameBlue.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, String>("name"));
-        playerGoalsBlue.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("goals"));
-        playerShotsBlue.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("shots"));
-        playerSavesBlue.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("saves"));
-        playerAssistsBlue.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("assists"));
+        playerNameBlue.setCellValueFactory(new PropertyValueFactory<>("name"));
+        playerGoalsBlue.setCellValueFactory(new PropertyValueFactory<>("goals"));
+        playerShotsBlue.setCellValueFactory(new PropertyValueFactory<>("shots"));
+        playerSavesBlue.setCellValueFactory(new PropertyValueFactory<>("saves"));
+        playerAssistsBlue.setCellValueFactory(new PropertyValueFactory<>("assists"));
 
-        playerNameRed.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, String>("name"));
-        playerGoalsRed.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("goals"));
-        playerShotsRed.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("shots"));
-        playerSavesRed.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("saves"));
-        playerAssistsRed.setCellValueFactory(new PropertyValueFactory<MatchPlayerDTO, Integer>("assists"));
+        playerNameRed.setCellValueFactory(new PropertyValueFactory<>("name"));
+        playerGoalsRed.setCellValueFactory(new PropertyValueFactory<>("goals"));
+        playerShotsRed.setCellValueFactory(new PropertyValueFactory<>("shots"));
+        playerSavesRed.setCellValueFactory(new PropertyValueFactory<>("saves"));
+        playerAssistsRed.setCellValueFactory(new PropertyValueFactory<>("assists"));
 
     }
 }

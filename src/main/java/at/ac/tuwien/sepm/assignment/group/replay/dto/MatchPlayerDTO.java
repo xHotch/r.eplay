@@ -9,7 +9,7 @@ public class MatchPlayerDTO {
     private MatchDTO matchDTO;
     private PlayerDTO playerDTO;
 
-    private int team;
+    private int team; //is 0 for team RED and 1 for team BLUE
     private int score;
     private int goals;
     private int assists;

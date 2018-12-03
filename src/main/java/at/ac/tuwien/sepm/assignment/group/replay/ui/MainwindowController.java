@@ -312,7 +312,7 @@ public class MainwindowController {
      * Helper Method to setup up the Player Table Column
      */
     private void setupPlayerTable() {
-        tableColumnPlayerName.setCellValueFactory(new PropertyValueFactory<PlayerDTO, String>("name"));
+        tableColumnPlayerName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableViewPlayers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableColumnPlayerName.setStyle("-fx-alignment: CENTER;");
     }
@@ -321,9 +321,9 @@ public class MainwindowController {
      * Helper Method to setup up the Match Table Columns
      */
     private void setupMatchTable() {
-        tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<MatchDTO, LocalDateTime>("dateTime"));
-        tableColumnPlayersRed.setCellValueFactory(new PropertyValueFactory<MatchDTO, String>("teamRedPlayers"));
-        tableColumnPlayersBlue.setCellValueFactory(new PropertyValueFactory<MatchDTO, String>("teamBluePlayers"));
+        tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+        tableColumnPlayersRed.setCellValueFactory(new PropertyValueFactory<>("teamRedPlayers"));
+        tableColumnPlayersBlue.setCellValueFactory(new PropertyValueFactory<>("teamBluePlayers"));
 
         tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
         tableColumnMatchDate.setSortable(true);
