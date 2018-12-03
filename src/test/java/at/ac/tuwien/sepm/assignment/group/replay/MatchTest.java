@@ -116,17 +116,19 @@ public class MatchTest {
         playerBLUE = new MatchPlayerDTO();
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED, 1,1, "Player 1", 3, 10, 2,3, 5, 1);
-        setPlayerVariables(playerBLUE, 1,2, "Player 2", 1, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED, 1,3, "Player 1", 3, 10, 2,3, 5, 1);
+        setPlayerVariables(playerBLUE, 1,4, "Player 2", 1, 15, 4,2, 3, 7);
 
-        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?");
-        ps.setInt(1,1);
+        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
+        ps.setInt(1,3);
         ps.setString(2,"Player red");
         ps.setInt(3,345456);
+        ps.setBoolean(4,true);
         ps.executeUpdate();
-        ps.setInt(1,2);
+        ps.setInt(1,4);
         ps.setString(2,"Player blue");
         ps.setInt(3,345333);
+        ps.setBoolean(4,true);
         ps.executeUpdate();
 
         if (!ps.isClosed()) ps.close();
@@ -163,14 +165,18 @@ public class MatchTest {
         setPlayerVariables(playerRED, 1,1, "Player 1", 3, 10, 2,3, 5, 1);
         setPlayerVariables(playerBLUE, 1,2, "Player 2", 1, 15, 4,2, 3, 7);
 
-        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?");
+        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setInt(1,1);
         ps.setString(2,"Player red");
         ps.setInt(3,345456);
+        ps.setBoolean(4,true);
+
         ps.executeUpdate();
         ps.setInt(1,2);
         ps.setString(2,"Player blue");
         ps.setInt(3,345333);
+        ps.setBoolean(4,true);
+
         ps.executeUpdate();
 
         if (!ps.isClosed()) ps.close();
