@@ -22,7 +22,7 @@ public interface PlayerService {
      * @throws PlayerValidationException if there is invalid data in the player.
      * @throws PlayerServiceException    if the dao method throws an error.
      */
-    int createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException;
+    long createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException;
 
     /**
      * Validates list of players to be deleted and deletes all players of the list that the method is called with

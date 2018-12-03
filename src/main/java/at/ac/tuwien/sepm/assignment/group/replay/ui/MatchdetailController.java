@@ -2,9 +2,13 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -12,6 +16,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
@@ -26,6 +31,11 @@ import java.util.List;
 public class MatchdetailController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    @Autowired
+    private PlayerService playerService;
+    @Autowired
+    private MainwindowController mainwindowController;
 
     @FXML
     private Label labelGameMode;
@@ -125,6 +135,20 @@ public class MatchdetailController {
 
         tableTeamBlue.setItems(playerListBlue);
         tableTeamRed.setItems(playerListRed);
+    }
+
+    public void onSavePlayerButtonClicked(ActionEvent actionEvent){
+
+        ObservableList<MatchPlayerDTO> playerDTO = tableTeamBlue.getSelectionModel().getSelectedItems();
+
+        for (MatchPlayerDTO matchPlayerDTO : playerDTO){
+            try {
+                playerService.showPlayer(matchPlayerDTO.getPlayerDTO());
+            } catch (PlayerServiceException e){
+                LOG.error("Cought PlayerServiceException" , e);
+            }
+        }
+        mainwindowController.updatePlayerTable();
     }
 
     /**

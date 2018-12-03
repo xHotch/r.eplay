@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchdetailController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchdetailController">
   <tabs>
     <Tab text="Grunddaten">
       <content>
@@ -39,7 +39,6 @@
                         <TableColumn fx:id="playerAssistsBlue" prefWidth="75.0" text="Assists" />
                     </columns>
                   </TableView>
-                  <Button layoutX="22.0" layoutY="367.0" mnemonicParsing="false" text="Spieler speichern" AnchorPane.bottomAnchor="320.0" AnchorPane.leftAnchor="20.0" />
                   <Label layoutX="30.0" layoutY="130.0" text="Team Rot" AnchorPane.bottomAnchor="265.0" AnchorPane.leftAnchor="20.0">
                      <font>
                         <Font size="25.0" />
@@ -54,7 +53,7 @@
                         <TableColumn fx:id="playerAssistsRed" prefWidth="75.0" text="Assists" />
                      </columns>
                   </TableView>
-                  <Button layoutX="22.0" layoutY="663.0" mnemonicParsing="false" text="Spieler speichern" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
+                  <Button layoutX="22.0" layoutY="663.0" mnemonicParsing="false" onAction="#onSavePlayerButtonClicked" text="Spieler speichern" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
                </children>
             </AnchorPane>
       </content>

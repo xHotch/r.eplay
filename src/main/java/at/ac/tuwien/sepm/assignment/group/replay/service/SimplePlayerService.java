@@ -27,7 +27,7 @@ public class SimplePlayerService implements PlayerService {
     }
 
     @Override
-    public int createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException {
+    public long createPlayer(PlayerDTO playerDTO) throws PlayerValidationException, PlayerServiceException {
         LOG.trace("Called - createPlayer");
         playerDTOValidator(playerDTO);
         try {
@@ -89,7 +89,7 @@ public class SimplePlayerService implements PlayerService {
         if (playerDTO.getName() == null || playerDTO.getName().equals("")) {
             errMsg += "No name\n";
         }
-        if (playerDTO.getPlattformid() <= 0) {
+        if (playerDTO.getPlatformID() <= 0) {
             errMsg += "plattformid is smaller or equal to zero\n";
         }
         if (!errMsg.equals("")) {

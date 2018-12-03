@@ -174,17 +174,15 @@ public class MainwindowController {
                 MatchDTO matchDto = jsonParseService.parseMatch(json);
                 LOG.debug("jsonParseFinished");
                 for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
-                    PlayerDTO pdto = new PlayerDTO();
-                    pdto.setName(mpdto.getName());
-                    pdto.setPlattformid(mpdto.getPlattformId());
-
-                    int id = playerService.createPlayer(pdto);
-                    mpdto.setPlayerId(id);
+                    playerService.createPlayer(mpdto.getPlayerDTO());
                 }
                 LOG.debug("All players created");
                 matchService.createMatch(matchDto);
                 LOG.debug("match created");
-                Platform.runLater(() -> updateMatchTable());
+                Platform.runLater(() -> {
+                    updateMatchTable();
+                    updatePlayerTable();
+                });
             } catch (FileServiceException e) {
                 LOG.error("Caught File Service Exception");
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
@@ -299,7 +297,7 @@ public class MainwindowController {
      * Loads the players into the player table
      * Calls the showErrorMessage if an Exception occurs
      */
-    private void updatePlayerTable() {
+    protected void updatePlayerTable() {
         try {
             ObservableList<PlayerDTO> observablePlayers = FXCollections.observableArrayList(playerService.getPlayers());
 
