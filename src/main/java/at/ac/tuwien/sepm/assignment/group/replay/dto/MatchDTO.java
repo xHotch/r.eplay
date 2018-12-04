@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
+import at.ac.tuwien.sepm.assignment.group.replay.ui.MainWindowController;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class MatchDTO {
 
 
     /**
-     * Method that is used by FXML to gather Information for the {@link at.ac.tuwien.sepm.assignment.group.replay.ui.MainwindowController#tableColumnPlayersRed} recursively
+     * Method that is used by FXML to gather Information for the {@link MainWindowController#tableColumnPlayersRed} recursively
      */
     public String getTeamRedPlayers(){
         return getTeamPlayers(0);
@@ -64,7 +66,7 @@ public class MatchDTO {
 
 
     /**
-     * Method that is used by FXML to gather Information for the {@link at.ac.tuwien.sepm.assignment.group.replay.ui.MainwindowController#tableColumnPlayersBlue} recursively
+     * Method that is used by FXML to gather Information for the {@link MainWindowController#tableColumnPlayersBlue} recursively
      */
     public String getTeamBluePlayers(){
         return getTeamPlayers(1);

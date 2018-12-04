@@ -2,13 +2,10 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -16,11 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,14 +23,12 @@ import java.util.List;
  * @author Bernhard Bayer
  */
 @Component
-public class MatchdetailController {
+public class MatchDetailController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Autowired
     private PlayerService playerService;
-    @Autowired
-    private MainwindowController mainwindowController;
+    private MainWindowController mainwindowController;
 
     @FXML
     private Label labelGameMode;
@@ -74,7 +67,9 @@ public class MatchdetailController {
     @FXML
     private TableColumn<MatchPlayerDTO, Integer>playerAssistsRed;
 
-    public MatchdetailController() {
+    public MatchDetailController(PlayerService playerService, MainWindowController mainwindowController) {
+        this.playerService = playerService;
+        this.mainwindowController = mainwindowController;
     }
 
     /**

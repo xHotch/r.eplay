@@ -23,7 +23,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -42,30 +41,23 @@ import java.util.concurrent.ExecutorService;
  * @author Bernhard Bayer
  */
 @Component
-public class MainwindowController {
+public class MainWindowController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Autowired
-    AnnotationConfigApplicationContext matchdetailsContext;
+    private AnnotationConfigApplicationContext matchdetailsContext;
 
-    @Autowired
-    MatchdetailController matchdetailController;
+    private MatchDetailController matchdetailController;
 
-    @Autowired
-    ExecutorService executorService;
+    private ExecutorService executorService;
 
-    @Autowired
-    ReplayService replayService;
+    private ReplayService replayService;
 
-    @Autowired
-    JsonParseService jsonParseService;
+    private JsonParseService jsonParseService;
 
-    @Autowired
-    MatchService matchService;
+    private MatchService matchService;
 
-    @Autowired
-    PlayerService playerService;
+    private PlayerService playerService;
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -85,8 +77,14 @@ public class MainwindowController {
     private TableColumn<PlayerDTO, String> tableColumnPlayerName;
 
 
-    public MainwindowController() {
-
+    public MainWindowController(AnnotationConfigApplicationContext matchdetailsContext, MatchDetailController matchdetailController, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService) {
+        this.matchdetailsContext = matchdetailsContext;
+        this.matchdetailController = matchdetailController;
+        this.executorService = executorService;
+        this.replayService = replayService;
+        this.jsonParseService = jsonParseService;
+        this.matchService = matchService;
+        this.playerService = playerService;
     }
 
     /**
