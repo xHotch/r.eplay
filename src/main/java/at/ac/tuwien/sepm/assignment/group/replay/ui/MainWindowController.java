@@ -23,8 +23,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,18 +47,13 @@ public class MainWindowController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private AnnotationConfigApplicationContext matchdetailsContext;
-
+    private SpringFXMLLoader springFXMLLoader;
+    @Autowired
     private MatchDetailController matchdetailController;
-
     private ExecutorService executorService;
-
     private ReplayService replayService;
-
     private JsonParseService jsonParseService;
-
     private MatchService matchService;
-
     private PlayerService playerService;
 
     @FXML
@@ -77,9 +74,8 @@ public class MainWindowController {
     private TableColumn<PlayerDTO, String> tableColumnPlayerName;
 
 
-    public MainWindowController(AnnotationConfigApplicationContext matchdetailsContext, MatchDetailController matchdetailController, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService) {
-        this.matchdetailsContext = matchdetailsContext;
-        this.matchdetailController = matchdetailController;
+    public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService) {
+        this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
         this.jsonParseService = jsonParseService;
@@ -121,8 +117,6 @@ public class MainWindowController {
             LOG.debug("Match Details window closed");
         });
 
-        // prepare fxml loader to inject controller
-        SpringFXMLLoader springFXMLLoader = matchdetailsContext.getBean(SpringFXMLLoader.class);
 
         try {
             matchdetailsStage.setScene(new Scene(springFXMLLoader.load("/fxml/matchdetail.fxml", Parent.class)));
