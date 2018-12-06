@@ -119,6 +119,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         case "TAGame.PRI_TA" :
                             //parsePlayerInformation(i,j);
                             break;
+                        case "TAGamee.GRI_TA" :
+                            //parseMatchInformation
+                            //e.g ['ProjectX.GRI_X:ReplicatetdGamePlaylist'] -> MatchType id
+
                         default:
                             //Information not relevant for our project
                             break;
