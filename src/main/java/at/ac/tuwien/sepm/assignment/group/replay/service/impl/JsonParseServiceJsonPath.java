@@ -1,9 +1,10 @@
-package at.ac.tuwien.sepm.assignment.group.replay.service;
+package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.io.FilenameUtils;

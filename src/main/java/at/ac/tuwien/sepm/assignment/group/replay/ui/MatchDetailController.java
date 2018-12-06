@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

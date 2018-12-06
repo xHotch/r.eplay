@@ -1,16 +1,16 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCMatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.SimpleMatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.hamcrest.CoreMatchers;
 import org.junit.*;

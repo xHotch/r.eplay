@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 
 import java.io.File;
 

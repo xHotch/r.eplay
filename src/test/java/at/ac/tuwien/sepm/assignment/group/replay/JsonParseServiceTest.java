@@ -1,13 +1,12 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseServiceJsonPath;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.JsonParseServiceJsonPath;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.File;
 import java.time.LocalDateTime;

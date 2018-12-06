@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.assignment.group.replay.exception;
+package at.ac.tuwien.sepm.assignment.group.replay.dao.exception;
 
 /**
  * @author Gabriel Aichinger

@@ -1,7 +1,8 @@
-package at.ac.tuwien.sepm.assignment.group.replay.service;
+package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

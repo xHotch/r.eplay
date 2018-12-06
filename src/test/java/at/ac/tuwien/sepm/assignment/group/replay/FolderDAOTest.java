@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.UserFolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.After;

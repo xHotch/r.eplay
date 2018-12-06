@@ -1,18 +1,18 @@
-package at.ac.tuwien.sepm.assignment.group.replay.service;
+package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

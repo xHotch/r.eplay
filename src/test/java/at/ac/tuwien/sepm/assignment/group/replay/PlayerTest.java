@@ -1,16 +1,16 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCMatchDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.JDBCPlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.SimplePlayerService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimplePlayerService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.junit.After;
 import org.junit.Assert;

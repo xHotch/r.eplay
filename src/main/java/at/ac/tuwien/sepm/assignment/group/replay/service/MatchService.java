@@ -1,9 +1,9 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchAlreadyExistsException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 
 import java.util.List;
 

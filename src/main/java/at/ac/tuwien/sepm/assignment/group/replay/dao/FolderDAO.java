@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao;
 
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 
 import java.io.File;
 

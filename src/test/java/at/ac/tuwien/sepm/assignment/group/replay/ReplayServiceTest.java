@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.UserFolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayServiceRLRP;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.ReplayServiceRLRP;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.After;

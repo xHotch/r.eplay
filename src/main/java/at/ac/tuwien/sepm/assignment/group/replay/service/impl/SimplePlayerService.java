@@ -1,10 +1,11 @@
-package at.ac.tuwien.sepm.assignment.group.replay.service;
+package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.exception.PlayerValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
