@@ -44,12 +44,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     public MatchDTO parseMatch(File jsonFile) throws FileServiceException {
         LOG.trace("called - parseMatch");
         if (jsonFile == null) {
-            LOG.error("Can't parse null");
+
             throw new FileServiceException("Can't parse null");
         }
         String extension = FilenameUtils.getExtension(jsonFile.getName());
         if (!extension.equals("json")) {
-            LOG.error("wrong file type: " + extension);
             throw new FileServiceException("wrong file type: " + extension);
         }
         if (!jsonFile.equals(jFile) || ctx == null) {
@@ -59,7 +58,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 ctx = JsonPath.using(conf2).parse(jsonFile);
                 jFile = jsonFile;
             } catch (IOException e) {
-                LOG.error("Could not parse replay file {}", jsonFile.getAbsolutePath());
                 throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
             }
 
@@ -72,11 +70,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         //Create List that stores calculated ballInformations. is used to generate Ball statistics
         ArrayList<BallInformation> ballInformations = new ArrayList<>();
 
-        int frameCount = ctx.read("$.Frames.length()");
-
-        LOG.debug("Match framecount : {}",frameCount);
-
         try {
+
+            int frameCount = ctx.read("$.Frames.length()");
+
+            LOG.debug("Match framecount : {}",frameCount);
             for (int i = 0; i<frameCount; i++){
 
                 String frame = "$.Frames["+i+"]";
