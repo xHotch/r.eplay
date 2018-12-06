@@ -65,8 +65,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         }
 
+        //Map that contains the ids and Classnames from actors.
+        //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
         HashMap<Integer,String> actors = new HashMap<>();
 
+        //Create List that stores calculated ballInformations. is used to generate Ball statistics
         ArrayList<BallInformation> ballInformations = new ArrayList<>();
 
         int frameCount = ctx.read("$.Frames.length()");
@@ -105,15 +108,20 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                     String className = actors.get(actorId);
 
+
                     switch (className){
                         case "TAGame.Ball_TA" :
                             ballInformations.add(parseBallInformation(i,j,frameTime,frameDelta));
                             break;
                         case "TAGame.Car_TA" :
-                            //parseCarInformation(i,j);
+                            //parseCarInformation(i,j,frameTime,frameDelta);
+                            break;
                         case "TAGame.PRI_TA" :
                             //parsePlayerInformation(i,j);
-
+                            break;
+                        default:
+                            //Information not relevant for our project
+                            break;
 
                     }
 
@@ -121,15 +129,25 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 }
             }
         } catch (Exception e){
-            LOG.error("error while parsing frames", e);
+            throw new FileServiceException("Exception while parsing frames", e);
         }
 
         //todo implement
         generateBallStatistic(ballInformations);
 
+
+        //Todo parse Player information from Frames not Properties
         return readProperties();
     }
 
+
+    /**
+     * Reads Match propertiees and generates MatchDTO
+     * Information not accurate, refactor to read playerInfo from frames
+     *
+     * @return MatchDTO created from the analysed Json file
+     * @throws FileServiceException if the file couldn't be parsed
+     */
     private MatchDTO readProperties() throws FileServiceException{
         MatchDTO match = new MatchDTO();
         try {

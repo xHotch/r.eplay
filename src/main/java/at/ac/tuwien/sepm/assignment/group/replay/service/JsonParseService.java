@@ -16,6 +16,8 @@ public interface JsonParseService {
     /**
      * Parses the given json-file into a match-dto
      *
+     * Calls other methods to parse further information from the json file
+     *
      * @param jsonFile The file that is parsed
      * @return The match parsed from the input-file
      * @throws FileServiceException if the file couldn't be parsed
