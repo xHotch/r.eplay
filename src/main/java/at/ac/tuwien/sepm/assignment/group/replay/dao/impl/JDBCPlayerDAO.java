@@ -63,12 +63,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 return playerDTO.getId();
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of player";
-                LOG.error(msg, e);
                 throw new PlayerPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not create player";
-            LOG.error(msg, e);
             throw new PlayerPersistenceException(msg, e);
         }
 
@@ -94,12 +92,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 }
             } catch (SQLException e) {
                 String msg = "Could not read resultSet of player";
-                LOG.error(msg, e);
                 throw new PlayerPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not read player";
-            LOG.error(msg, e);
             throw new PlayerPersistenceException(msg, e);
         }
         return result;
@@ -118,7 +114,6 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
         } catch (SQLException e) {
             String msg = "Could not delete player";
-            LOG.error(msg, e);
             throw new PlayerPersistenceException(msg, e);
         }
     }
@@ -136,7 +131,6 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
         } catch (SQLException e) {
             String msg = "Could not update player to add it to the list of shown players";
-            LOG.error(msg, e);
             throw new PlayerPersistenceException(msg, e);
         }
 
@@ -164,7 +158,6 @@ public class JDBCPlayerDAO implements PlayerDAO {
             return player;
         } catch (SQLException e) {
             String msg = "Could not update player to add it to the list of shown players";
-            LOG.error(msg, e);
             throw new PlayerPersistenceException(msg, e);
         }
 

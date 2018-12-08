@@ -56,7 +56,6 @@ public class UserFolderDAO implements FolderDAO {
     public File copyReplayFile(File replayFile) throws FilePersistenceException {
         LOG.trace("Called - copyReplayFile");
         if (!FilenameUtils.getExtension(replayFile.getName()).equals("replay")) {
-            LOG.error("File not .replay");
             throw new FilePersistenceException("File not .replay");
         }
         File file;
@@ -66,8 +65,7 @@ public class UserFolderDAO implements FolderDAO {
             try {
                 Files.copy(replayFile.getAbsoluteFile().toPath(), file.getAbsoluteFile().toPath());
             } catch (IOException e) {
-                LOG.error("Cought exception while copying replay file to directory");
-                throw new FilePersistenceException("Cought exception while copying replay file to directory", e);
+                throw new FilePersistenceException("Caught exception while copying replay file to directory", e);
             }
         } while (!file.exists());
 
@@ -84,8 +82,7 @@ public class UserFolderDAO implements FolderDAO {
             try {
                 Files.copy(fileStream, file.getAbsoluteFile().toPath());
             } catch (IOException e) {
-                LOG.error("Cought Exception while setting up parser: {}", e.getMessage());
-                throw new FilePersistenceException("Cought Exception while setting up parser", e);
+                throw new FilePersistenceException("Caught Exception while setting up parser", e);
             }
         }
         return file;

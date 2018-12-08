@@ -35,7 +35,6 @@ public class SimplePlayerService implements PlayerService {
             return playerDAO.createPlayer(playerDTO);
         } catch (PlayerPersistenceException e) {
             String msg = "Failed to create player";
-            LOG.error(msg, e);
             throw new PlayerServiceException(msg, e);
         }
     }
@@ -51,7 +50,6 @@ public class SimplePlayerService implements PlayerService {
                 playerDAO.deletePlayer(p);
             } catch (PlayerPersistenceException e) {
                 String msg = "Failed to delete player";
-                LOG.error(msg, e);
                 throw new PlayerServiceException(msg, e);
             }
 
@@ -67,7 +65,6 @@ public class SimplePlayerService implements PlayerService {
             result = playerDAO.readPlayers();
         } catch (PlayerPersistenceException e) {
             String msg = "Failed to get players";
-            LOG.error(msg, e);
             throw new PlayerServiceException(msg, e);
         }
         return result;
@@ -80,7 +77,6 @@ public class SimplePlayerService implements PlayerService {
             playerDAO.showPlayer(player);
         } catch (PlayerPersistenceException e) {
             String msg = "Failed to add player";
-            LOG.error(msg, e);
             throw new PlayerServiceException(msg, e);        }
     }
 

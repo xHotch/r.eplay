@@ -178,7 +178,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                 long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
                 if (id == 0) {
-                    LOG.error("A player has no id");
                     throw new FileServiceException("A player has no id");
                 }
                 playerDTO.setPlatformID(id);
@@ -188,7 +187,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
         } catch (Exception e) {
-            LOG.error("Error during parsing" + e.getMessage());
             throw new FileServiceException(e.getMessage(), e);
         }
         return match;

@@ -67,7 +67,6 @@ public class ReplayServiceRLRP implements ReplayService {
             LOG.debug("Parser process finished with exitValue : {} ", exitVal);
 
             if (exitVal != 0) {
-                LOG.error("Could not parse replay file: {}", replayFile.getAbsolutePath());
                 throw new FileServiceException("Could not parse replay file" + replayFile.getAbsolutePath());
             }
 

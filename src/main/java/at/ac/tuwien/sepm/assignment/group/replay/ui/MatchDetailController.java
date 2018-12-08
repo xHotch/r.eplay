@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -136,19 +137,21 @@ public class MatchDetailController {
         ObservableList<MatchPlayerDTO> playersTeamBlue = tableTeamBlue.getSelectionModel().getSelectedItems();
         ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 
-        for (MatchPlayerDTO matchPlayer : playersTeamBlue){
+        for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
             try {
                 playerService.showPlayer(matchPlayer.getPlayerDTO());
-            } catch (PlayerServiceException e){
-                LOG.error("Caught PlayerServiceException" , e);
+            } catch (PlayerServiceException e) {
+                LOG.error("Caught PlayerServiceException", e);
+                showErrorMessage(e.getMessage());
             }
         }
 
-        for (MatchPlayerDTO matchPlayer : playersTeamRed){
+        for (MatchPlayerDTO matchPlayer : playersTeamRed) {
             try {
                 playerService.showPlayer(matchPlayer.getPlayerDTO());
-            } catch (PlayerServiceException e){
-                LOG.error("Caught PlayerServiceException" , e);
+            } catch (PlayerServiceException e) {
+                LOG.error("Caught PlayerServiceException", e);
+                showErrorMessage(e.getMessage());
             }
         }
         mainwindowController.updatePlayerTable();
@@ -170,5 +173,22 @@ public class MatchDetailController {
         playerSavesRed.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsRed.setCellValueFactory(new PropertyValueFactory<>("assists"));
 
+    }
+
+    /**
+     * Method to show a simple Error Alert to the user
+     *
+     * @param errorMessage The String containing the message displayed
+     */
+    private void showErrorMessage(String errorMessage) {
+
+        LOG.trace("Called - showErrorMessage");
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Wrong input error");
+        alert.setHeaderText("Error");
+        alert.setContentText(errorMessage);
+
+        alert.showAndWait();
     }
 }

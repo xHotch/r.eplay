@@ -37,7 +37,6 @@ public class SimpleMatchService implements MatchService {
             matchDAO.createMatch(matchDTO);
         } catch (MatchPersistenceException e) {
             String msg = "Failed to create match";
-            LOG.error(msg, e);
             throw new MatchServiceException(msg,e);
         }
     }
@@ -49,7 +48,6 @@ public class SimpleMatchService implements MatchService {
             return matchDAO.readMatches();
         } catch (MatchPersistenceException e){
             String message = "Could not get matches from DAO";
-            LOG.error(message);
             throw new MatchServiceException(message,e);
         }
     }
