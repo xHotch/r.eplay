@@ -1,13 +1,17 @@
-
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
-import com.jayway.jsonpath.*;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.math3.complex.Quaternion;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,8 +40,9 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     //Strings
     private String rigidBody = "['TAGame.RBActor_TA:ReplicatedRBState']";
     private String rigidBodyPosition = rigidBody + ".Position";
-
-
+    private String rigidBodyRotation = rigidBody + ".Rotation";
+    private String rigidBodyLinearVelocity = rigidBody + ".LinearVelocity";
+    private String rigidBodyAngularVelocity = rigidBody + ".AngularVelocity";
 
 
     @Override
@@ -65,59 +70,54 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         //Map that contains the ids and Classnames from actors.
         //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
-        HashMap<Integer,String> actors = new HashMap<>();
+        HashMap<Integer, String> actors = new HashMap<>();
 
         //Create List that stores calculated ballInformations. is used to generate Ball statistics
-        ArrayList<BallInformation> ballInformations = new ArrayList<>();
+        ArrayList<RigidBodyInformation> ballInformations = new ArrayList<>();
 
         try {
 
             int frameCount = ctx.read("$.Frames.length()");
 
-            LOG.debug("Match framecount : {}",frameCount);
-            for (int i = 0; i<frameCount; i++){
+            LOG.debug("Match framecount : {}", frameCount);
+            for (int i = 0; i < frameCount; i++) {
 
-                String frame = "$.Frames["+i+"]";
+                String frame = "$.Frames[" + i + "]";
                 int actorUpdateCount = ctx.read(frame + ".ActorUpdates.length()");
-                LOG.debug("Frame {} has {} ActorUpdates",i,actorUpdateCount);
+                LOG.debug("Frame {} has {} ActorUpdates", i, actorUpdateCount);
 
 
-                double frameTime = ctx.read(frame + ".Time");
-                double frameDelta;
+                double frameTime = ctx.read(frame + ".Time", Double.class);
+                double frameDelta = ctx.read(frame + ".Delta", Double.class);
 
-                //Cast necesarry because jsonPath will return an int if a value is 0 and throw an error
-                try {
-                    frameDelta = ctx.read(frame + ".Delta");
-                } catch (Exception e){
-                    frameDelta=0.0;
-                }
 
-                for (int j = 0; j<actorUpdateCount; j++){
+                for (int j = 0; j < actorUpdateCount; j++) {
 
-                    int actorId = ctx.read(frame + ".ActorUpdates["+j+"].Id");
+                    int actorId = ctx.read(frame + ".ActorUpdates[" + j + "].Id", Integer.class);
 
                     //New Actors have field ClassName. Check if it is a new actor
-                    String newActor = ctx.read(frame + ".ActorUpdates["+j+"].ClassName");
-                    if(newActor!= null){
-                        actors.put(actorId,newActor);
-                        LOG.debug("New Actor found at frame {}, actorupdate {}", i,j);
+                    String newActor = ctx.read(frame + ".ActorUpdates[" + j + "].ClassName");
+                    if (newActor != null) {
+                        actors.put(actorId, newActor);
+                        LOG.debug("New Actor found at frame {}, actorupdate {}", i, j);
                     }
 
 
                     String className = actors.get(actorId);
 
 
-                    switch (className){
-                        case "TAGame.Ball_TA" :
-                            ballInformations.add(parseBallInformation(i,j,frameTime,frameDelta));
+                    switch (className) {
+                        case "TAGame.Ball_TA":
+                            //todo parse information, if game is paused and replace 'false' on parameter gamePaused
+                            ballInformations.add(parseRigidBodyInformation(i, j, frameTime, frameDelta, false));
                             break;
-                        case "TAGame.Car_TA" :
+                        case "TAGame.Car_TA":
                             //parseCarInformation(i,j,frameTime,frameDelta);
                             break;
-                        case "TAGame.PRI_TA" :
+                        case "TAGame.PRI_TA":
                             //parsePlayerInformation(i,j);
                             break;
-                        case "TAGamee.GRI_TA" :
+                        case "TAGamee.GRI_TA":
                             //parseMatchInformation
                             //e.g ['ProjectX.GRI_X:ReplicatetdGamePlaylist'] -> MatchType id
 
@@ -130,7 +130,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                     LOG.debug(className);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new FileServiceException("Exception while parsing frames", e);
         }
 
@@ -150,7 +150,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
      * @return MatchDTO created from the analysed Json file
      * @throws FileServiceException if the file couldn't be parsed
      */
-    private MatchDTO readProperties() throws FileServiceException{
+    private MatchDTO readProperties() throws FileServiceException {
         MatchDTO match = new MatchDTO();
         try {
             String dateTime = ctx.read("$.Properties.Date");
@@ -192,23 +192,149 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         return match;
     }
 
-    private BallInformation parseBallInformation(int frameId,int actorUpdateId, double frameTime, double frameDelta){
-        LOG.trace("Called - parseBallInformation");
-        BallInformation ballInformation = new BallInformation();
-        LinkedHashMap<String, Object> position = ctx.read("$.Frames["+frameId+"].ActorUpdates["+actorUpdateId+"]." + rigidBodyPosition);
 
-        ballInformation.setPosition(position);
-        ballInformation.setFrameTime(frameTime);
-        ballInformation.setFrameDelta(frameDelta);
+    /**
+     * Reads Information about RigidBodys from specific frame / actorUpdate
+     *
+     * @param frameId       ID of the frame to parse
+     * @param actorUpdateId ID of the ActorUpdate to parse
+     * @param frameTime     frameTime of the frame
+     * @param frameDelta    deltaTime of the frame
+     * @param gamePaused    boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
+     * @return RigidBodyInformation Containing rotation, velocity and position information, as well as frame and delta time values.
+     * @throws FileServiceException if the file couldn't be parsed
+     */
+    private RigidBodyInformation parseRigidBodyInformation(int frameId, int actorUpdateId, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+        LOG.trace("Called - parseRigidBodyInformation");
 
-        LOG.debug(String.valueOf(position.size()));
-        return ballInformation;
+        //todo boolean sleeping
+
+        //todo check if game is paused
+        LinkedHashMap<String, Object> position = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyPosition);
+        LinkedHashMap<String, Object> rotation = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyRotation);
+        LinkedHashMap<String, Object> linearVelocity = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyLinearVelocity);
+        LinkedHashMap<String, Object> angularVelocity = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyAngularVelocity);
+
+        RigidBodyInformation rigidBodyInformation = new RigidBodyInformation();
+
+        try {
+            rigidBodyInformation.setPosition(getVectorFromMap(position));
+            rigidBodyInformation.setAngularVelocity(getVectorFromMap(angularVelocity));
+            rigidBodyInformation.setLinearVelocity(getVectorFromMap(linearVelocity));
+            rigidBodyInformation.setRotation(getQuaternionFromMap(rotation));
+        } catch (NullPointerException e) {
+            //Catches NullPointerException as null is be returned by JsonPath if the value was not updated
+        } catch (Exception e) {
+            throw new FileServiceException("Error while calculating RigidBodyInformation", e);
+        }
+
+        rigidBodyInformation.setGamePaused(gamePaused);
+        rigidBodyInformation.setFrameTime(frameTime);
+        rigidBodyInformation.setFrameDelta(frameDelta);
+
+        return rigidBodyInformation;
     }
 
-
     //todo Refactor in seperate Statistic Class
-    private void generateBallStatistic(List<BallInformation> ballInformations){
-        LOG.debug("Match has {} ballinformations", ballInformations.size());
+    private void generateBallStatistic(List<RigidBodyInformation> rigidBodyInformations) {
+        //debug("Match has {} ballinformations", rigidBodyInformations.size());
+    }
+
+    /**
+     * Generates a Vector3D from LinkedHashMap generated by JsonPath.
+     * Vector3D are better for calculation, compared  to the map.
+     * <p>
+     * Velocities and Positions are stored as 3 dimensional Vectors
+     *
+     * @param map LinkedHashMap parsed by JsonPath, containing 3 dimensional Vector values
+     * @return Vector3D containing the x,y,z values from the map
+     */
+    private Vector3D getVectorFromMap(LinkedHashMap<String, Object> map) {
+        int i = 0;
+        double x = 0.0;
+        double y = 0.0;
+        double z = 0.0;
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getValue() instanceof Integer) {
+                if (i == 0) {
+                    x = ((Integer) entry.getValue()).doubleValue();
+                }
+                if (i == 1) {
+                    y = ((Integer) entry.getValue()).doubleValue();
+                }
+                if (i == 2) {
+                    z = ((Integer) entry.getValue()).doubleValue();
+                }
+            } else {
+                if (i == 0) {
+                    x = (double) entry.getValue();
+                }
+                if (i == 1) {
+                    y = (double) entry.getValue();
+                }
+                if (i == 2) {
+                    z = (double) entry.getValue();
+                }
+
+                i++;
+            }
+        }
+
+        return new Vector3D(x, y, z);
+    }
+
+    /**
+     * Generates a Quaternion from LinkedHashMap generated by JsonPath.
+     * Quaternions are better for calculations, compared  to the map.
+     * <p>
+     * Rotations are stored as Quaternions
+     *
+     * @param map LinkedHashMap parsed by JsonPath, containing Quaternion values
+     * @return Quaternion containing the x,x,y,z values from the map
+     */
+    private Quaternion getQuaternionFromMap(LinkedHashMap<String, Object> map) {
+        int i = 0;
+        double x = 0.0;
+        double y = 0.0;
+        double z = 0.0;
+        double w = 0.0;
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getValue() instanceof Integer) {
+                if (i == 0) {
+                    x = ((Integer) entry.getValue()).doubleValue();
+                }
+                if (i == 1) {
+                    y = ((Integer) entry.getValue()).doubleValue();
+                }
+                if (i == 2) {
+                    z = ((Integer) entry.getValue()).doubleValue();
+                }
+                if (i == 3) {
+                    w = ((Integer) entry.getValue()).doubleValue();
+                }
+            } else {
+                if (i == 0) {
+                    x = (double) entry.getValue();
+                }
+                if (i == 1) {
+                    y = (double) entry.getValue();
+                }
+                if (i == 2) {
+                    z = (double) entry.getValue();
+                }
+                if (i == 3) {
+                    w = (double) entry.getValue();
+                }
+            }
+            i++;
+
+        }
+
+        //todo test quaternion order
+        //return new Quaternion(x,y,z,w);
+        return new Quaternion(w, x, y, z);
     }
 }
 
