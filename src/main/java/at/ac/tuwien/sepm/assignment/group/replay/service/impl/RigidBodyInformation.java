@@ -5,6 +5,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class RigidBodyInformation {
 
+
+
     private double frameTime;
     private double frameDelta;
 
@@ -15,14 +17,6 @@ public class RigidBodyInformation {
     private Vector3D angularVelocity;
     private Vector3D linearVelocity;
 
-
-    public boolean isGamePaused() {
-        return gamePaused;
-    }
-
-    public void setGamePaused(boolean gamePaused) {
-        this.gamePaused = gamePaused;
-    }
 
     public double getFrameTime() {
         return frameTime;
@@ -38,6 +32,14 @@ public class RigidBodyInformation {
 
     public void setFrameDelta(double frameDelta) {
         this.frameDelta = frameDelta;
+    }
+
+    public boolean isGamePaused() {
+        return gamePaused;
+    }
+
+    public void setGamePaused(boolean gamePaused) {
+        this.gamePaused = gamePaused;
     }
 
     public Vector3D getPosition() {
@@ -71,6 +73,4 @@ public class RigidBodyInformation {
     public void setLinearVelocity(Vector3D linearVelocity) {
         this.linearVelocity = linearVelocity;
     }
-
-
 }
