@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.assignment.group.util;
 
-import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +31,7 @@ public class JDBCConnectionManager {
             LOG.debug("Database connection status:" + connection.isClosed());
         } catch (SQLException e) {
             LOG.error("SQL connection could not be opened!", e);
+            //TODO: Throw Exception
         }
         return connection;
     }

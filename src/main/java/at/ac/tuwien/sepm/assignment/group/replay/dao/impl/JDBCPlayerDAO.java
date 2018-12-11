@@ -44,29 +44,22 @@ public class JDBCPlayerDAO implements PlayerDAO {
         LOG.trace("Called - createPlayer");
 
         try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER, Statement.RETURN_GENERATED_KEYS);
-            PreparedStatement ps2 = connection.prepareStatement(READ_PLAYER_BY_PLATFORMID)) {
+             PreparedStatement ps2 = connection.prepareStatement(READ_PLAYER_BY_PLATFORMID)) {
             ps2.setLong(1, playerDTO.getPlatformID());
             try (ResultSet rs2 = ps2.executeQuery()) {
                 if (rs2.next()) {
                     return rs2.getInt("id");
                 }
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of player search";
-                throw new PlayerPersistenceException(msg, e);
             }
             ps.setString(1, playerDTO.getName());
             ps.setLong(2, playerDTO.getPlatformID());
             ps.setBoolean(3, playerDTO.isShown());
-
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
                 playerDTO.setId(rs.getLong("id"));
                 return playerDTO.getId();
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of player";
-                throw new PlayerPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not create player";
@@ -93,9 +86,6 @@ public class JDBCPlayerDAO implements PlayerDAO {
                     result.add(player);
                     LOG.debug("Added player to the result list!");
                 }
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of player";
-                throw new PlayerPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not read player";

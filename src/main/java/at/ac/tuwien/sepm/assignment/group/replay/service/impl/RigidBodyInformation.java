@@ -8,14 +8,6 @@ public class RigidBodyInformation {
     private double frameTime;
     private double frameDelta;
 
-    public boolean isGamePaused() {
-        return gamePaused;
-    }
-
-    public void setGamePaused(boolean gamePaused) {
-        this.gamePaused = gamePaused;
-    }
-
     private boolean gamePaused;
 
     private Vector3D position;
@@ -23,6 +15,14 @@ public class RigidBodyInformation {
     private Vector3D angularVelocity;
     private Vector3D linearVelocity;
 
+
+    public boolean isGamePaused() {
+        return gamePaused;
+    }
+
+    public void setGamePaused(boolean gamePaused) {
+        this.gamePaused = gamePaused;
+    }
 
     public double getFrameTime() {
         return frameTime;

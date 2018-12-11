@@ -48,6 +48,7 @@ public class UserFolderDAO implements FolderDAO {
                 LOG.debug("{} Directory setup successfully", folder);
             } else {
                 LOG.error("Error setting up {} Directory", folder);
+                //TODO: Throw Exception
             }
         }
         return directory;

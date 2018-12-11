@@ -15,17 +15,18 @@ public enum MatchType {
         this.id=id;
     }
 
-    public static MatchType getById(float id) {
+    public static MatchType getById(int id) {
         for(MatchType e : values()) {
             if(e.id == id) return e;
         }
         return null;
     }
 
-    public float getId() {
+    public int getId() {
         return id;
     }
 
+    @Override
     public String toString() {
         return label;
     }

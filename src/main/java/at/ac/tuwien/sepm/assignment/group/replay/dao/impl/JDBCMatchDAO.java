@@ -32,6 +32,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private final Connection connection;
 
+    //TODO: constructor injection instead of @Autowired
     @Autowired
     private PlayerDAO playerDAO;
 
@@ -45,15 +46,15 @@ public class JDBCMatchDAO implements MatchDAO {
         LOG.trace("Called - createMatch");
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS);
             PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID)) {
+
+            //TODO: maybe delete the following query
             ps2.setString(1, matchDTO.getReadId());
             try (ResultSet rs2 = ps2.executeQuery()) {
                 if (rs2.next()) {
                     throw new MatchAlreadyExistsException("Match already exists");
                 }
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of match search";
-                throw new MatchPersistenceException(msg, e);
             }
+
             ps.setTimestamp(1, Timestamp.valueOf(matchDTO.getDateTime()));
             ps.setInt(2, matchDTO.getTeamSize());
             ps.setString(3, matchDTO.getReadId());
@@ -62,9 +63,6 @@ public class JDBCMatchDAO implements MatchDAO {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
                 matchDTO.setId(rs.getInt("id"));
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of match";
-                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not create match";
@@ -122,9 +120,6 @@ public class JDBCMatchDAO implements MatchDAO {
                     result.add(match);
                     LOG.debug("Added match to the result list!");
                 }
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of match";
-                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not read match";
@@ -161,9 +156,6 @@ public class JDBCMatchDAO implements MatchDAO {
 
                     result.add(matchPlayer);
                 }
-            } catch (SQLException e) {
-                String msg = "Could not read resultSet of match players";
-                throw new MatchPersistenceException(msg, e);
             }
         } catch (SQLException e) {
             String msg = "Could not read match players";
