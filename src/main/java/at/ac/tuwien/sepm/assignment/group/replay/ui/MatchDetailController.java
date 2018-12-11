@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import javafx.collections.FXCollections;
@@ -114,12 +115,12 @@ public class MatchDetailController {
 
         for (MatchPlayerDTO player:matchPlayers) {
             // team blue
-            if(player.getTeam() == 1){
+            if(player.getTeam() == TeamSide.BLUE){
                 blueGoals += player.getGoals();
 
                 playerListBlue.add(player);
             }
-            if(player.getTeam() == 0){
+            if(player.getTeam() == TeamSide.RED){
                 redGoals += player.getGoals();
 
                 playerListRed.add(player);

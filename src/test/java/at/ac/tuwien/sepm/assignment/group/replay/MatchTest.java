@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
@@ -122,8 +123,8 @@ public class MatchTest {
 
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,3, 10, 2,3, 5,1);
-        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,1, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED, 10, 2,3, 5,1);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setInt(1,1);
@@ -172,8 +173,8 @@ public class MatchTest {
         PlayerDTO playerR = new PlayerDTO();
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,3,3, 10, 2,3, 5);
-        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,1, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED,3, 10, 2,3, 5);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
 
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
@@ -223,7 +224,7 @@ public class MatchTest {
         // verify player data ...
         for (MatchPlayerDTO player:match.getPlayerData()) {
             MatchPlayerDTO compare;
-            if (player.getTeam() == 3) compare = playerRED;
+            if (player.getTeam() == TeamSide.RED) compare = playerRED;
             else compare = playerBLUE;
 
             Assert.assertThat(player.getName(), is(compare.getName()));
@@ -259,8 +260,8 @@ public class MatchTest {
         PlayerDTO playerB = new PlayerDTO();
         PlayerDTO playerR = new PlayerDTO();
 
-        setPlayerVariables(playerRed,match,playerR,"",1,-1,-1,-1,-1,-1,-1);
-        setPlayerVariables(playerBlue,match, playerB,"",2,-1,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerRed,match,playerR,"",1,TeamSide.BLUE,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerBlue,match, playerB,"",2,TeamSide.BLUE,-1,-1,-1,-1,-1);
 
         List<MatchPlayerDTO> players = new LinkedList<>();
         players.add(playerBlue);
@@ -273,14 +274,14 @@ public class MatchTest {
             fail();
         } catch (MatchValidationException e) {
             assertThat(e.getMessage(), CoreMatchers.is("Team size does not equal player list\n" +
-                "No Name\n" + "Invalid Team number\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
-                "No Name\n" + "Invalid Team number\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
+                "No Name\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
+                "No Name\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
                 "Uneven teamsize\n"));
         }
     }
 
     // helper class to populate the player's variables
-    public void setPlayerVariables(MatchPlayerDTO player, MatchDTO match, PlayerDTO playerDTO, String name,int id,  int team, int score, int goals, int assists, int shots, int saves){
+    public void setPlayerVariables(MatchPlayerDTO player, MatchDTO match, PlayerDTO playerDTO, String name, int id, TeamSide team, int score, int goals, int assists, int shots, int saves){
         playerDTO.setName(name);
         playerDTO.setId(id);
 

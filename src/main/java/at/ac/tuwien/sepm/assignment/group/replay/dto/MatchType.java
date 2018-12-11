@@ -1,4 +1,6 @@
-package at.ac.tuwien.sepm.assignment.group.util;
+package at.ac.tuwien.sepm.assignment.group.replay.dto;
+
+import java.util.Optional;
 
 public enum MatchType {
     RANKED2V2("2 vs 2 Ranked", 11),
@@ -15,11 +17,11 @@ public enum MatchType {
         this.id=id;
     }
 
-    public static MatchType getById(int id) {
+    public static Optional<MatchType> getById(int id) {
         for(MatchType e : values()) {
-            if(e.id == id) return e;
+            if(e.id == id) return Optional.of(e);
         }
-        return null;
+        return Optional.empty();
     }
 
     public int getId() {

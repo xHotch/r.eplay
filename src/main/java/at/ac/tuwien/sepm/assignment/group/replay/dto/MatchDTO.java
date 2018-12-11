@@ -61,7 +61,7 @@ public class MatchDTO {
      * Method that is used by FXML to gather Information for the {@link MainWindowController#tableColumnPlayersRed} recursively
      */
     public String getTeamRedPlayers(){
-        return getTeamPlayers(0);
+        return getTeamPlayers(TeamSide.RED);
     }
 
 
@@ -69,7 +69,7 @@ public class MatchDTO {
      * Method that is used by FXML to gather Information for the {@link MainWindowController#tableColumnPlayersBlue} recursively
      */
     public String getTeamBluePlayers(){
-        return getTeamPlayers(1);
+        return getTeamPlayers(TeamSide.BLUE);
     }
 
 
@@ -79,7 +79,7 @@ public class MatchDTO {
      *
      * @param team the team id
      */
-    private String getTeamPlayers(int team){
+    private String getTeamPlayers(TeamSide team){
 
         StringBuilder players = new StringBuilder();
 

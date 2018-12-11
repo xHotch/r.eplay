@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setLong(1,matchPlayerDTO.getPlayerId());
             ps.setInt(2,matchPlayerDTO.getMatchId());
             ps.setString(3, matchPlayerDTO.getName());
-            ps.setInt(4, matchPlayerDTO.getTeam());
+            ps.setInt(4, matchPlayerDTO.getTeam().getId());
             ps.setInt(5, matchPlayerDTO.getScore());
             ps.setInt(6, matchPlayerDTO.getGoals());
             ps.setInt(7, matchPlayerDTO.getAssists());
@@ -144,7 +145,7 @@ public class JDBCMatchDAO implements MatchDAO {
                         throw new MatchPersistenceException(msg, e);
                     }
 
-                    matchPlayer.setTeam(rs.getInt("team"));
+                    matchPlayer.setTeam(TeamSide.getById(rs.getInt("team")).get());
                     matchPlayer.setScore(rs.getInt("score"));
                     matchPlayer.setGoals(rs.getInt("goals"));
                     matchPlayer.setAssists(rs.getInt("assists"));

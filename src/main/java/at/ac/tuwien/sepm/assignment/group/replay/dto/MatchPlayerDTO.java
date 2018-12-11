@@ -9,7 +9,7 @@ public class MatchPlayerDTO {
     private MatchDTO matchDTO;
     private PlayerDTO playerDTO;
 
-    private int team; //is 0 for team RED and 1 for team BLUE
+    private TeamSide team; //is 0 for team RED and 1 for team BLUE
     private int score;
     private int goals;
     private int assists;
@@ -47,11 +47,11 @@ public class MatchPlayerDTO {
     }
 
 
-    public int getTeam() {
+    public TeamSide getTeam() {
         return team;
     }
 
-    public void setTeam(int team) {
+    public void setTeam(TeamSide team) {
         this.team = team;
     }
 
