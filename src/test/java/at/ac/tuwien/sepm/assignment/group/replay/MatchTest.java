@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceE
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.hamcrest.CoreMatchers;
@@ -236,7 +237,7 @@ public class MatchTest {
     }
 
     @Test
-    public void validationMatchTest() throws MatchServiceException, MatchAlreadyExistsException {
+    public void validationMatchTest() throws MatchServiceException, ReplayAlreadyExistsException {
         MatchDTO match = new MatchDTO();
 
         match.setDateTime(null);

@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceE
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class SimpleMatchService implements MatchService {
     }
 
     @Override
-    public void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, MatchAlreadyExistsException {
+    public void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, ReplayAlreadyExistsException {
         LOG.trace("Called - createMatch");
         matchDTOValidator(matchDTO);
         try {
@@ -38,6 +39,8 @@ public class SimpleMatchService implements MatchService {
         } catch (MatchPersistenceException e) {
             String msg = "Failed to create match";
             throw new MatchServiceException(msg,e);
+        } catch (MatchAlreadyExistsException e) {
+            throw new ReplayAlreadyExistsException("Replay already exists",e);
         }
     }
 

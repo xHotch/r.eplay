@@ -175,22 +175,22 @@ public class MainWindowController {
                     updatePlayerTable();
                 });
             } catch (FileServiceException e) {
-                LOG.error("Caught File Service Exception");
+                LOG.error("Caught File Service Exception", e);
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException");
+                LOG.error("Caught PlayerServiceException", e);
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (PlayerValidationException e) {
-                LOG.error("Caught PlayerValidationException");
+                LOG.error("Caught PlayerValidationException", e);
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (MatchServiceException e) {
-                LOG.error("Caught MatchServiceException");
+                LOG.error("Caught MatchServiceException", e);
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             } catch (MatchValidationException e) {
-                LOG.error("Caught MatchValidationException");
+                LOG.error("Caught MatchValidationException", e);
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
-            } catch (MatchAlreadyExistsException e) {
-                LOG.error("Caught MatchAlreadyExistsException");
+            } catch (ReplayAlreadyExistsException e) {
+                LOG.error("Caught ReplayAlreadyExistsException", e);
                 Platform.runLater(() -> showErrorMessage(e.getMessage()));
             }
         });

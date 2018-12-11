@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface MatchService {
      * @throws MatchServiceException    if the dao method throws an error.
      * @throws MatchAlreadyExistsException if the match already exists
      */
-    void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, MatchAlreadyExistsException;
+    void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, ReplayAlreadyExistsException;
 
     List<MatchDTO> getMatches() throws MatchServiceException;
 }

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
@@ -33,7 +34,7 @@ public class ReplayServiceTest {
     private FolderDAO mockFolderDAO;
 
     @Before
-    public void setUp() {
+    public void setUp() throws CouldNotCreateFolderException {
 
         // get the MatchDAO component from the spring framework
         mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles");

@@ -26,15 +26,13 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
     private static final String GET_PLAYER = "SELECT * FROM player WHERE id = ?";
 
-    private static final String DELETE_PLAYER = "UPDATE player SET shown = 0 WHERE id = ?";
-
-    private static final String SHOW_PLAYER = "UPDATE player SET shown = 1 WHERE id = ?";
+    private static final String SET_SHOW_PLAYER = "UPDATE player SET shown = ? WHERE id = ?";
 
     private static final String READ_PLAYER_BY_PLATFORMID = "Select id from player where plattformid = ?";
 
     private final Connection connection;
 
-    public JDBCPlayerDAO(JDBCConnectionManager jdbcConnectionManager) {
+    public JDBCPlayerDAO(JDBCConnectionManager jdbcConnectionManager) throws SQLException {
         this.connection = jdbcConnectionManager.getConnection();
     }
 
@@ -98,9 +96,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
     public void deletePlayer(PlayerDTO playerToDelete) throws PlayerPersistenceException {
         LOG.trace("Called - deletePlayer");
 
-        try (PreparedStatement ps = connection.prepareStatement(DELETE_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = connection.prepareStatement(SET_SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setLong(1,playerToDelete.getId());
+            ps.setBoolean(1,false);
+            ps.setLong(2,playerToDelete.getId());
 
             ps.executeUpdate();
 
@@ -114,9 +113,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
     public void showPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
         LOG.trace("Called - showPlayer");
 
-        try (PreparedStatement ps = connection.prepareStatement(SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = connection.prepareStatement(SET_SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setLong(1, playerDTO.getId());
+            ps.setBoolean(1,true);
+            ps.setLong(2, playerDTO.getId());
 
             ps.executeUpdate();
 

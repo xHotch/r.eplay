@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -26,19 +27,19 @@ public class UserFolderDAO implements FolderDAO {
     private File fileDirectory;
 
 
-    public UserFolderDAO(String parserDir, String fileDir) {
+    public UserFolderDAO(String parserDir, String fileDir) throws CouldNotCreateFolderException {
         parserDirectory = setupDirectory(parserDir);
         fileDirectory = setupDirectory(fileDir);
     }
 
     //Default Folder Names
-    public UserFolderDAO() {
+    public UserFolderDAO() throws CouldNotCreateFolderException {
         parserDirectory = setupDirectory("parser");
         fileDirectory = setupDirectory("files");
     }
 
     @Override
-    public File setupDirectory(String folder) {
+    public File setupDirectory(String folder) throws CouldNotCreateFolderException {
         LOG.trace("Called - setupDirectory");
 
         File directory = new File(System.getProperty("user.home"), "qse01ReplayParser/" + folder);
@@ -48,7 +49,7 @@ public class UserFolderDAO implements FolderDAO {
                 LOG.debug("{} Directory setup successfully", folder);
             } else {
                 LOG.error("Error setting up {} Directory", folder);
-                //TODO: Throw Exception
+                throw new CouldNotCreateFolderException("Error setting up " + folder +" Directory");
             }
         }
         return directory;

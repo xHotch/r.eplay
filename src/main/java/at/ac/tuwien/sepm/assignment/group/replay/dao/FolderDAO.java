@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 
@@ -12,7 +13,7 @@ public interface FolderDAO {
      *
      * @return the created Directory
      */
-    File setupDirectory(String folder);
+    File setupDirectory(String folder) throws CouldNotCreateFolderException;
 
     /**
      * Method that copies a .replay file into the {@link UserFolderDAO#fileDirectory} folder.

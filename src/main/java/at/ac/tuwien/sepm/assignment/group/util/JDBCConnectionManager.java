@@ -21,18 +21,14 @@ public class JDBCConnectionManager {
 
     private Connection connection;
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
         LOG.debug("Get database connection");
-        try {
-            if (connection == null) {
-                LOG.debug("try to get new database connection with: " + connectionString);
-                connection = DriverManager.getConnection(connectionString);
-            }
-            LOG.debug("Database connection status:" + connection.isClosed());
-        } catch (SQLException e) {
-            LOG.error("SQL connection could not be opened!", e);
-            //TODO: Throw Exception
+        if (connection == null) {
+            LOG.debug("try to get new database connection with: " + connectionString);
+            connection = DriverManager.getConnection(connectionString);
         }
+        LOG.debug("Database connection status:" + connection.isClosed());
+
         return connection;
     }
 

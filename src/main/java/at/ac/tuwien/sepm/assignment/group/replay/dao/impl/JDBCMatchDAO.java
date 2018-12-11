@@ -32,13 +32,11 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private final Connection connection;
 
-    //TODO: constructor injection instead of @Autowired
-    @Autowired
     private PlayerDAO playerDAO;
 
-
-    public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager) {
-       this.connection = jdbcConnectionManager.getConnection();
+    public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO) throws SQLException {
+        this.connection = jdbcConnectionManager.getConnection();
+        this.playerDAO = playerDAO;
     }
 
     @Override
@@ -47,7 +45,6 @@ public class JDBCMatchDAO implements MatchDAO {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS);
             PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID)) {
 
-            //TODO: maybe delete the following query
             ps2.setString(1, matchDTO.getReadId());
             try (ResultSet rs2 = ps2.executeQuery()) {
                 if (rs2.next()) {

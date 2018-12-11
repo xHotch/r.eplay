@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import org.apache.commons.io.FileUtils;
@@ -38,7 +39,7 @@ public class FolderDAOTest {
 
 
     @Before
-    public void setUp() {
+    public void setUp() throws CouldNotCreateFolderException {
         parserDir = "testParserDir";
         fileDir = "testFileDir";
         folderDAO = new UserFolderDAO(parserDir, fileDir);
