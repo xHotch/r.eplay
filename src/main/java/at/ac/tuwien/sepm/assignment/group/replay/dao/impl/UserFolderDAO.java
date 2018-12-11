@@ -37,6 +37,7 @@ public class UserFolderDAO implements FolderDAO {
         fileDirectory = setupDirectory("files");
     }
 
+    @Override
     public File setupDirectory(String folder) {
         LOG.trace("Called - setupDirectory");
 
@@ -95,10 +96,12 @@ public class UserFolderDAO implements FolderDAO {
         return new File(fileDirectory, FilenameUtils.getBaseName(replayFile.getName()) + ".json");
     }
 
+    @Override
     public File getParserDirectory() {
         return parserDirectory;
     }
 
+    @Override
     public File getFileDirectory() {
         return fileDirectory;
     }

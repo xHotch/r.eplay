@@ -43,13 +43,16 @@ public class JDBCMatchDAO implements MatchDAO {
     @Override
     public void createMatch(MatchDTO matchDTO) throws MatchPersistenceException, MatchAlreadyExistsException {
         LOG.trace("Called - createMatch");
-        int matchID;
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS)) {
-            PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID);
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID)) {
             ps2.setString(1, matchDTO.getReadId());
-            ResultSet rs2 = ps2.executeQuery();
-            if (rs2.next()) {
-                throw new MatchAlreadyExistsException("Match already exists");
+            try (ResultSet rs2 = ps2.executeQuery()) {
+                if (rs2.next()) {
+                    throw new MatchAlreadyExistsException("Match already exists");
+                }
+            } catch (SQLException e) {
+                String msg = "Could not read resultSet of match search";
+                throw new MatchPersistenceException(msg, e);
             }
             ps.setTimestamp(1, Timestamp.valueOf(matchDTO.getDateTime()));
             ps.setInt(2, matchDTO.getTeamSize());

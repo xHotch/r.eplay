@@ -43,14 +43,17 @@ public class JDBCPlayerDAO implements PlayerDAO {
     public long createPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
         LOG.trace("Called - createPlayer");
 
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
-            PreparedStatement ps2 = connection.prepareStatement(READ_PLAYER_BY_PLATFORMID);
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_PLAYER, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps2 = connection.prepareStatement(READ_PLAYER_BY_PLATFORMID)) {
             ps2.setLong(1, playerDTO.getPlatformID());
-            ResultSet rs2 = ps2.executeQuery();
-            if (rs2.next()) {
-                return rs2.getInt("id");
+            try (ResultSet rs2 = ps2.executeQuery()) {
+                if (rs2.next()) {
+                    return rs2.getInt("id");
+                }
+            } catch (SQLException e) {
+                String msg = "Could not read resultSet of player search";
+                throw new PlayerPersistenceException(msg, e);
             }
-
             ps.setString(1, playerDTO.getName());
             ps.setLong(2, playerDTO.getPlatformID());
             ps.setBoolean(3, playerDTO.isShown());
@@ -105,8 +108,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
     public void deletePlayer(PlayerDTO playerToDelete) throws PlayerPersistenceException {
         LOG.trace("Called - deletePlayer");
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(DELETE_PLAYER, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps = connection.prepareStatement(DELETE_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setLong(1,playerToDelete.getId());
 
@@ -122,8 +124,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
     public void showPlayer(PlayerDTO playerDTO) throws PlayerPersistenceException {
         LOG.trace("Called - showPlayer");
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps = connection.prepareStatement(SHOW_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setLong(1, playerDTO.getId());
 
@@ -139,12 +140,12 @@ public class JDBCPlayerDAO implements PlayerDAO {
     @Override
     public PlayerDTO get(int id) throws PlayerPersistenceException{
         LOG.trace("Called - showPlayer");
-        PlayerDTO player = new PlayerDTO();
+        PlayerDTO player;
         try (PreparedStatement ps = connection.prepareStatement(GET_PLAYER, Statement.RETURN_GENERATED_KEYS)){
 
             ps.setInt(1, id);
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
                 rs.next();
 
                 player = new PlayerDTO();
@@ -155,9 +156,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
                 LOG.debug("Added player to the result list!");
 
-            return player;
+                return player;
+            }
         } catch (SQLException e) {
-            String msg = "Could not update player to add it to the list of shown players";
+            String msg = "Could not get player";
             throw new PlayerPersistenceException(msg, e);
         }
 
