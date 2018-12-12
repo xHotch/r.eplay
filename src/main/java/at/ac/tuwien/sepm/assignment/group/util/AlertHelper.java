@@ -10,7 +10,6 @@ import java.lang.invoke.MethodHandles;
 /**
  * @author Gabriel Aichinger
  */
-@Component
 public class AlertHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -20,7 +19,7 @@ public class AlertHelper {
      *
      * @param errorMessage The String containing the message displayed
      */
-    public void showErrorMessage(String errorMessage) {
+    public static void showErrorMessage(String errorMessage) {
 
         LOG.trace("Called - showErrorMessage");
 

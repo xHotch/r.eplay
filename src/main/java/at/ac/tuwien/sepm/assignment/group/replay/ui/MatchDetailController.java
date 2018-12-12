@@ -30,7 +30,6 @@ public class MatchDetailController {
 
     private PlayerService playerService;
     private MainWindowController mainwindowController;
-    private AlertHelper alertHelper;
 
     @FXML
     private Label labelGameMode;
@@ -69,10 +68,9 @@ public class MatchDetailController {
     @FXML
     private TableColumn<MatchPlayerDTO, Integer>playerAssistsRed;
 
-    public MatchDetailController(PlayerService playerService, MainWindowController mainwindowController, AlertHelper alertHelper) {
+    public MatchDetailController(PlayerService playerService, MainWindowController mainwindowController) {
         this.playerService = playerService;
         this.mainwindowController = mainwindowController;
-        this.alertHelper = alertHelper;
     }
 
     /**
@@ -140,14 +138,14 @@ public class MatchDetailController {
         ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 
         if (playersTeamBlue.isEmpty() && playersTeamRed.isEmpty()) {
-            alertHelper.showErrorMessage("No player selected");
+            AlertHelper.showErrorMessage("No player selected");
         } else {
             for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
                 try {
                     playerService.showPlayer(matchPlayer.getPlayerDTO());
                 } catch (PlayerServiceException e) {
                     LOG.error("Caught PlayerServiceException", e);
-                    alertHelper.showErrorMessage(e.getMessage());
+                    AlertHelper.showErrorMessage(e.getMessage());
                 }
             }
 
@@ -156,7 +154,7 @@ public class MatchDetailController {
                     playerService.showPlayer(matchPlayer.getPlayerDTO());
                 } catch (PlayerServiceException e) {
                     LOG.error("Caught PlayerServiceException", e);
-                    alertHelper.showErrorMessage(e.getMessage());
+                    AlertHelper.showErrorMessage(e.getMessage());
                 }
             }
             mainwindowController.updatePlayerTable();
