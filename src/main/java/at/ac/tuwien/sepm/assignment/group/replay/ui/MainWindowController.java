@@ -150,7 +150,7 @@ public class MainWindowController {
         //Set extension filter
         FileChooser.ExtensionFilter extFilterREPLAY = new FileChooser.ExtensionFilter("Replay files (*.replay)", "*.REPLAY");
         fileChooser.getExtensionFilters().add(extFilterREPLAY);
-
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home"), "qse01ReplayParser/files"));
 
         //Show open file dialog
         File inputFile = fileChooser.showOpenDialog(null);
