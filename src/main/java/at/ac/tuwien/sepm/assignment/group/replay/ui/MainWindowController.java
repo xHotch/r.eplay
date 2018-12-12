@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
@@ -9,6 +8,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -54,6 +54,7 @@ public class MainWindowController {
     private JsonParseService jsonParseService;
     private MatchService matchService;
     private PlayerService playerService;
+    private AlertHelper alertHelper;
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -73,13 +74,14 @@ public class MainWindowController {
     private TableColumn<PlayerDTO, String> tableColumnPlayerName;
 
 
-    public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService) {
+    public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, AlertHelper alertHelper) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
         this.jsonParseService = jsonParseService;
         this.matchService = matchService;
         this.playerService = playerService;
+        this.alertHelper = alertHelper;
     }
 
     /**
@@ -176,22 +178,22 @@ public class MainWindowController {
                 });
             } catch (FileServiceException e) {
                 LOG.error("Caught File Service Exception", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> alertHelper.showErrorMessage(e.getMessage()));
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> alertHelper.showErrorMessage(e.getMessage()));
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> alertHelper.showErrorMessage(e.getMessage()));
             } catch (MatchServiceException e) {
                 LOG.error("Caught MatchServiceException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> alertHelper.showErrorMessage(e.getMessage()));
             } catch (MatchValidationException e) {
                 LOG.error("Caught MatchValidationException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> alertHelper.showErrorMessage(e.getMessage()));
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> alertHelper.showErrorMessage(e.getMessage()));
             }
         });
 
@@ -210,7 +212,7 @@ public class MainWindowController {
         selectedPlayers = tableViewPlayers.getSelectionModel().getSelectedItems();
 
         if (selectedPlayers.isEmpty()) {
-            showErrorMessage("No player selected");
+            alertHelper.showErrorMessage("No player selected");
             return;
         }
 
@@ -239,31 +241,13 @@ public class MainWindowController {
                 playerService.deletePlayers(playersToDelete);
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException");
-                showErrorMessage("Error while deleting player(s).");
+                alertHelper.showErrorMessage("Error while deleting player(s).");
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException");
-                showErrorMessage("List of players to be deleted might be empty.");
+                alertHelper.showErrorMessage("List of players to be deleted might be empty.");
             }
             updatePlayerTable();
         }
-    }
-
-
-    /**
-     * Method to show a simple Error Alert to the user
-     *
-     * @param errorMessage The String containing the message displayed
-     */
-    private void showErrorMessage(String errorMessage) {
-
-        LOG.trace("Called - showErrorMessage");
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Wrong input error");
-        alert.setHeaderText("Error");
-        alert.setContentText(errorMessage);
-
-        alert.showAndWait();
     }
 
 
@@ -280,7 +264,7 @@ public class MainWindowController {
             tableViewMatches.setItems(sortedMatches);
         } catch (MatchServiceException e) {
             LOG.error("Caught MatchServiceException {} ", e.getMessage());
-            showErrorMessage(e.getMessage());
+            alertHelper.showErrorMessage(e.getMessage());
         }
     }
 
@@ -295,7 +279,7 @@ public class MainWindowController {
             tableViewPlayers.setItems(observablePlayers);
         } catch (PlayerServiceException e) {
             LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            showErrorMessage(e.getMessage());
+            alertHelper.showErrorMessage(e.getMessage());
         }
     }
 

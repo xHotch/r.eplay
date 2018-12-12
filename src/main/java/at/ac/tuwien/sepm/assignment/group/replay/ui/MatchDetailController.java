@@ -4,10 +4,10 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,6 +30,7 @@ public class MatchDetailController {
 
     private PlayerService playerService;
     private MainWindowController mainwindowController;
+    private AlertHelper alertHelper;
 
     @FXML
     private Label labelGameMode;
@@ -68,9 +69,10 @@ public class MatchDetailController {
     @FXML
     private TableColumn<MatchPlayerDTO, Integer>playerAssistsRed;
 
-    public MatchDetailController(PlayerService playerService, MainWindowController mainwindowController) {
+    public MatchDetailController(PlayerService playerService, MainWindowController mainwindowController, AlertHelper alertHelper) {
         this.playerService = playerService;
         this.mainwindowController = mainwindowController;
+        this.alertHelper = alertHelper;
     }
 
     /**
@@ -142,7 +144,7 @@ public class MatchDetailController {
                 playerService.showPlayer(matchPlayer.getPlayerDTO());
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException", e);
-                showErrorMessage(e.getMessage());
+                alertHelper.showErrorMessage(e.getMessage());
             }
         }
 
@@ -151,7 +153,7 @@ public class MatchDetailController {
                 playerService.showPlayer(matchPlayer.getPlayerDTO());
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException", e);
-                showErrorMessage(e.getMessage());
+                alertHelper.showErrorMessage(e.getMessage());
             }
         }
         mainwindowController.updatePlayerTable();
@@ -173,22 +175,5 @@ public class MatchDetailController {
         playerSavesRed.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsRed.setCellValueFactory(new PropertyValueFactory<>("assists"));
 
-    }
-
-    /**
-     * Method to show a simple Error Alert to the user
-     *
-     * @param errorMessage The String containing the message displayed
-     */
-    private void showErrorMessage(String errorMessage) {
-
-        LOG.trace("Called - showErrorMessage");
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Wrong input error");
-        alert.setHeaderText("Error");
-        alert.setContentText(errorMessage);
-
-        alert.showAndWait();
     }
 }
