@@ -10,7 +10,7 @@ class GameInformationParser {
 
     private ReadContext ctx;
 
-    ArrayList<Double> timeOfGoals;
+    private ArrayList<Double> timeOfGoals;
 
     void setCtx(ReadContext ctx) {
         this.ctx = ctx;
@@ -20,7 +20,7 @@ class GameInformationParser {
      * reads the time of each goal out of the json file and sets it in the timeOfGoals list
      *
      */
-    public void setTimeOfGoals() {
+    void setTimeOfGoals() {
         timeOfGoals = new ArrayList<>();
 
         int numberOfGoals = ctx.read("$.TickMarks.length()");
@@ -47,7 +47,7 @@ class GameInformationParser {
      * @return true if game should be paused
      * false if game should not be paused
      */
-    public boolean pauseGameIfGoalWasScored(Double frameTime) {
+    boolean pauseGameIfGoalWasScored(Double frameTime) {
         if (!timeOfGoals.isEmpty()) {
             for (Double goalTime : timeOfGoals) {
                 if (Double.compare(goalTime, frameTime) == 0) {
@@ -60,12 +60,9 @@ class GameInformationParser {
     }
 
 
-    public boolean resumeGameIfCountdownIsZero(String frame, int currentActorUpdateNr) {
+    boolean resumeGameIfCountdownIsZero(String frame, int currentActorUpdateNr) {
         Integer countdown = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].['TAGame.GameEvent_TA:ReplicatedRoundCountDownNumber']", Integer.class);
 
-        if ((countdown != null) && (countdown == 0)) {
-            return false;
-        }else {
-        return true;
-    }}
+        return (countdown == null) || (countdown != 0);
+    }
 }
