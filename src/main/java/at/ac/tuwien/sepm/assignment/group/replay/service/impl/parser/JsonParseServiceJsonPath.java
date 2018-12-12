@@ -80,10 +80,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         }
 
         parseFrames();
-        LOG.debug("asdf");
         //Todo parse Player information from Frames not Properties
 
-        carInformationParser.getPlayerCarMap();
 
         return readProperties();
     }
