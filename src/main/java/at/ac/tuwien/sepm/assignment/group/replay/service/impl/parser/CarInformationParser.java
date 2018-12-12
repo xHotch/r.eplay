@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import org.slf4j.Logger;
@@ -23,18 +24,20 @@ public class CarInformationParser {
     private double frameDelta;
     private boolean gamePaused;
 
-    //Map that maps ActorID from a Player to a car. Key = CarActorId, Value = playerActorId
+    //Map that maps ActorID from a car to a player. Key = CarActorId, Value = playerActorId
     private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
 
     //Map that maps ActorID from a Car to a list of RigidBodyInformation
     private LinkedHashMap<Integer, List<RigidBodyInformation>> rigidBodyMap = new LinkedHashMap<>();
 
     private RigidBodyParser rigidBodyParser;
+    private PlayerStatistic playerStatistic;
     private ReadContext ctx;
 
 
-    public CarInformationParser(RigidBodyParser rigidBodyParser) {
+    public CarInformationParser(RigidBodyParser rigidBodyParser, PlayerStatistic playerStatistic) {
         this.rigidBodyParser = rigidBodyParser;
+        this.playerStatistic = playerStatistic;
     }
 
     /**
@@ -92,6 +95,20 @@ public class CarInformationParser {
         return playerCarMap;
     }
 
+    void calculate()
+    {
+        Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers = new HashMap<>();
+        for (Map.Entry<Integer,Integer> entry: playerCarMap.entrySet()) { // getValue() = playerKey, getKey() = carKey
+            if(rigidBodyPlayers.containsKey(entry.getValue())) {
+                rigidBodyPlayers.get(entry.getValue()).addAll(rigidBodyMap.get(entry.getKey()));
+            } else
+            {
+                rigidBodyPlayers.put(entry.getValue(),rigidBodyMap.get(entry.getKey()));
+            }
+        }
+        playerStatistic.setRigidBodyPlayers(rigidBodyPlayers);
+        playerStatistic.calculate();
+    }
 
     void setCtx(ReadContext ctx) {
         this.ctx = ctx;

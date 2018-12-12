@@ -81,7 +81,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         parseFrames();
         LOG.debug("########################################################################################");
-
+        carInformationParser.calculate();
         LOG.debug("########################################################################################");
         //Todo parse Player information from Frames not Properties
 
