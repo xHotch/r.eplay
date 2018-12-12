@@ -106,9 +106,8 @@ class RigidBodyParser {
                 if (i == 2) {
                     z = (double) entry.getValue();
                 }
-
-                i++;
             }
+            i++;
         }
 
         return new Vector3D(x, y, z);

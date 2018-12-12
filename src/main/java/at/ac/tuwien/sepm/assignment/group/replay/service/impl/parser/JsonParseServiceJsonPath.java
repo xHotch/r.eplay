@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
@@ -83,7 +84,9 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         }
 
         parseFrames();
-        LOG.debug("asdf");
+        LOG.debug("########################################################################################");
+
+        LOG.debug("########################################################################################");
         //Todo parse Player information from Frames not Properties
         return readProperties();
     }
@@ -191,7 +194,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 matchPlayer.setShots(ctx.read("$.Properties.PlayerStats[" + i + "].Shots"));
                 matchPlayer.setScore(ctx.read("$.Properties.PlayerStats[" + i + "].Score"));
                 playerDTO.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
-                matchPlayer.setTeam(ctx.read("$.Properties.PlayerStats[" + i + "].Team"));
+                matchPlayer.setTeam(TeamSide.getById(ctx.read("$.Properties.PlayerStats[" + i + "].Team")).get());
 
                 long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
                 if (id == 0) {
