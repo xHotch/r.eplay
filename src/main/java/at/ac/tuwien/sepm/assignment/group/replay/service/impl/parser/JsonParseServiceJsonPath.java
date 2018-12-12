@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -43,7 +42,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
 
-    private boolean gamePaused = false;
 
     public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser) {
         this.rigidBodyParser = rigidBodyParser;
@@ -95,6 +93,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
         HashMap<Integer, String> actors = new HashMap<>();
 
+        //list that stores time when goals were scored, in order to pause the game afterwards
+        ArrayList<Double> timeOfGoals = getTimeOfGoals();
+
+        //pause game at the beginning
+        boolean gamePaused = true;
 
         try {
 
@@ -111,6 +114,9 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 double frameTime = ctx.read(frame + ".Time", Double.class);
                 double frameDelta = ctx.read(frame + ".Delta", Double.class);
 
+                //pause game if goal was scored
+                if (!gamePaused){
+                gamePaused = pauseGame(timeOfGoals, frameTime);}
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -126,7 +132,13 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                     String className = actors.get(actorId);
 
-                    //todo parse information, if game is paused and replace 'false' on parameter gamePaused
+                    //resume game if countdown, that is shown after a goal before the game resumes, equals 0
+                    Integer countdown = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].['TAGame.GameEvent_TA:ReplicatedRoundCountDownNumber']", Integer.class);
+
+                    if ((countdown != null) && (countdown == 0)) {
+                        gamePaused = false;
+                    }
+
                     switch (className) {
                         case "TAGame.Ball_TA":
                             ballInformationParser.parse(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
@@ -157,6 +169,52 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         }
     }
 
+
+    /**
+     * checks if the game should be paused by checking if a goal was scored
+     *
+     * @param timeOfGoals list that contains each moment of a scored goal
+     * @param frameTime   current frame time
+     * @return true if game should be paused
+     * false if game should not be paused
+     */
+    private boolean pauseGame(ArrayList<Double> timeOfGoals, Double frameTime) {
+        if (!timeOfGoals.isEmpty()) {
+            for (Double goalTime : timeOfGoals) {
+                if (Double.compare(goalTime, frameTime) == 0) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    /**
+     * reads the time of each goal out of the json file and returns it in a list
+     *
+     * @return a list of Double values that contains each moment a goal was scored
+     */
+    private ArrayList<Double> getTimeOfGoals() {
+        ArrayList<Double> timeOfGoals = new ArrayList<>();
+
+        int numberOfGoals = ctx.read("$.TickMarks.length()");
+
+        Double goalTime;
+        //saves are stored as well in the TickMarks array, so eventType makes sure only goals are returned
+        String eventType;
+
+        for (int i = 0; i < numberOfGoals; i++) {
+
+            eventType = ctx.read("$.TickMarks[" + i + "].Type", String.class);
+            if (eventType.equals("Team0Goal") || eventType.equals("Team1Goal")) {
+                goalTime = ctx.read("$.TickMarks[" + i + "].Time", Double.class);
+                timeOfGoals.add(goalTime);
+            }
+        }
+
+        return timeOfGoals;
+    }
 
     /**
      * Reads Match propertiees and generates MatchDTO
