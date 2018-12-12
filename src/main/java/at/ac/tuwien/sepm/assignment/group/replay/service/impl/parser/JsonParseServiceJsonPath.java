@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import com.jayway.jsonpath.Configuration;
@@ -94,7 +95,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         HashMap<Integer, String> actors = new HashMap<>();
 
         //list that stores time when goals were scored, in order to pause the game afterwards
-        ArrayList<Double> timeOfGoals = getTimeOfGoals();
+        gameInformationParse.setTimeOfGoals();
 
         //pause game at the beginning
         boolean gamePaused = true;
@@ -116,7 +117,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                 //pause game if goal was scored
                 if (!gamePaused){
-                gamePaused = pauseGame(timeOfGoals, frameTime);}
+                gamePaused = gameInformationParse.pauseGameIfGoalWasScored(frameTime);}
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -132,13 +133,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                     String className = actors.get(actorId);
 
-                    //resume game if countdown, that is shown after a goal before the game resumes, equals 0
-                    Integer countdown = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].['TAGame.GameEvent_TA:ReplicatedRoundCountDownNumber']", Integer.class);
-
-                    if ((countdown != null) && (countdown == 0)) {
-                        gamePaused = false;
+                    //resume game if countdown equals 0 (is shown after a goal before the game resumes)
+                    if (gamePaused) {
+                        gamePaused = gameInformationParse.resumeGameIfCountdownIsZero(frame, currentActorUpdateNr);
                     }
-
                     switch (className) {
                         case "TAGame.Ball_TA":
                             ballInformationParser.parse(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
@@ -167,53 +165,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         } catch (Exception e) {
             throw new FileServiceException("Exception while parsing frames", e);
         }
-    }
-
-
-    /**
-     * checks if the game should be paused by checking if a goal was scored
-     *
-     * @param timeOfGoals list that contains each moment of a scored goal
-     * @param frameTime   current frame time
-     * @return true if game should be paused
-     * false if game should not be paused
-     */
-    private boolean pauseGame(ArrayList<Double> timeOfGoals, Double frameTime) {
-        if (!timeOfGoals.isEmpty()) {
-            for (Double goalTime : timeOfGoals) {
-                if (Double.compare(goalTime, frameTime) == 0) {
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }
-
-    /**
-     * reads the time of each goal out of the json file and returns it in a list
-     *
-     * @return a list of Double values that contains each moment a goal was scored
-     */
-    private ArrayList<Double> getTimeOfGoals() {
-        ArrayList<Double> timeOfGoals = new ArrayList<>();
-
-        int numberOfGoals = ctx.read("$.TickMarks.length()");
-
-        Double goalTime;
-        //saves are stored as well in the TickMarks array, so eventType makes sure only goals are returned
-        String eventType;
-
-        for (int i = 0; i < numberOfGoals; i++) {
-
-            eventType = ctx.read("$.TickMarks[" + i + "].Type", String.class);
-            if (eventType.equals("Team0Goal") || eventType.equals("Team1Goal")) {
-                goalTime = ctx.read("$.TickMarks[" + i + "].Time", Double.class);
-                timeOfGoals.add(goalTime);
-            }
-        }
-
-        return timeOfGoals;
     }
 
     /**
@@ -249,7 +200,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 matchPlayer.setShots(ctx.read("$.Properties.PlayerStats[" + i + "].Shots"));
                 matchPlayer.setScore(ctx.read("$.Properties.PlayerStats[" + i + "].Score"));
                 playerDTO.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
-                matchPlayer.setTeam(ctx.read("$.Properties.PlayerStats[" + i + "].Team"));
+                matchPlayer.setTeam(TeamSide.getById(ctx.read("$.Properties.PlayerStats[" + i + "].Team")).get());
 
                 long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
                 if (id == 0) {
