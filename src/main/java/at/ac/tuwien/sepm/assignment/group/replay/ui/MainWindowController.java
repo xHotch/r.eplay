@@ -234,11 +234,8 @@ public class MainWindowController {
             counter++;
         }
         //let the user confirm the deletion
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Players");
-        alert.setContentText("Are you sure you want to delete the following players? \n" + playerNames);
+        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Delete Players",null,"Are you sure you want to delete the following players? \n" + playerNames);
 
-        Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
                 playerService.deletePlayers(playersToDelete);
