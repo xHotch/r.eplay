@@ -135,28 +135,32 @@ public class MatchDetailController {
         tableTeamRed.setItems(playerListRed);
     }
 
-    public void onSavePlayerButtonClicked(){
+    public void onSavePlayerButtonClicked() {
         ObservableList<MatchPlayerDTO> playersTeamBlue = tableTeamBlue.getSelectionModel().getSelectedItems();
         ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 
-        for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
-            try {
-                playerService.showPlayer(matchPlayer.getPlayerDTO());
-            } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException", e);
-                alertHelper.showErrorMessage(e.getMessage());
+        if (playersTeamBlue.isEmpty() && playersTeamRed.isEmpty()) {
+            alertHelper.showErrorMessage("No player selected");
+        } else {
+            for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
+                try {
+                    playerService.showPlayer(matchPlayer.getPlayerDTO());
+                } catch (PlayerServiceException e) {
+                    LOG.error("Caught PlayerServiceException", e);
+                    alertHelper.showErrorMessage(e.getMessage());
+                }
             }
-        }
 
-        for (MatchPlayerDTO matchPlayer : playersTeamRed) {
-            try {
-                playerService.showPlayer(matchPlayer.getPlayerDTO());
-            } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException", e);
-                alertHelper.showErrorMessage(e.getMessage());
+            for (MatchPlayerDTO matchPlayer : playersTeamRed) {
+                try {
+                    playerService.showPlayer(matchPlayer.getPlayerDTO());
+                } catch (PlayerServiceException e) {
+                    LOG.error("Caught PlayerServiceException", e);
+                    alertHelper.showErrorMessage(e.getMessage());
+                }
             }
+            mainwindowController.updatePlayerTable();
         }
-        mainwindowController.updatePlayerTable();
     }
 
     /**

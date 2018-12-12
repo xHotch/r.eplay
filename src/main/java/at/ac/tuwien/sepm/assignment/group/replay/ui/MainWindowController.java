@@ -126,11 +126,16 @@ public class MainWindowController {
         }
 
         // load match details for the new window
-        matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
-        // show application
-        matchdetailsStage.show();
-        matchdetailsStage.toFront();
-        LOG.debug("Opening Match Details window complete");
+        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
+            matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
+            // show application
+            matchdetailsStage.show();
+            matchdetailsStage.toFront();
+            LOG.debug("Opening Match Details window complete");
+        } else {
+            alertHelper.showErrorMessage("No match selected");
+        }
+
 
     }
 
