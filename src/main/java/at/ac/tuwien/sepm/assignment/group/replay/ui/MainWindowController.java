@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
@@ -9,6 +8,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -124,11 +124,16 @@ public class MainWindowController {
         }
 
         // load match details for the new window
-        matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
-        // show application
-        matchdetailsStage.show();
-        matchdetailsStage.toFront();
-        LOG.debug("Opening Match Details window complete");
+        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
+            matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
+            // show application
+            matchdetailsStage.show();
+            matchdetailsStage.toFront();
+            LOG.debug("Opening Match Details window complete");
+        } else {
+            AlertHelper.showErrorMessage("No match selected");
+        }
+
 
     }
 
@@ -176,22 +181,22 @@ public class MainWindowController {
                 });
             } catch (FileServiceException e) {
                 LOG.error("Caught File Service Exception", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
             } catch (MatchServiceException e) {
                 LOG.error("Caught MatchServiceException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
             } catch (MatchValidationException e) {
                 LOG.error("Caught MatchValidationException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
-                Platform.runLater(() -> showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
             }
         });
 
@@ -210,7 +215,7 @@ public class MainWindowController {
         selectedPlayers = tableViewPlayers.getSelectionModel().getSelectedItems();
 
         if (selectedPlayers.isEmpty()) {
-            showErrorMessage("No player selected");
+            AlertHelper.showErrorMessage("No player selected");
             return;
         }
 
@@ -229,41 +234,20 @@ public class MainWindowController {
             counter++;
         }
         //let the user confirm the deletion
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Players");
-        alert.setContentText("Are you sure you want to delete the following players? \n" + playerNames);
+        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Delete Players",null,"Are you sure you want to delete the following players? \n" + playerNames);
 
-        Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
                 playerService.deletePlayers(playersToDelete);
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException");
-                showErrorMessage("Error while deleting player(s).");
+                AlertHelper.showErrorMessage("Error while deleting player(s).");
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException");
-                showErrorMessage("List of players to be deleted might be empty.");
+                AlertHelper.showErrorMessage("List of players to be deleted might be empty.");
             }
             updatePlayerTable();
         }
-    }
-
-
-    /**
-     * Method to show a simple Error Alert to the user
-     *
-     * @param errorMessage The String containing the message displayed
-     */
-    private void showErrorMessage(String errorMessage) {
-
-        LOG.trace("Called - showErrorMessage");
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Wrong input error");
-        alert.setHeaderText("Error");
-        alert.setContentText(errorMessage);
-
-        alert.showAndWait();
     }
 
 
@@ -280,7 +264,7 @@ public class MainWindowController {
             tableViewMatches.setItems(sortedMatches);
         } catch (MatchServiceException e) {
             LOG.error("Caught MatchServiceException {} ", e.getMessage());
-            showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage(e.getMessage());
         }
     }
 
@@ -295,7 +279,7 @@ public class MainWindowController {
             tableViewPlayers.setItems(observablePlayers);
         } catch (PlayerServiceException e) {
             LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage(e.getMessage());
         }
     }
 

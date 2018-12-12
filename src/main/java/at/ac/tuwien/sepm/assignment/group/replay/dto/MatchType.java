@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
 import java.util.Optional;
 
+import java.util.Optional;
+
 public enum MatchType {
     RANKED2V2("2 vs 2 Ranked", 11),
     RANKED1V1("1 vs 1 Ranked", 10),

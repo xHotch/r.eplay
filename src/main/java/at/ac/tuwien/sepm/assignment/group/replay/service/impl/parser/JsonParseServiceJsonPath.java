@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -21,9 +20,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -44,7 +41,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
 
-    private boolean gamePaused = false;
 
     public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser) {
         this.rigidBodyParser = rigidBodyParser;
@@ -88,16 +84,29 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         LOG.debug("########################################################################################");
         //Todo parse Player information from Frames not Properties
+
+        carInformationParser.getPlayerCarMap();
+
         return readProperties();
     }
 
-
+    /**
+     * Method that loops through frames and actorupdates.
+     * Calls other classes to parse information from the json, depending on the classtype of the actor
+     *
+     * @throws FileServiceException if File could not be parsed
+     */
     private void parseFrames() throws FileServiceException {
         LOG.trace("Called - parseFrames");
         //Map that contains the ids and Classnames from actors.
         //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
         HashMap<Integer, String> actors = new HashMap<>();
 
+        //list that stores time when goals were scored, in order to pause the game afterwards
+        gameInformationParse.setTimeOfGoals();
+
+        //pause game at the beginning
+        boolean gamePaused = true;
 
         try {
 
@@ -114,6 +123,9 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 double frameTime = ctx.read(frame + ".Time", Double.class);
                 double frameDelta = ctx.read(frame + ".Delta", Double.class);
 
+                //pause game if goal was scored
+                if (!gamePaused){
+                gamePaused = gameInformationParse.pauseGameIfGoalWasScored(frameTime);}
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -129,7 +141,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                     String className = actors.get(actorId);
 
-                    //todo parse information, if game is paused and replace 'false' on parameter gamePaused
+                    //resume game if countdown equals 0 (is shown after a goal before the game resumes)
+                    if (gamePaused) {
+                        gamePaused = gameInformationParse.resumeGameIfCountdownIsZero(frame, currentActorUpdateNr);
+                    }
                     switch (className) {
                         case "TAGame.Ball_TA":
                             ballInformationParser.parse(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
@@ -159,7 +174,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             throw new FileServiceException("Exception while parsing frames", e);
         }
     }
-
 
     /**
      * Reads Match propertiees and generates MatchDTO
