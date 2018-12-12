@@ -19,9 +19,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -83,10 +81,18 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         parseFrames();
         LOG.debug("asdf");
         //Todo parse Player information from Frames not Properties
+
+        carInformationParser.getPlayerCarMap();
+
         return readProperties();
     }
 
-
+    /**
+     * Method that loops through frames and actorupdates.
+     * Calls other classes to parse information from the json, depending on the classtype of the actor
+     *
+     * @throws FileServiceException if File could not be parsed
+     */
     private void parseFrames() throws FileServiceException {
         LOG.trace("Called - parseFrames");
         //Map that contains the ids and Classnames from actors.
