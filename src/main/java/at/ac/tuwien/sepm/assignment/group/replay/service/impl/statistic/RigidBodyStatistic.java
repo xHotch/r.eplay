@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic;
 
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,23 +16,49 @@ import java.util.List;
 public class RigidBodyStatistic {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    RigidBodyInformation[] rigidBodyList;
-
     private double averageSpeed;
     private double positiveSideTime = 0;
     private double negativeSideTime = 0;
     private double airTime;
     private double groundTime;
 
-    public RigidBodyStatistic() {
+    double averagerDistanceTo(List<RigidBodyInformation> rigidBodyInformation1,List<RigidBodyInformation> rigidBodyInformation2) {
+        RigidBodyInformation[] rigidBodyList1 = rigidBodyInformation1.toArray(new RigidBodyInformation[0]);
+        RigidBodyInformation[] rigidBodyList2 = rigidBodyInformation2.toArray(new RigidBodyInformation[0]);
+        Vector3D positionBody1 = rigidBodyList1[0].getPosition();
+        Vector3D positionBody2 = rigidBodyList2[0].getPosition();
+        double distance = 0;
+        int count = 0;
+        int i = 0;
+        int j = 0;
+        while (i < rigidBodyList1.length || j < rigidBodyList2.length) {
+            if(rigidBodyList1[i].getFrameTime() == rigidBodyList2[j].getFrameTime()) {
+                positionBody1 = rigidBodyList1[i].getPosition();
+                positionBody2 = rigidBodyList2[j].getPosition();
+                i++;
+                j++;
+            } else if(rigidBodyList1[i].getFrameTime() < rigidBodyList2[j].getFrameTime()){
+                positionBody1 = rigidBodyList1[i].getPosition();
+                i++;
+            } else if(rigidBodyList1[i].getFrameTime() > rigidBodyList2[j].getFrameTime()) {
+                positionBody2 = rigidBodyList2[j].getPosition();
+                j++;
+            }
+            distance += positionBody1.distance(positionBody2);
+            count++;
+        }
+
+        return count != 0 ? distance/count : 0;
     }
 
-    float averagerDistanceTo(List<RigidBodyInformation> list) {
-        return 0;
-    }
-
-    public void calculate()
+    public void calculate(List<RigidBodyInformation> rigidBodyInformations)
     {
+        RigidBodyInformation[] rigidBodyList = rigidBodyInformations.toArray(new RigidBodyInformation[0]);
+        averageSpeed = 0;
+        positiveSideTime = 0;
+        negativeSideTime = 0;
+        airTime = 0;
+        groundTime = 0;
         double deltaTime;
         double distance;
         double frameSpeed;
@@ -44,10 +71,13 @@ public class RigidBodyStatistic {
             deltaTime = rigidBody2.getFrameTime() - rigidBody1.getFrameTime();
             distance = rigidBody1.getPosition().distance(rigidBody2.getPosition());
             if(!rigidBody1.isGamePaused() && !rigidBody2.isGamePaused()) {
+                //side Time
                 if(rigidBody1.getPosition().getX() < 0) negativeSideTime += deltaTime;
                 else positiveSideTime += deltaTime;
+                //ground / air time
                 if(rigidBody1.getPosition().getZ() < 18) groundTime += deltaTime;
                 else airTime += deltaTime;
+                //average Speed
                 frameSpeed = distance / deltaTime;
                 speed += frameSpeed;
                 countFrame++;
@@ -56,10 +86,6 @@ public class RigidBodyStatistic {
         if (countFrame > 0) averageSpeed = speed/countFrame;
         else averageSpeed = 0;
         LOG.debug("Speed {} Count {} CountFrame {} negativeSideTime {} positiveSideTime {} groundTime {} airTime {}",averageSpeed,count,countFrame,negativeSideTime,positiveSideTime,groundTime,airTime);
-    }
-
-    public void setRigidBodyInformations(List<RigidBodyInformation> rigidBodyInformations) {
-        this.rigidBodyList = rigidBodyInformations.toArray(new RigidBodyInformation[rigidBodyInformations.size()]);
     }
 
     double getAverageSpeed() {
