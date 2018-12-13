@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
@@ -43,14 +44,15 @@ public class CarInformationParser {
     /**
      * Calls other methods, to read information about cars from the json file.
      *
-     * @param currentFrame       ID of the frame to parse
+     * @param currentFrame         ID of the frame to parse
      * @param currentActorUpdateNr ID of the ActorUpdate to parse
-     * @param frameTime     frameTime of the frame
-     * @param frameDelta    deltaTime of the frame
-     * @param gamePaused    boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
+     * @param frameTime            frameTime of the frame
+     * @param frameDelta           deltaTime of the frame
+     * @param gamePaused           boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
      * @throws FileServiceException if the file couldn't be parsed
      */
     void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+        LOG.trace("Called - parse");
         this.actorId = actorId;
         this.currentFrame = currentFrame;
         this.currentActorUpdateNr = currentActorUpdateNr;
@@ -89,25 +91,22 @@ public class CarInformationParser {
         }
     }
 
-
-
-    LinkedHashMap<Integer, Integer> getPlayerCarMap() {
-        return playerCarMap;
-    }
-
-    void calculate()
-    {
-        Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers = new HashMap<>();
-        for (Map.Entry<Integer,Integer> entry: playerCarMap.entrySet()) { // getValue() = playerKey, getKey() = carKey
-            if(rigidBodyPlayers.containsKey(entry.getValue())) {
+    void calculate(List<MatchPlayerDTO> matchPlayerDTOList) {
+        LOG.trace("Called - calculate");
+        Map<Integer, List<RigidBodyInformation>> rigidBodyPlayers = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : playerCarMap.entrySet()) { // getValue() = playerKey, getKey() = carKey
+            if (rigidBodyPlayers.containsKey(entry.getValue())) {
                 rigidBodyPlayers.get(entry.getValue()).addAll(rigidBodyMap.get(entry.getKey()));
-            } else
-            {
-                rigidBodyPlayers.put(entry.getValue(),rigidBodyMap.get(entry.getKey()));
+            } else {
+                rigidBodyPlayers.put(entry.getValue(), rigidBodyMap.get(entry.getKey()));
             }
         }
         playerStatistic.setRigidBodyPlayers(rigidBodyPlayers);
-        playerStatistic.calculate();
+        playerStatistic.calculate(matchPlayerDTOList);
+    }
+
+    LinkedHashMap<Integer, Integer> getPlayerCarMap() {
+        return playerCarMap;
     }
 
     void setCtx(ReadContext ctx) {

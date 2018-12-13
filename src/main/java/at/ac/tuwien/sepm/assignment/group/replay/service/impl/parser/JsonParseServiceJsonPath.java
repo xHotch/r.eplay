@@ -79,15 +79,16 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         }
 
+        LOG.debug("Start Parse");
+        MatchDTO matchDTO = readProperties();
         parseFrames();
-        LOG.debug("########################################################################################");
-        carInformationParser.calculate();
-        LOG.debug("########################################################################################");
         //Todo parse Player information from Frames not Properties
+        LOG.debug("End Parse");
+        LOG.debug("Start  Calculate");
+        calculate(matchDTO);
+        LOG.debug("End  Calculate");
 
-        carInformationParser.getPlayerCarMap();
-
-        return readProperties();
+        return matchDTO;
     }
 
     /**
@@ -173,6 +174,16 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         } catch (Exception e) {
             throw new FileServiceException("Exception while parsing frames", e);
         }
+    }
+
+    /**
+     * Calculates all statistics to be save in the database
+     *
+     * @param matchDTO the match data wto save the statistics
+     */
+    private void calculate(MatchDTO matchDTO) {
+        LOG.trace("Called - calculate");
+        carInformationParser.calculate(matchDTO.getPlayerData());
     }
 
     /**

@@ -22,7 +22,8 @@ public class RigidBodyStatistic {
     private double airTime;
     private double groundTime;
 
-    double averagerDistanceTo(List<RigidBodyInformation> rigidBodyInformation1,List<RigidBodyInformation> rigidBodyInformation2) {
+    double averageDistanceTo(List<RigidBodyInformation> rigidBodyInformation1, List<RigidBodyInformation> rigidBodyInformation2) {
+        LOG.trace("Called - averageDistanceTo");
         RigidBodyInformation[] rigidBodyList1 = rigidBodyInformation1.toArray(new RigidBodyInformation[0]);
         RigidBodyInformation[] rigidBodyList2 = rigidBodyInformation2.toArray(new RigidBodyInformation[0]);
         Vector3D positionBody1 = rigidBodyList1[0].getPosition();
@@ -32,15 +33,15 @@ public class RigidBodyStatistic {
         int i = 0;
         int j = 0;
         while (i < rigidBodyList1.length || j < rigidBodyList2.length) {
-            if(rigidBodyList1[i].getFrameTime() == rigidBodyList2[j].getFrameTime()) {
+            if (rigidBodyList1[i].getFrameTime() == rigidBodyList2[j].getFrameTime()) {
                 positionBody1 = rigidBodyList1[i].getPosition();
                 positionBody2 = rigidBodyList2[j].getPosition();
                 i++;
                 j++;
-            } else if(rigidBodyList1[i].getFrameTime() < rigidBodyList2[j].getFrameTime()){
+            } else if (rigidBodyList1[i].getFrameTime() < rigidBodyList2[j].getFrameTime()) {
                 positionBody1 = rigidBodyList1[i].getPosition();
                 i++;
-            } else if(rigidBodyList1[i].getFrameTime() > rigidBodyList2[j].getFrameTime()) {
+            } else if (rigidBodyList1[i].getFrameTime() > rigidBodyList2[j].getFrameTime()) {
                 positionBody2 = rigidBodyList2[j].getPosition();
                 j++;
             }
@@ -48,11 +49,11 @@ public class RigidBodyStatistic {
             count++;
         }
 
-        return count != 0 ? distance/count : 0;
+        return count != 0 ? distance / count : 0;
     }
 
-    public void calculate(List<RigidBodyInformation> rigidBodyInformations)
-    {
+    public void calculate(List<RigidBodyInformation> rigidBodyInformations) {
+        LOG.trace("Called calculate");
         RigidBodyInformation[] rigidBodyList = rigidBodyInformations.toArray(new RigidBodyInformation[0]);
         averageSpeed = 0;
         positiveSideTime = 0;
@@ -65,17 +66,17 @@ public class RigidBodyStatistic {
         double speed = 0;
         int count = 0;
         int countFrame = 0;
-        for (int i = 1; i < rigidBodyList.length-1; i++) {
+        for (int i = 1; i < rigidBodyList.length - 1; i++) {
             RigidBodyInformation rigidBody1 = rigidBodyList[i];
-            RigidBodyInformation rigidBody2 = rigidBodyList[i+1];
+            RigidBodyInformation rigidBody2 = rigidBodyList[i + 1];
             deltaTime = rigidBody2.getFrameTime() - rigidBody1.getFrameTime();
             distance = rigidBody1.getPosition().distance(rigidBody2.getPosition());
-            if(!rigidBody1.isGamePaused() && !rigidBody2.isGamePaused()) {
+            if (!rigidBody1.isGamePaused() && !rigidBody2.isGamePaused()) {
                 //side Time
-                if(rigidBody1.getPosition().getX() < 0) negativeSideTime += deltaTime;
+                if (rigidBody1.getPosition().getX() < 0) negativeSideTime += deltaTime;
                 else positiveSideTime += deltaTime;
                 //ground / air time
-                if(rigidBody1.getPosition().getZ() < 18) groundTime += deltaTime;
+                if (rigidBody1.getPosition().getZ() < 18) groundTime += deltaTime;
                 else airTime += deltaTime;
                 //average Speed
                 frameSpeed = distance / deltaTime;
@@ -83,9 +84,9 @@ public class RigidBodyStatistic {
                 countFrame++;
             } else count++;
         }
-        if (countFrame > 0) averageSpeed = speed/countFrame;
+        if (countFrame > 0) averageSpeed = speed / countFrame;
         else averageSpeed = 0;
-        LOG.debug("Speed {} Count {} CountFrame {} negativeSideTime {} positiveSideTime {} groundTime {} airTime {}",averageSpeed,count,countFrame,negativeSideTime,positiveSideTime,groundTime,airTime);
+        LOG.debug("Speed {} Count {} CountFrame {} negativeSideTime {} positiveSideTime {} groundTime {} airTime {}", averageSpeed, count, countFrame, negativeSideTime, positiveSideTime, groundTime, airTime);
     }
 
     double getAverageSpeed() {

@@ -15,6 +15,11 @@ public class MatchPlayerDTO {
     private int assists;
     private int shots;
     private int saves;
+    private double homeSideTime;
+    private double enemySideTime;
+    private double averageSpeed;
+    private double airTime;
+    private double groundTime;
 
     public MatchDTO getMatchDTO() {
         return matchDTO;
@@ -36,16 +41,13 @@ public class MatchPlayerDTO {
         return matchDTO.getId();
     }
 
-
     public long getPlayerId() {
         return playerDTO.getId();
     }
 
-
     public String getName() {
         return playerDTO.getName();
     }
-
 
     public TeamSide getTeam() {
         return team;
@@ -95,4 +97,43 @@ public class MatchPlayerDTO {
         this.saves = saves;
     }
 
+    public double getHomeSideTime() {
+        return homeSideTime;
+    }
+
+    public void setHomeSideTime(double homeSideTime) {
+        this.homeSideTime = homeSideTime;
+    }
+
+    public double getEnemySideTime() {
+        return enemySideTime;
+    }
+
+    public void setEnemySideTime(double enemySideTime) {
+        this.enemySideTime = enemySideTime;
+    }
+
+    public double getAverageSpeed() {
+        return averageSpeed;
+    }
+
+    public void setAverageSpeed(double averageSpeed) {
+        this.averageSpeed = averageSpeed;
+    }
+
+    public double getAirTime() {
+        return airTime;
+    }
+
+    public void setAirTime(double airTime) {
+        this.airTime = airTime;
+    }
+
+    public double getGroundTime() {
+        return groundTime;
+    }
+
+    public void setGroundTime(double groundTime) {
+        this.groundTime = groundTime;
+    }
 }
