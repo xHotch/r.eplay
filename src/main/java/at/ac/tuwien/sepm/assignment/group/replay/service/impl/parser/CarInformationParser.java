@@ -32,13 +32,11 @@ public class CarInformationParser {
     private LinkedHashMap<Integer, List<RigidBodyInformation>> rigidBodyMap = new LinkedHashMap<>();
 
     private RigidBodyParser rigidBodyParser;
-    private PlayerStatistic playerStatistic;
     private ReadContext ctx;
 
 
-    public CarInformationParser(RigidBodyParser rigidBodyParser, PlayerStatistic playerStatistic) {
+    public CarInformationParser(RigidBodyParser rigidBodyParser) {
         this.rigidBodyParser = rigidBodyParser;
-        this.playerStatistic = playerStatistic;
     }
 
     /**
@@ -91,7 +89,7 @@ public class CarInformationParser {
         }
     }
 
-    void calculate(List<MatchPlayerDTO> matchPlayerDTOList) {
+    Map<Integer, List<RigidBodyInformation>> getRigidBodyListPlayer() {
         LOG.trace("Called - calculate");
         Map<Integer, List<RigidBodyInformation>> rigidBodyPlayers = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : playerCarMap.entrySet()) { // getValue() = playerKey, getKey() = carKey
@@ -101,8 +99,7 @@ public class CarInformationParser {
                 rigidBodyPlayers.put(entry.getValue(), rigidBodyMap.get(entry.getKey()));
             }
         }
-        playerStatistic.setRigidBodyPlayers(rigidBodyPlayers);
-        playerStatistic.calculate(matchPlayerDTOList);
+        return rigidBodyPlayers;
     }
 
     LinkedHashMap<Integer, Integer> getPlayerCarMap() {

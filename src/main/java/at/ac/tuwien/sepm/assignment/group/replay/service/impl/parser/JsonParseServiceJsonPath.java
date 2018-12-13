@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -40,14 +41,16 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private GameInformationParser gameInformationParse;
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
+    private PlayerStatistic playerStatistic;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, PlayerStatistic playerStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParse = gameInformationParse;
         this.carInformationParser = carInformationParser;
         this.ballInformationParser = ballInformationParser;
+        this.playerStatistic = playerStatistic;
     }
 
     @Override
@@ -183,7 +186,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
      */
     private void calculate(MatchDTO matchDTO) {
         LOG.trace("Called - calculate");
-        carInformationParser.calculate(matchDTO.getPlayerData());
+        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer()); //TODO link actorID to matchplayer
     }
 
     /**

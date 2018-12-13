@@ -20,22 +20,21 @@ public class PlayerStatistic {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private RigidBodyStatistic rigidBodyStatistic;
-    private Map<Integer, List<RigidBodyInformation>> rigidBodyPlayers;
 
     public PlayerStatistic(RigidBodyStatistic rigidBodyStatistic) {
         this.rigidBodyStatistic = rigidBodyStatistic;
     }
 
-    public void calculate(List<MatchPlayerDTO> matchPlayerDTOList) {
+    public void calculate(List<MatchPlayerDTO> matchPlayerDTOList,Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers) {
         LOG.trace("Called - calculate");
         Iterator<MatchPlayerDTO> matchPlayerDTOIterator = matchPlayerDTOList.iterator();
         for (int key : rigidBodyPlayers.keySet()) {
             rigidBodyStatistic.calculate(rigidBodyPlayers.get(key));
-            MatchPlayerDTO matchPlayerDTO = matchPlayerDTOIterator.next();
+            MatchPlayerDTO matchPlayerDTO = matchPlayerDTOIterator.next(); //TODO match player to actorId
             matchPlayerDTO.setAirTime(rigidBodyStatistic.getAirTime());
             matchPlayerDTO.setGroundTime(rigidBodyStatistic.getGroundTime());
             matchPlayerDTO.setAverageSpeed(rigidBodyStatistic.getAverageSpeed());
-            if (matchPlayerDTO.getTeam() == TeamSide.RED) { //TODO check if red or blue side is on the positive side
+            if (matchPlayerDTO.getTeam() == TeamSide.RED) {
                 matchPlayerDTO.setEnemySideTime(rigidBodyStatistic.getNegativeSideTime());
                 matchPlayerDTO.setHomeSideTime(rigidBodyStatistic.getPositiveSideTime());
             } else {
@@ -45,7 +44,4 @@ public class PlayerStatistic {
         }
     }
 
-    public void setRigidBodyPlayers(Map<Integer, List<RigidBodyInformation>> rigidBodyPlayers) {
-        this.rigidBodyPlayers = rigidBodyPlayers;
-    }
 }
