@@ -41,14 +41,16 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private GameInformationParser gameInformationParse;
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
+    private BoostInformationParser boostInformationParser;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParse = gameInformationParse;
         this.carInformationParser = carInformationParser;
         this.ballInformationParser = ballInformationParser;
+        this.boostInformationParser = boostInformationParser;
     }
 
     @Override
@@ -72,6 +74,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 gameInformationParse.setCtx(ctx);
                 carInformationParser.setCtx(ctx);
                 ballInformationParser.setCtx(ctx);
+                boostInformationParser.setCtx(ctx);
 
                 jFile = jsonFile;
             } catch (IOException e) {
@@ -129,7 +132,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         LOG.debug("New Actor found at frame {}, actorupdate {}", currentFrame, currentActorUpdateNr);
                     }
 
-
                     String className = actors.get(actorId);
 
                     //resume game if countdown, that is shown after a goal before the game resumes, equals 0
@@ -154,6 +156,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         case "TAGamee.GRI_TA":
                             //parseMatchInformation
                             //e.g ['ProjectX.GRI_X:ReplicatetdGamePlaylist'] -> MatchType id
+                            break;
+
+                        case "TAGame.CarComponent_Boost_TA":
+                            boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            break;
 
                         default:
                             //Information not relevant for our project
@@ -164,6 +171,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                     LOG.debug(className);
                 }
             }
+            //boostInformationParser.printDebugInformation();
         } catch (Exception e) {
             throw new FileServiceException("Exception while parsing frames", e);
         }
