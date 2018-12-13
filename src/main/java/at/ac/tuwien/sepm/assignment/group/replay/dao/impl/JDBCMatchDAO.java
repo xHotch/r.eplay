@@ -24,7 +24,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?";
-    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?";
+    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
@@ -87,6 +87,11 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setInt(7, matchPlayerDTO.getAssists());
             ps.setInt(8, matchPlayerDTO.getSaves());
             ps.setInt(9, matchPlayerDTO.getShots());
+            ps.setDouble(10,matchPlayerDTO.getAirTime());
+            ps.setDouble(11,matchPlayerDTO.getGroundTime());
+            ps.setDouble(12,matchPlayerDTO.getHomeSideTime());
+            ps.setDouble(13,matchPlayerDTO.getEnemySideTime());
+            ps.setDouble(14,matchPlayerDTO.getAverageSpeed());
 
             ps.executeUpdate();
 
@@ -161,8 +166,4 @@ public class JDBCMatchDAO implements MatchDAO {
         }
         return result;
     }
-
-
-
-
 }

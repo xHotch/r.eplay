@@ -83,7 +83,7 @@ public class SimpleMatchService implements MatchService {
     }
 
     private String matchPlayerDTOValidator(MatchPlayerDTO matchPlayerDTO) {
-        LOG.trace("Called - matchDTOValidator");
+        LOG.trace("Called - matchPlayerDTOValidator");
         String errMsg = "";
         if (matchPlayerDTO.getName() == null || matchPlayerDTO.getName().equals("")) errMsg += "No Name\n";
         if (matchPlayerDTO.getGoals() < 0) errMsg += "Goals negativ\n";
