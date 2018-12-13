@@ -11,16 +11,16 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-10level %logger{100} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-8level %logger{100} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <!-- Example: <logger name="at.ac.tuwien.sepm.assignment.group.replay.service.impl" level="INFO" /> -->
+
     <root level="debug">
         <appender-ref ref="FILE" />
-
     </root>
     <root level="trace">
-
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
