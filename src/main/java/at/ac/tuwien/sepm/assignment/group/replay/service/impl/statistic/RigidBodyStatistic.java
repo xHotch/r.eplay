@@ -73,7 +73,7 @@ public class RigidBodyStatistic {
             distance = rigidBody1.getPosition().distance(rigidBody2.getPosition());
             if (!rigidBody1.isGamePaused() && !rigidBody2.isGamePaused()) {
                 //side Time
-                if (rigidBody1.getPosition().getX() < 0) negativeSideTime += deltaTime;
+                if (rigidBody1.getPosition().getY() < 0) negativeSideTime += deltaTime;
                 else positiveSideTime += deltaTime;
                 //ground / air time
                 if (rigidBody1.getPosition().getZ() < 18) groundTime += deltaTime;
