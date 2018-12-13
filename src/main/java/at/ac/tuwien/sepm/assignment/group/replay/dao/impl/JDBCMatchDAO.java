@@ -156,6 +156,11 @@ public class JDBCMatchDAO implements MatchDAO {
                     matchPlayer.setAssists(rs.getInt("assists"));
                     matchPlayer.setSaves(rs.getInt("saves"));
                     matchPlayer.setShots(rs.getInt("shots"));
+                    matchPlayer.setAirTime(rs.getDouble("airTime"));
+                    matchPlayer.setGroundTime(rs.getDouble("groundTime"));
+                    matchPlayer.setHomeSideTime(rs.getDouble("homeSideTime"));
+                    matchPlayer.setEnemySideTime(rs.getDouble("enemySideTime"));
+                    matchPlayer.setAverageSpeed(rs.getDouble("averageSpeed"));
 
                     result.add(matchPlayer);
                 }
