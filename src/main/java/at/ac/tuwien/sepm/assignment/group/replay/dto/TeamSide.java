@@ -6,7 +6,7 @@ import java.util.Optional;
  * @author Daniel Klampfl
  */
 public enum TeamSide {
-    RED(0),BLUE(1);
+    RED(1),BLUE(0);
 
     private int id;
 
