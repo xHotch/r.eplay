@@ -3,8 +3,10 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -42,15 +44,17 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
     private BoostInformationParser boostInformationParser;
+    private PlayerStatistic playerStatistic;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParse = gameInformationParse;
         this.carInformationParser = carInformationParser;
         this.ballInformationParser = ballInformationParser;
         this.boostInformationParser = boostInformationParser;
+        this.playerStatistic = playerStatistic;
     }
 
     @Override
@@ -74,7 +78,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 gameInformationParse.setCtx(ctx);
                 carInformationParser.setCtx(ctx);
                 ballInformationParser.setCtx(ctx);
-                boostInformationParser.setCtx(ctx);
 
                 jFile = jsonFile;
             } catch (IOException e) {
@@ -83,13 +86,24 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         }
 
+        LOG.debug("Start Parse");
+        MatchDTO matchDTO = readProperties();
         parseFrames();
-        LOG.debug("asdf");
         //Todo parse Player information from Frames not Properties
-        return readProperties();
+        LOG.debug("End Parse");
+        LOG.debug("Start  Calculate");
+        calculate(matchDTO);
+        LOG.debug("End  Calculate");
+
+        return matchDTO;
     }
 
-
+    /**
+     * Method that loops through frames and actorupdates.
+     * Calls other classes to parse information from the json, depending on the classtype of the actor
+     *
+     * @throws FileServiceException if File could not be parsed
+     */
     private void parseFrames() throws FileServiceException {
         LOG.trace("Called - parseFrames");
         //Map that contains the ids and Classnames from actors.
@@ -97,7 +111,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         HashMap<Integer, String> actors = new HashMap<>();
 
         //list that stores time when goals were scored, in order to pause the game afterwards
-        ArrayList<Double> timeOfGoals = getTimeOfGoals();
+        gameInformationParse.setTimeOfGoals();
 
         //pause game at the beginning
         boolean gamePaused = true;
@@ -119,7 +133,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                 //pause game if goal was scored
                 if (!gamePaused){
-                gamePaused = pauseGame(timeOfGoals, frameTime);}
+                gamePaused = gameInformationParse.pauseGameIfGoalWasScored(frameTime);}
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -132,15 +146,13 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         LOG.debug("New Actor found at frame {}, actorupdate {}", currentFrame, currentActorUpdateNr);
                     }
 
+
                     String className = actors.get(actorId);
 
-                    //resume game if countdown, that is shown after a goal before the game resumes, equals 0
-                    Integer countdown = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].['TAGame.GameEvent_TA:ReplicatedRoundCountDownNumber']", Integer.class);
-
-                    if ((countdown != null) && (countdown == 0)) {
-                        gamePaused = false;
+                    //resume game if countdown equals 0 (is shown after a goal before the game resumes)
+                    if (gamePaused) {
+                        gamePaused = gameInformationParse.resumeGameIfCountdownIsZero(frame, currentActorUpdateNr);
                     }
-
                     switch (className) {
                         case "TAGame.Ball_TA":
                             ballInformationParser.parse(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
@@ -171,7 +183,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                     LOG.debug(className);
                 }
             }
-            //boostInformationParser.printDebugInformation();
         } catch (Exception e) {
             throw new FileServiceException("Exception while parsing frames", e);
         }
@@ -179,49 +190,13 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
     /**
-     * checks if the game should be paused by checking if a goal was scored
+     * Calculates all statistics to be save in the database
      *
-     * @param timeOfGoals list that contains each moment of a scored goal
-     * @param frameTime   current frame time
-     * @return true if game should be paused
-     * false if game should not be paused
+     * @param matchDTO the match data wto save the statistics
      */
-    private boolean pauseGame(ArrayList<Double> timeOfGoals, Double frameTime) {
-        if (!timeOfGoals.isEmpty()) {
-            for (Double goalTime : timeOfGoals) {
-                if (Double.compare(goalTime, frameTime) == 0) {
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }
-
-    /**
-     * reads the time of each goal out of the json file and returns it in a list
-     *
-     * @return a list of Double values that contains each moment a goal was scored
-     */
-    private ArrayList<Double> getTimeOfGoals() {
-        ArrayList<Double> timeOfGoals = new ArrayList<>();
-
-        int numberOfGoals = ctx.read("$.TickMarks.length()");
-
-        Double goalTime;
-        //saves are stored as well in the TickMarks array, so eventType makes sure only goals are returned
-        String eventType;
-
-        for (int i = 0; i < numberOfGoals; i++) {
-
-            eventType = ctx.read("$.TickMarks[" + i + "].Type", String.class);
-            if (eventType.equals("Team0Goal") || eventType.equals("Team1Goal")) {
-                goalTime = ctx.read("$.TickMarks[" + i + "].Time", Double.class);
-                timeOfGoals.add(goalTime);
-            }
-        }
-
-        return timeOfGoals;
+    private void calculate(MatchDTO matchDTO) {
+        LOG.trace("Called - calculate");
+        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer()); //TODO link actorID to matchplayer
     }
 
     /**
@@ -257,7 +232,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 matchPlayer.setShots(ctx.read("$.Properties.PlayerStats[" + i + "].Shots"));
                 matchPlayer.setScore(ctx.read("$.Properties.PlayerStats[" + i + "].Score"));
                 playerDTO.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
-                matchPlayer.setTeam(ctx.read("$.Properties.PlayerStats[" + i + "].Team"));
+                matchPlayer.setTeam(TeamSide.getById(ctx.read("$.Properties.PlayerStats[" + i + "].Team")).get());
 
                 long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
                 if (id == 0) {

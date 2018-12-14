@@ -30,6 +30,11 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   assists INT NOT NULL,
   saves INT NOT NULL,
   shots INT NOT NULL,
+  airTime double,
+  groundTime double,
+  homeSideTime double,
+  enemySideTime double,
+  averageSpeed double,
   FOREIGN KEY (playerid) REFERENCES player(id),
   FOREIGN KEY (matchid) REFERENCES match_(id),
   PRIMARY KEY (playerid,matchid)

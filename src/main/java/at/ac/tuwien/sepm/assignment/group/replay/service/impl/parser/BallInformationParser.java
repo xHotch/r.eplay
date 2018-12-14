@@ -18,6 +18,10 @@ public class BallInformationParser {
 
     private ArrayList<RigidBodyInformation> rigidBodyInformations = new ArrayList<>();
 
+    public ArrayList<RigidBodyInformation> getRigidBodyInformations() {
+        return rigidBodyInformations;
+    }
+
     private RigidBodyParser rigidBodyParser;
     private ReadContext ctx;
 

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?";
-    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?";
+    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
@@ -80,12 +81,17 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setLong(1,matchPlayerDTO.getPlayerId());
             ps.setInt(2,matchPlayerDTO.getMatchId());
             ps.setString(3, matchPlayerDTO.getName());
-            ps.setInt(4, matchPlayerDTO.getTeam());
+            ps.setInt(4, matchPlayerDTO.getTeam().getId());
             ps.setInt(5, matchPlayerDTO.getScore());
             ps.setInt(6, matchPlayerDTO.getGoals());
             ps.setInt(7, matchPlayerDTO.getAssists());
             ps.setInt(8, matchPlayerDTO.getSaves());
             ps.setInt(9, matchPlayerDTO.getShots());
+            ps.setDouble(10,matchPlayerDTO.getAirTime());
+            ps.setDouble(11,matchPlayerDTO.getGroundTime());
+            ps.setDouble(12,matchPlayerDTO.getHomeSideTime());
+            ps.setDouble(13,matchPlayerDTO.getEnemySideTime());
+            ps.setDouble(14,matchPlayerDTO.getAverageSpeed());
 
             ps.executeUpdate();
 
@@ -144,12 +150,17 @@ public class JDBCMatchDAO implements MatchDAO {
                         throw new MatchPersistenceException(msg, e);
                     }
 
-                    matchPlayer.setTeam(rs.getInt("team"));
+                    matchPlayer.setTeam(TeamSide.getById(rs.getInt("team")).get());
                     matchPlayer.setScore(rs.getInt("score"));
                     matchPlayer.setGoals(rs.getInt("goals"));
                     matchPlayer.setAssists(rs.getInt("assists"));
                     matchPlayer.setSaves(rs.getInt("saves"));
                     matchPlayer.setShots(rs.getInt("shots"));
+                    matchPlayer.setAirTime(rs.getDouble("airTime"));
+                    matchPlayer.setGroundTime(rs.getDouble("groundTime"));
+                    matchPlayer.setHomeSideTime(rs.getDouble("homeSideTime"));
+                    matchPlayer.setEnemySideTime(rs.getDouble("enemySideTime"));
+                    matchPlayer.setAverageSpeed(rs.getDouble("averageSpeed"));
 
                     result.add(matchPlayer);
                 }
@@ -160,8 +171,4 @@ public class JDBCMatchDAO implements MatchDAO {
         }
         return result;
     }
-
-
-
-
 }

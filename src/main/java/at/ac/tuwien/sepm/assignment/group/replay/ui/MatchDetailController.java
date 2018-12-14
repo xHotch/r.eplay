@@ -2,12 +2,13 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -114,12 +115,12 @@ public class MatchDetailController {
 
         for (MatchPlayerDTO player:matchPlayers) {
             // team blue
-            if(player.getTeam() == 1){
+            if(player.getTeam() == TeamSide.BLUE){
                 blueGoals += player.getGoals();
 
                 playerListBlue.add(player);
             }
-            if(player.getTeam() == 0){
+            if(player.getTeam() == TeamSide.RED){
                 redGoals += player.getGoals();
 
                 playerListRed.add(player);
@@ -133,28 +134,32 @@ public class MatchDetailController {
         tableTeamRed.setItems(playerListRed);
     }
 
-    public void onSavePlayerButtonClicked(){
+    public void onSavePlayerButtonClicked() {
         ObservableList<MatchPlayerDTO> playersTeamBlue = tableTeamBlue.getSelectionModel().getSelectedItems();
         ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 
-        for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
-            try {
-                playerService.showPlayer(matchPlayer.getPlayerDTO());
-            } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException", e);
-                showErrorMessage(e.getMessage());
+        if (playersTeamBlue.isEmpty() && playersTeamRed.isEmpty()) {
+            AlertHelper.showErrorMessage("No player selected");
+        } else {
+            for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
+                try {
+                    playerService.showPlayer(matchPlayer.getPlayerDTO());
+                } catch (PlayerServiceException e) {
+                    LOG.error("Caught PlayerServiceException", e);
+                    AlertHelper.showErrorMessage(e.getMessage());
+                }
             }
-        }
 
-        for (MatchPlayerDTO matchPlayer : playersTeamRed) {
-            try {
-                playerService.showPlayer(matchPlayer.getPlayerDTO());
-            } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException", e);
-                showErrorMessage(e.getMessage());
+            for (MatchPlayerDTO matchPlayer : playersTeamRed) {
+                try {
+                    playerService.showPlayer(matchPlayer.getPlayerDTO());
+                } catch (PlayerServiceException e) {
+                    LOG.error("Caught PlayerServiceException", e);
+                    AlertHelper.showErrorMessage(e.getMessage());
+                }
             }
+            mainwindowController.updatePlayerTable();
         }
-        mainwindowController.updatePlayerTable();
     }
 
     /**
@@ -173,22 +178,5 @@ public class MatchDetailController {
         playerSavesRed.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsRed.setCellValueFactory(new PropertyValueFactory<>("assists"));
 
-    }
-
-    /**
-     * Method to show a simple Error Alert to the user
-     *
-     * @param errorMessage The String containing the message displayed
-     */
-    private void showErrorMessage(String errorMessage) {
-
-        LOG.trace("Called - showErrorMessage");
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Wrong input error");
-        alert.setHeaderText("Error");
-        alert.setContentText(errorMessage);
-
-        alert.showAndWait();
     }
 }

@@ -59,9 +59,10 @@ public class BoostInformationParser {
             parseBoostAmountInformation();
         }
 
-        LOG.debug("PRINT OUT BOOST INFORMATION");
-        LOG.debug("Actor: " + actorId + ", Current Frame: " + currentFrame + ", current Boost: " + currentBoost);
-        LOG.debug("PRINT OUT BOOST INFORMATION END");
+        //TODO parse information of boost if it was activated or not. Boost activated = False if the boost amount was set to 0 in the same update.
+        if(ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:ReplicatedActive']") != null) {
+            //parseBoostActiveInformation();
+        }
     }
 
     private void getPlayerIDfromBoost() {
@@ -108,7 +109,7 @@ public class BoostInformationParser {
         ) {
             for (BoostInformation info:boost.getValue()
                  ) {
-                LOG.debug("Boost ID: " + boost.getKey() + ", Frame: " + info.getFrame() + ", Boost amount: " + info.getBoostAmount());
+                LOG.debug("Boost ID: {}, Frame: {}, Boost amount: {}", boost.getKey(), info.getFrame(), info.getBoostAmount());
             }
         }
     }

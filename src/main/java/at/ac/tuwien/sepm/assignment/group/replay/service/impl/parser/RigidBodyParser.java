@@ -45,10 +45,6 @@ class RigidBodyParser {
     RigidBodyInformation parseRigidBodyInformation(int frameId, int actorUpdateId, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
         LOG.trace("Called - parseRigidBodyInformation");
 
-        //todo boolean sleeping
-
-
-        //todo check if game is paused
         LinkedHashMap<String, Object> position = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyPosition);
         LinkedHashMap<String, Object> rotation = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyRotation);
         LinkedHashMap<String, Object> linearVelocity = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyLinearVelocity);
@@ -106,9 +102,8 @@ class RigidBodyParser {
                 if (i == 2) {
                     z = (double) entry.getValue();
                 }
-
-                i++;
             }
+            i++;
         }
 
         return new Vector3D(x, y, z);

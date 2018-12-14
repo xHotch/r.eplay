@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
@@ -67,11 +68,11 @@ public class SimpleMatchService implements MatchService {
             int countTeamRed = 0;
             for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
                 errMsg += matchPlayerDTOValidator(player);
-                if (player.getTeam() == 0) {
-                    countTeamBlue++;
-                }
-                if (player.getTeam() == 1) {
+                if (player.getTeam() == TeamSide.RED) {
                     countTeamRed++;
+                }
+                if (player.getTeam() == TeamSide.BLUE) {
+                    countTeamBlue++;
                 }
             }
             if (matchDTO.getTeamSize() != countTeamBlue || matchDTO.getTeamSize() != countTeamRed) errMsg += "Uneven teamsize\n";
@@ -82,10 +83,9 @@ public class SimpleMatchService implements MatchService {
     }
 
     private String matchPlayerDTOValidator(MatchPlayerDTO matchPlayerDTO) {
-        LOG.trace("Called - matchDTOValidator");
+        LOG.trace("Called - matchPlayerDTOValidator");
         String errMsg = "";
         if (matchPlayerDTO.getName() == null || matchPlayerDTO.getName().equals("")) errMsg += "No Name\n";
-        if (matchPlayerDTO.getTeam() < 0 || matchPlayerDTO.getTeam() > 1) errMsg += "Invalid Team number\n";
         if (matchPlayerDTO.getGoals() < 0) errMsg += "Goals negativ\n";
         if (matchPlayerDTO.getShots() < 0) errMsg += "Shots negativ\n";
         if (matchPlayerDTO.getAssists() < 0) errMsg += "Assists negativ\n";
