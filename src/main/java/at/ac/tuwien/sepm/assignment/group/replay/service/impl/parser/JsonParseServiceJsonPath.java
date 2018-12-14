@@ -74,6 +74,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 ctx = JsonPath.using(conf).parse(jsonFile);
 
                 playerInformationParser.setCtx(ctx);
+                playerInformationParser.setUp();
                 rigidBodyParser.setCtx(ctx);
                 gameInformationParse.setCtx(ctx);
                 carInformationParser.setCtx(ctx);
@@ -93,8 +94,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.debug("Start Parse");
         MatchDTO matchDTO = readProperties();
         parseFrames();
-        //Todo parse Player information from Frames not Properties
         LOG.debug("End Parse");
+        playerInformationParser.setActorId(matchDTO.getPlayerData());
         LOG.debug("Start  Calculate");
         calculate(matchDTO);
         LOG.debug("End  Calculate");
@@ -166,7 +167,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             break;
 
                         case "TAGame.PRI_TA":
-                            //parsePlayerInformation(i,j);
+                            playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
 
                             break;
                         case "TAGamee.GRI_TA":
