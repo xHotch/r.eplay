@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
@@ -60,6 +61,15 @@ public class CarInformationParser {
 
         getPlayerIDfromCar();
         parseRigidBodyInformation();
+    }
+
+    /**
+     * Setups up the Lists and Maps.
+     * Has to be called every time a new file gets parsed
+     */
+    void setup(){
+        playerCarMap = new LinkedHashMap<>();
+        rigidBodyMap = new LinkedHashMap<>();
     }
 
     /**

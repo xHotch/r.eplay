@@ -43,6 +43,11 @@ public class BoostInformationParser {
 
     private int currentBoost;
 
+    void setup(){
+        carBoostMap = new HashMap<>();
+        boostAmountMap = new HashMap<>();
+    }
+
     void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
 
 

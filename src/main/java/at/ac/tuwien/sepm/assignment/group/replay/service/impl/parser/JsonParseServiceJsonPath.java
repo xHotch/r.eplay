@@ -77,7 +77,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 rigidBodyParser.setCtx(ctx);
                 gameInformationParse.setCtx(ctx);
                 carInformationParser.setCtx(ctx);
+                carInformationParser.setup();
                 ballInformationParser.setCtx(ctx);
+                ballInformationParser.setup();
+                boostInformationParser.setCtx(ctx);
+                boostInformationParser.setup();
 
                 jFile = jsonFile;
             } catch (IOException e) {
