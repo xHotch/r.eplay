@@ -55,14 +55,13 @@ public class BoostInformationParser {
 
         getPlayerIDfromBoost();
         //parse the amount of boost, check if the classname is not 'TAGame.CarComponent_TA:ReplicatedActive' since this indicates active boosting, will be done later.
-        if(ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:ReplicatedActive']") == null) {
-            parseBoostAmountInformation();
-        }
+        parseBoostAmountInformation();
+
 
         //TODO parse information of boost if it was activated or not. Boost activated = False if the boost amount was set to 0 in the same update.
-        if(ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:ReplicatedActive']") != null) {
-            //parseBoostActiveInformation();
-        }
+        //parseBoostActiveInformation();
+
+
     }
 
     private void getPlayerIDfromBoost() {
@@ -74,6 +73,10 @@ public class BoostInformationParser {
         } catch (NullPointerException e) {
             LOG.debug("No Information about boost found - wrong replicated info found");
         }
+    }
+
+    private void parseBoostAmountInformation() throws FileServiceException {
+        LOG.trace("Called - parseBoostAmountInformation");
 
         //try catch clauses sequentially, otherwise the first calls would break the others if the others were actually valid.
         try {
@@ -81,25 +84,22 @@ public class BoostInformationParser {
             currentBoost = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class);
             //map to 0 - 100, in the json it is from 0 - 255
             currentBoost = (int)(currentBoost / 255.0 * 100.0);
+            //create new boost object
+            BoostInformation boost = new BoostInformation(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
+            boostAmountMap.putIfAbsent(actorId, new ArrayList<>());
+            boostAmountMap.get(actorId).add(boost);
+
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
         } catch (NullPointerException e) {
             LOG.debug("No information about boost found - wrong replicated info found");
         }
+
     }
 
-    private void parseBoostAmountInformation() throws FileServiceException {
-        LOG.trace("Called - parseBoostAmountInformation");
-
-        //create new boost object
-        BoostInformation boost = new BoostInformation(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
-
-        boostAmountMap.putIfAbsent(actorId, new ArrayList<>());
-        try {
-            boostAmountMap.get(actorId).add(boost);
-        } catch (PathNotFoundException e) {
-            LOG.debug("No Information about boost amount found");
-        }
+    private void parseBoostActiveInformation(){
+        //todo implement
+        //ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:ReplicatedActive']",Boolean.class);
     }
 
     public void printDebugInformation() {
