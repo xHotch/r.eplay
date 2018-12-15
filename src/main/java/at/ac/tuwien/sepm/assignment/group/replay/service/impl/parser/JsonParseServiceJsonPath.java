@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
@@ -45,9 +46,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private BallInformationParser ballInformationParser;
     private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
+    private BallStatistic ballStatistic;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParse = gameInformationParse;
@@ -55,6 +57,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         this.ballInformationParser = ballInformationParser;
         this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
+        this.ballStatistic = ballStatistic;
     }
 
     @Override
@@ -202,6 +205,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private void calculate(MatchDTO matchDTO) {
         LOG.trace("Called - calculate");
         playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer()); //TODO link actorID to matchplayer
+        ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
     }
 
     /**
