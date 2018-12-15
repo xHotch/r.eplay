@@ -27,20 +27,20 @@ public class PlayerStatistic {
 
     public void calculate(List<MatchPlayerDTO> matchPlayerDTOList,Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers) {
         LOG.trace("Called - calculate");
-        Iterator<MatchPlayerDTO> matchPlayerDTOIterator = matchPlayerDTOList.iterator();
-        for (int key : rigidBodyPlayers.keySet()) {
-            rigidBodyStatistic.calculate(rigidBodyPlayers.get(key));
-            MatchPlayerDTO matchPlayerDTO = matchPlayerDTOIterator.next(); //TODO match player to actorId
-            matchPlayerDTO.setAirTime(rigidBodyStatistic.getAirTime());
-            matchPlayerDTO.setGroundTime(rigidBodyStatistic.getGroundTime());
-            matchPlayerDTO.setAverageSpeed(rigidBodyStatistic.getAverageSpeed());
-            if (matchPlayerDTO.getTeam() == TeamSide.RED) {
-                matchPlayerDTO.setEnemySideTime(rigidBodyStatistic.getNegativeSideTime());
-                matchPlayerDTO.setHomeSideTime(rigidBodyStatistic.getPositiveSideTime());
-            } else {
-                matchPlayerDTO.setEnemySideTime(rigidBodyStatistic.getPositiveSideTime());
-                matchPlayerDTO.setHomeSideTime(rigidBodyStatistic.getNegativeSideTime());
-            }
+        matchPlayerDTOList.forEach(dto -> setMatchPlayerData(dto,rigidBodyPlayers.get(dto.getActorId())));
+    }
+
+    void setMatchPlayerData(MatchPlayerDTO matchPlayerDTO, List<RigidBodyInformation> rigidBodyPlayer){
+        rigidBodyStatistic.calculate(rigidBodyPlayer);
+        matchPlayerDTO.setAirTime(rigidBodyStatistic.getAirTime());
+        matchPlayerDTO.setGroundTime(rigidBodyStatistic.getGroundTime());
+        matchPlayerDTO.setAverageSpeed(rigidBodyStatistic.getAverageSpeed());
+        if (matchPlayerDTO.getTeam() == TeamSide.RED) {
+            matchPlayerDTO.setHomeSideTime(rigidBodyStatistic.getPositiveSideTime());
+            matchPlayerDTO.setEnemySideTime(rigidBodyStatistic.getNegativeSideTime());
+        } else {
+            matchPlayerDTO.setHomeSideTime(rigidBodyStatistic.getNegativeSideTime());
+            matchPlayerDTO.setEnemySideTime(rigidBodyStatistic.getPositiveSideTime());
         }
     }
 
