@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.ReadContext;
@@ -8,13 +9,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BallInformationParser {
+
+
+    private int currentFrame;
+    private int currentActorUpdateNr;
+    private double frameTime;
+    private double frameDelta;
+    private boolean gamePaused;
+
+    private EnumMap<TeamSide, Integer> hitCount;
 
     private ArrayList<RigidBodyInformation> rigidBodyInformations = new ArrayList<>();
 
@@ -36,15 +43,40 @@ public class BallInformationParser {
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    //Map that maps ActorID from a Player to a car. Key = CarActorId, Value = playerActorId
-    private Map<Integer, Integer> playerCarMap = new HashMap<>();
 
-
-    //Map that maps ActorID from a Car to a list of RigidBodyInformation
-    private Map<Integer, List<RigidBodyInformation>> rigidBodyMap = new HashMap<>();
-
-    void parse(int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
-        rigidBodyInformations.add(rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused));
+    void setup(){
+        rigidBodyInformations=new ArrayList<>();
+        hitCount = new EnumMap<>(TeamSide.class);
     }
 
+    void parse(int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+        LOG.trace("Called - parse");
+
+        this.currentFrame = currentFrame;
+        this.currentActorUpdateNr = currentActorUpdateNr;
+        this.frameTime = frameTime;
+        this.frameDelta = frameDelta;
+        this.gamePaused = gamePaused;
+
+        rigidBodyInformations.add(rigidBodyParser.parseRigidBodyInformation(this.currentFrame, this.currentActorUpdateNr, this.frameTime, this.frameDelta, this.gamePaused));
+        parseHitInformation();
+    }
+
+    private void parseHitInformation(){
+        try {
+            int hit = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.Ball_TA:HitTeamNum']",Integer.class);
+
+            TeamSide side = TeamSide.getById(hit).get();
+            hitCount.put(side,hitCount.getOrDefault(side,0)+1);
+            //todo save time
+
+        } catch (NullPointerException e){
+            LOG.debug("No Hit Information found");
+        }
+
+    }
+
+    public EnumMap<TeamSide, Integer> getHitCount() {
+        return hitCount;
+    }
 }

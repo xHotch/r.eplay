@@ -20,6 +20,7 @@ public class MatchPlayerDTO {
     private double averageSpeed;
     private double airTime;
     private double groundTime;
+    private int actorId;
 
     public MatchDTO getMatchDTO() {
         return matchDTO;
@@ -135,5 +136,13 @@ public class MatchPlayerDTO {
 
     public void setGroundTime(double groundTime) {
         this.groundTime = groundTime;
+    }
+
+    public int getActorId() {
+        return actorId;
+    }
+
+    public void setActorId(int actorId) {
+        this.actorId = actorId;
     }
 }

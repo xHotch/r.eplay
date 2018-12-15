@@ -30,7 +30,7 @@ public class MatchDetailController {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private PlayerService playerService;
-    private MainWindowController mainwindowController;
+    private PlayerController playerController;
 
     @FXML
     private Label labelGameMode;
@@ -69,9 +69,9 @@ public class MatchDetailController {
     @FXML
     private TableColumn<MatchPlayerDTO, Integer>playerAssistsRed;
 
-    public MatchDetailController(PlayerService playerService, MainWindowController mainwindowController) {
+    public MatchDetailController(PlayerService playerService, PlayerController playerController) {
         this.playerService = playerService;
-        this.mainwindowController = mainwindowController;
+        this.playerController = playerController;
     }
 
     /**
@@ -158,7 +158,7 @@ public class MatchDetailController {
                     AlertHelper.showErrorMessage(e.getMessage());
                 }
             }
-            mainwindowController.updatePlayerTable();
+            playerController.updatePlayerTable();
         }
     }
 

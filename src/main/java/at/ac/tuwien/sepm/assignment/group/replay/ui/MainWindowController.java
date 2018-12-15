@@ -47,39 +47,21 @@ public class MainWindowController {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private SpringFXMLLoader springFXMLLoader;
-    @Autowired
-    private MatchDetailController matchdetailController;
     private ExecutorService executorService;
-    private ReplayService replayService;
-    private JsonParseService jsonParseService;
-    private MatchService matchService;
-    private PlayerService playerService;
 
-    @FXML
-    private TableView<MatchDTO> tableViewMatches;
-    @FXML
-    private TableColumn<MatchDTO, LocalDateTime> tableColumnMatchDate;
-    @FXML
-    private TableColumn<MatchDTO, String> tableColumnMatchType;
-    @FXML
-    private TableColumn<MatchDTO, String> tableColumnPlayersBlue;
-    @FXML
-    private TableColumn<MatchDTO, String> tableColumnPlayersRed;
+    // Inject tab content.
+    @FXML private Tab matchTab;
+    // Inject controller
+    //@FXML private MatchController matchTabPageController;
 
-    //Player Tab
-    @FXML
-    private TableView<PlayerDTO> tableViewPlayers;
-    @FXML
-    private TableColumn<PlayerDTO, String> tableColumnPlayerName;
+    // Inject tab content.
+    @FXML private Tab playerTab;
+    // Inject controller
+    //@FXML private PlayerController playerTabPageController;
 
-
-    public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService) {
+    public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
-        this.replayService = replayService;
-        this.jsonParseService = jsonParseService;
-        this.matchService = matchService;
-        this.playerService = playerService;
     }
 
     /**
@@ -89,221 +71,6 @@ public class MainWindowController {
     @FXML
     void initialize() {
 
-        setupMatchTable();
-        setupPlayerTable();
-        updateMatchTable();
-        updatePlayerTable();
-
     }
-
-    /**
-     * Opens a new Match Detail window.
-     *
-     * @param actionEvent Actionevent from the button
-     */
-    public void onMatchdetailsButtonClicked(ActionEvent actionEvent) {
-
-        LOG.info("Match Details button clicked");
-        LOG.debug("Opening Match Details window");
-
-        Stage matchdetailsStage = new Stage();
-        // setup application
-        matchdetailsStage.setTitle("Matchdetails");
-        matchdetailsStage.setWidth(1024);
-        matchdetailsStage.setHeight(768);
-        matchdetailsStage.centerOnScreen();
-        matchdetailsStage.setOnCloseRequest(event -> {
-            LOG.debug("Match Details window closed");
-        });
-
-
-        try {
-            matchdetailsStage.setScene(new Scene(springFXMLLoader.load("/fxml/matchdetail.fxml", Parent.class)));
-        } catch (IOException e) {
-            LOG.error("Loading Match Details fxml failed: " + e.getMessage());
-        }
-
-        // load match details for the new window
-        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
-            matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
-            // show application
-            matchdetailsStage.show();
-            matchdetailsStage.toFront();
-            LOG.debug("Opening Match Details window complete");
-        } else {
-            AlertHelper.showErrorMessage("No match selected");
-        }
-
-
-    }
-
-
-    /**
-     * Method that opens a FileChooser when the actionEvent occurs
-     * Lets the user chose .replay files
-     * <p>
-     * The chosen file gets sent to service layer, to parse it
-     *
-     * @param actionEvent Actionevent from the button
-     */
-    public void onUploadReplayButtonClicked(ActionEvent actionEvent) {
-        LOG.info("Image Chooser clicked");
-        LOG.trace("Called - onUploadMatchButtonClicked");
-
-        FileChooser fileChooser = new FileChooser();
-
-        //Set extension filter
-        FileChooser.ExtensionFilter extFilterREPLAY = new FileChooser.ExtensionFilter("Replay files (*.replay)", "*.REPLAY");
-        fileChooser.getExtensionFilters().add(extFilterREPLAY);
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home"), "qse01ReplayParser/files"));
-
-        //Show open file dialog
-        File inputFile = fileChooser.showOpenDialog(null);
-        if (inputFile == null) {
-            LOG.info("File selection cancelled");
-            return;
-        }
-
-        executorService.submit(() -> {
-            try {
-                File json = replayService.parseReplayFileToJson(inputFile);
-                MatchDTO matchDto = jsonParseService.parseMatch(json);
-                LOG.debug("jsonParseFinished");
-                for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
-                    playerService.createPlayer(mpdto.getPlayerDTO());
-                }
-                LOG.debug("All players created");
-                matchService.createMatch(matchDto);
-                LOG.debug("match created");
-                Platform.runLater(() -> {
-                    updateMatchTable();
-                    updatePlayerTable();
-                });
-            } catch (FileServiceException e) {
-                LOG.error("Caught File Service Exception", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } catch (PlayerValidationException e) {
-                LOG.error("Caught PlayerValidationException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } catch (MatchServiceException e) {
-                LOG.error("Caught MatchServiceException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } catch (MatchValidationException e) {
-                LOG.error("Caught MatchValidationException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } catch (ReplayAlreadyExistsException e) {
-                LOG.error("Caught ReplayAlreadyExistsException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            }
-        });
-
-    }
-
-    /**
-     * Deletes selected players in the list.
-     *
-     * @param actionEvent Action event from the button
-     */
-    public void onDeletePlayerButtonClicked(ActionEvent actionEvent) {
-        LOG.info("Delete player button clicked");
-        LOG.trace("Called - onDeletePlayerButtonClicked");
-
-        ObservableList<PlayerDTO> selectedPlayers;
-        selectedPlayers = tableViewPlayers.getSelectionModel().getSelectedItems();
-
-        if (selectedPlayers.isEmpty()) {
-            AlertHelper.showErrorMessage("No player selected");
-            return;
-        }
-
-        //new list for delete method in service layer
-        List<PlayerDTO> playersToDelete = new LinkedList<>();
-        //get player names for info message
-        String playerNames = "";
-        int counter = 0;
-
-        for (PlayerDTO p : selectedPlayers) {
-            if (counter != 0) {
-                playerNames += ", ";
-            }
-            playerNames += p.getName();
-            playersToDelete.add(p);
-            counter++;
-        }
-        //let the user confirm the deletion
-        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Delete Players",null,"Are you sure you want to delete the following players? \n" + playerNames);
-
-        if (result.get() == ButtonType.OK) {
-            try {
-                playerService.deletePlayers(playersToDelete);
-            } catch (PlayerServiceException e) {
-                LOG.error("Caught PlayerServiceException");
-                AlertHelper.showErrorMessage("Error while deleting player(s).");
-            } catch (PlayerValidationException e) {
-                LOG.error("Caught PlayerValidationException");
-                AlertHelper.showErrorMessage("List of players to be deleted might be empty.");
-            }
-            updatePlayerTable();
-        }
-    }
-
-
-    /**
-     * Method to update the Match Table
-     * Calls the showErrorMessage if an Exception occurs
-     */
-    private void updateMatchTable() {
-        try {
-            ObservableList<MatchDTO> observableMatches = FXCollections.observableArrayList(matchService.getMatches());
-            SortedList<MatchDTO> sortedMatches = new SortedList<>(observableMatches);
-            sortedMatches.comparatorProperty().bind(tableViewMatches.comparatorProperty());
-            tableViewMatches.getSortOrder().add(tableColumnMatchDate);
-            tableViewMatches.setItems(sortedMatches);
-        } catch (MatchServiceException e) {
-            LOG.error("Caught MatchServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
-        }
-    }
-
-    /**
-     * Loads the players into the player table
-     * Calls the showErrorMessage if an Exception occurs
-     */
-    protected void updatePlayerTable() {
-        try {
-            ObservableList<PlayerDTO> observablePlayers = FXCollections.observableArrayList(playerService.getPlayers());
-
-            tableViewPlayers.setItems(observablePlayers);
-        } catch (PlayerServiceException e) {
-            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
-        }
-    }
-
-    /**
-     * Helper Method to setup up the Player Table Column
-     */
-    private void setupPlayerTable() {
-        tableColumnPlayerName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tableViewPlayers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        tableColumnPlayerName.setStyle("-fx-alignment: CENTER;");
-    }
-
-    /**
-     * Helper Method to setup up the Match Table Columns
-     */
-    private void setupMatchTable() {
-        tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-        tableColumnPlayersRed.setCellValueFactory(new PropertyValueFactory<>("teamRedPlayers"));
-        tableColumnPlayersBlue.setCellValueFactory(new PropertyValueFactory<>("teamBluePlayers"));
-
-        tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
-        tableColumnMatchDate.setSortable(true);
-        tableViewMatches.sort();
-    }
-
 
 }

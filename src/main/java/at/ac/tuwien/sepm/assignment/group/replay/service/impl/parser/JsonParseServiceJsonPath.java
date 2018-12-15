@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -41,15 +43,17 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private GameInformationParser gameInformationParse;
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
+    private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, PlayerStatistic playerStatistic) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParse = gameInformationParse;
         this.carInformationParser = carInformationParser;
         this.ballInformationParser = ballInformationParser;
+        this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
     }
 
@@ -70,10 +74,15 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 ctx = JsonPath.using(conf).parse(jsonFile);
 
                 playerInformationParser.setCtx(ctx);
+                playerInformationParser.setUp();
                 rigidBodyParser.setCtx(ctx);
                 gameInformationParse.setCtx(ctx);
                 carInformationParser.setCtx(ctx);
+                carInformationParser.setup();
                 ballInformationParser.setCtx(ctx);
+                ballInformationParser.setup();
+                boostInformationParser.setCtx(ctx);
+                boostInformationParser.setup();
 
                 jFile = jsonFile;
             } catch (IOException e) {
@@ -85,8 +94,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.debug("Start Parse");
         MatchDTO matchDTO = readProperties();
         parseFrames();
-        //Todo parse Player information from Frames not Properties
         LOG.debug("End Parse");
+        playerInformationParser.setActorId(matchDTO.getPlayerData());
         LOG.debug("Start  Calculate");
         calculate(matchDTO);
         LOG.debug("End  Calculate");
@@ -158,12 +167,17 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             break;
 
                         case "TAGame.PRI_TA":
-                            //parsePlayerInformation(i,j);
+                            playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
 
                             break;
                         case "TAGamee.GRI_TA":
                             //parseMatchInformation
                             //e.g ['ProjectX.GRI_X:ReplicatetdGamePlaylist'] -> MatchType id
+                            break;
+
+                        case "TAGame.CarComponent_Boost_TA":
+                            boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            break;
 
                         default:
                             //Information not relevant for our project
@@ -178,6 +192,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             throw new FileServiceException("Exception while parsing frames", e);
         }
     }
+
 
     /**
      * Calculates all statistics to be save in the database
