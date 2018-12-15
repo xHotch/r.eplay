@@ -8,7 +8,11 @@ CREATE TABLE IF NOT EXISTS match_
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   dateTime TIMESTAMP NOT NULL,
   teamSize INT NOT NULL,
-  readId VARCHAR(50) NOT NULL UNIQUE
+  readId VARCHAR(50) NOT NULL UNIQUE,
+  timeBallInBlueSide double,
+  timeBallInRedSide double,
+  possessionBlue int,
+  possessionRed int
 );
 
 CREATE TABLE IF NOT EXISTS player
