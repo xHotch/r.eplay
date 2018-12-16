@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -20,7 +21,7 @@
             <TableColumn fx:id="tableColumnPlayersRed" prefWidth="180.0" text="Spieler Team Rot" />
          </columns>
       </TableView>
-      <Button layoutX="564.0" layoutY="106.0" mnemonicParsing="false" onAction="#onUploadReplayButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
+      <Button fx:id="uploadReplayButton" layoutX="564.0" layoutY="106.0" mnemonicParsing="false" onAction="#onUploadReplayButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
       <Button disable="true" layoutX="119.0" layoutY="517.0" mnemonicParsing="false" text="Match löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
       <Button disable="true" layoutX="210.0" layoutY="684.0" mnemonicParsing="false" text="Ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
       <Button layoutX="381.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchdetailsButtonClicked" text="Matchdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="360.0" />
@@ -37,5 +38,6 @@
       <ChoiceBox disable="true" layoutX="610.0" layoutY="576.0" prefWidth="150.0" AnchorPane.bottomAnchor="100.0" AnchorPane.rightAnchor="44.0" />
       <Button disable="true" layoutX="670.0" layoutY="684.0" mnemonicParsing="false" text="Suchen" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="160.0" />
       <Button disable="true" layoutX="931.0" layoutY="684.0" mnemonicParsing="false" text="Suche zurücksetzen" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="20.0" />
+      <ProgressIndicator fx:id="loadReplayProgressIndicator" layoutX="791.0" layoutY="139.0" visible="false" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="140.0" />
    </children>
 </AnchorPane>

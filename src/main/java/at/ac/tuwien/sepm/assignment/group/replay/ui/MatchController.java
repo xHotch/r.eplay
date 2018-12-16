@@ -66,6 +66,10 @@ public class MatchController {
     private TableColumn<MatchDTO, String> tableColumnPlayersBlue;
     @FXML
     private TableColumn<MatchDTO, String> tableColumnPlayersRed;
+    @FXML
+    private ProgressIndicator loadReplayProgressIndicator;
+    @FXML
+    private Button uploadReplayButton;
 
     public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchDetailController matchdetailController) {
         this.springFXMLLoader = springFXMLLoader;
@@ -158,6 +162,8 @@ public class MatchController {
 
         executorService.submit(() -> {
             try {
+                Platform.runLater(() -> loadReplayProgressIndicator.setVisible(true));
+                Platform.runLater(() -> uploadReplayButton.setDisable(true));
                 File json = replayService.parseReplayFileToJson(inputFile);
                 MatchDTO matchDto = jsonParseService.parseMatch(json);
                 LOG.debug("jsonParseFinished");
@@ -189,6 +195,9 @@ public class MatchController {
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+            } finally {
+                Platform.runLater(() -> loadReplayProgressIndicator.setVisible(false));
+                Platform.runLater(() -> uploadReplayButton.setDisable(false));
             }
         });
 
