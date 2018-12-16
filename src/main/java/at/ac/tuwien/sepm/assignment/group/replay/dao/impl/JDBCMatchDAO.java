@@ -32,6 +32,8 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final String READ_MATCH_BY_READID = "Select id from match_ where readId = ?";
 
+    private static final String DELETE_MATCH = "Delete from match_ where id = ?";
+
     private final Connection connection;
 
     private PlayerDAO playerDAO;
@@ -178,5 +180,16 @@ public class JDBCMatchDAO implements MatchDAO {
             throw new MatchPersistenceException(msg, e);
         }
         return result;
+    }
+
+    @Override
+    public void deleteMatch(MatchDTO matchDTO) throws MatchPersistenceException {
+        LOG.trace("Called - deleteMatch");
+        try (PreparedStatement ps = connection.prepareStatement(DELETE_MATCH)) {
+            ps.setInt(1, matchDTO.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new MatchPersistenceException("Could not delete match", e);
+        }
     }
 }

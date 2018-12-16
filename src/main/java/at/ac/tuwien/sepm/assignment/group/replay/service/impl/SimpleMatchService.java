@@ -56,6 +56,16 @@ public class SimpleMatchService implements MatchService {
         }
     }
 
+    @Override
+    public void deleteMatch(MatchDTO matchDTO) throws MatchServiceException {
+        LOG.trace("called - deleteMatch");
+        try {
+            matchDAO.deleteMatch(matchDTO);
+        } catch (MatchPersistenceException e) {
+            throw new MatchServiceException("could not delete match",e);
+        }
+    }
+
     private void matchDTOValidator(MatchDTO matchDTO) throws MatchValidationException {
         LOG.trace("Called - matchDTOValidator");
         String errMsg = "";

@@ -133,6 +133,23 @@ public class MatchController {
 
     }
 
+    public void onMatchDeleteButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Match delete button clicked");
+        LOG.trace("called - onMatchDeleteButtonClicked");
+        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
+            MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
+            try {
+                matchService.deleteMatch(selectedMatch);
+                updateMatchTable();
+            } catch (MatchServiceException e) {
+                LOG.error("caught MatchServiceException", e);
+                AlertHelper.showErrorMessage(e.getMessage());
+            }
+        } else {
+            AlertHelper.showErrorMessage("No match selected");
+        }
+    }
+
     /**
      * Method that opens a FileChooser when the actionEvent occurs
      * Lets the user chose .replay files

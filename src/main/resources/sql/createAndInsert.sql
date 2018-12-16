@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   enemySideTime double,
   averageSpeed double,
   FOREIGN KEY (playerid) REFERENCES player(id),
-  FOREIGN KEY (matchid) REFERENCES match_(id),
+  FOREIGN KEY (matchid) REFERENCES match_(id) on delete cascade,
   PRIMARY KEY (playerid,matchid)
 );
 

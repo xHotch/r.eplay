@@ -26,4 +26,11 @@ public interface MatchService {
     void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, ReplayAlreadyExistsException;
 
     List<MatchDTO> getMatches() throws MatchServiceException;
+
+    /**
+     * Deletes a match
+     * @param matchDTO the match to delete
+     * @throws MatchServiceException if the dao method throws an error
+     */
+    void deleteMatch(MatchDTO matchDTO) throws MatchServiceException;
 }

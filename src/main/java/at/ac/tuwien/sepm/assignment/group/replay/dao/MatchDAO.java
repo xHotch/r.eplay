@@ -26,4 +26,11 @@ public interface MatchDAO {
      * while reading the matches from the database.
      */
     List<MatchDTO> readMatches() throws MatchPersistenceException;
+
+    /**
+     * Deletes a match
+     * @param matchDTO the match which should be deleted
+     * @throws MatchPersistenceException throws persistence exception if something failed while deleting the match
+     */
+    void deleteMatch(MatchDTO matchDTO) throws MatchPersistenceException;
 }
