@@ -24,16 +24,17 @@ public class BallStatisticsController {
     private PieChart pieChartPossession;
 
     void loadBallStatistics(MatchDTO matchDTO) {
+        LOG.trace("called loadBallStatistics");
 
         //get ball info and add it to the team side chart
-        PieChart.Data sideBlueSlice = new PieChart.Data("Blue Side", matchDTO.getTimeBallInBlueSide());
-        PieChart.Data sideRedSlice = new PieChart.Data("Red Side", matchDTO.getTimeBallInRedSide());
+        PieChart.Data sideBlueSlice = new PieChart.Data("Blaue Seite", matchDTO.getTimeBallInBlueSide());
+        PieChart.Data sideRedSlice = new PieChart.Data("Rote Seite", matchDTO.getTimeBallInRedSide());
         pieChartTeamSide.getData().add(sideBlueSlice);
         pieChartTeamSide.getData().add(sideRedSlice);
 
         //get possession information and add it to the possession chart
-        PieChart.Data posBlueTeamSlice = new PieChart.Data("Blue Team", matchDTO.getPossessionBlue());
-        PieChart.Data posRedTeamSlice = new PieChart.Data("Red Team", matchDTO.getPossessionRed());
+        PieChart.Data posBlueTeamSlice = new PieChart.Data("Blaues Team", matchDTO.getPossessionBlue());
+        PieChart.Data posRedTeamSlice = new PieChart.Data("Rotes Team", matchDTO.getPossessionRed());
         pieChartPossession.getData().add(posBlueTeamSlice);
         pieChartPossession.getData().add(posRedTeamSlice);
 
@@ -50,7 +51,6 @@ public class BallStatisticsController {
 
         //TODO: add heatmap
 
-        LOG.debug("successfully loaded ball statistics");
     }
 
 }

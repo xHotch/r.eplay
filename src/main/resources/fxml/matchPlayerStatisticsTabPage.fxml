@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
+   <children>
+      <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
+      <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
+      <PieChart fx:id="pcAirGroundTime" layoutX="40.0" layoutY="80.0" prefHeight="271.0" prefWidth="450.0" title="Zeit am Boden / Zeit in der Luft" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="80.0" />
+      <PieChart fx:id="pcTimeInSide" layoutX="538.0" layoutY="80.0" prefHeight="271.0" prefWidth="450.0" title="Zeit in der eigenen/gegnerischen Hälfte" AnchorPane.leftAnchor="538.0" AnchorPane.topAnchor="80.0" />
+      <Label layoutX="114.0" layoutY="377.0" text="Durchschnittliche Entfernung vom Ball" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="377.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="692.0" layoutY="377.0" text="Position Heatmap" AnchorPane.leftAnchor="692.0" AnchorPane.topAnchor="377.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="233.0" layoutY="474.0" text="???" AnchorPane.leftAnchor="233.0" AnchorPane.topAnchor="474.0">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Label>
+      <Label layoutX="664.0" layoutY="474.0" text="Heatmap" AnchorPane.leftAnchor="664.0" AnchorPane.topAnchor="474.0">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
