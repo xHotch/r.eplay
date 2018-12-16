@@ -1,62 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchDetailController">
   <tabs>
-    <Tab text="Grunddaten">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Label layoutX="36.0" layoutY="33.0" text="Spielmodus:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="104.0" layoutY="25.0" text="Datum:" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="249.0" layoutY="20.0" text="Matchdauer:" AnchorPane.leftAnchor="249.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="349.0" layoutY="20.0" text="Team Blau:" AnchorPane.leftAnchor="349.0" AnchorPane.topAnchor="20.0" />
-                  <Label layoutX="449.0" layoutY="20.0" text="Team Rot:" AnchorPane.leftAnchor="449.0" AnchorPane.topAnchor="20.0" />
-                  <Label fx:id="labelGameMode" layoutX="37.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="50.0" />
-                  <Label fx:id="labelDate" layoutX="124.0" layoutY="65.0" text="Label" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="50.0" />
-                  <Label fx:id="labelMatchDuration" layoutX="249.0" layoutY="50.0" text="Label" AnchorPane.leftAnchor="249.0" AnchorPane.topAnchor="50.0" />
-                  <Label fx:id="labelTeamBlue" layoutX="349.0" layoutY="50.0" text="Label" AnchorPane.leftAnchor="349.0" AnchorPane.topAnchor="50.0" />
-                  <Label fx:id="labelTeamRed" layoutX="449.0" layoutY="50.0" text="Label" AnchorPane.leftAnchor="449.0" AnchorPane.topAnchor="50.0" />
-                  <Label layoutX="34.0" layoutY="120.0" text="Team Blau" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="120.0">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Label>
-                  <TableView fx:id="tableTeamBlue" layoutX="14.0" layoutY="191.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
-                    <columns>
-                      <TableColumn fx:id="playerNameBlue" prefWidth="160.0" text="Spieler" />
-                      <TableColumn fx:id="playerGoalsBlue" prefWidth="75.0" text="Tore" />
-                        <TableColumn fx:id="playerShotsBlue" prefWidth="75.0" text="Schüsse" />
-                        <TableColumn fx:id="playerSavesBlue" prefWidth="75.0" text="Saves" />
-                        <TableColumn fx:id="playerAssistsBlue" prefWidth="75.0" text="Assists" />
-                    </columns>
-                  </TableView>
-                  <Label layoutX="30.0" layoutY="130.0" text="Team Rot" AnchorPane.bottomAnchor="265.0" AnchorPane.leftAnchor="20.0">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Label>
-                  <TableView fx:id="tableTeamRed" layoutX="20.0" layoutY="449.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                     <columns>
-                        <TableColumn fx:id="playerNameRed" prefWidth="160.0" text="Spieler" />
-                        <TableColumn fx:id="playerGoalsRed" prefWidth="75.0" text="Tore" />
-                        <TableColumn fx:id="playerShotsRed" prefWidth="75.0" text="Schüsse" />
-                        <TableColumn fx:id="playerSavesRed" prefWidth="75.0" text="Saves" />
-                        <TableColumn fx:id="playerAssistsRed" prefWidth="75.0" text="Assists" />
-                     </columns>
-                  </TableView>
-                  <Button layoutX="22.0" layoutY="663.0" mnemonicParsing="false" onAction="#onSavePlayerButtonClicked" text="Spieler speichern" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
-               </children>
-            </AnchorPane>
-      </content>
-    </Tab>
+      <Tab fx:id="matchStatsOverviewTab" text="Grunddaten">
+          <fx:include fx:id="matchStatsOverviewTabPage" source="/fxml/matchStatsOverviewTabPage.fxml"/>
+      </Tab>
+      <Tab fx:id="ballStatisticsTab" text="Ball Statistik">
+          <fx:include fx:id="ballStatisticsTabPage" source="/fxml/ballStatisticsTabPage.fxml"/>
+      </Tab>
   </tabs>
 </TabPane>
