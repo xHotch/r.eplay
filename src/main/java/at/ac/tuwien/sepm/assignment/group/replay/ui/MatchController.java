@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
@@ -24,16 +23,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -48,8 +43,9 @@ public class MatchController {
 
     private SpringFXMLLoader springFXMLLoader;
     //@Autowired
-    private MatchDetailController matchdetailController;
+    private MatchStatsOverviewController matchStatsOverviewController;
     private PlayerController playerController;
+    private BallStatisticsController ballStatisticsController;
     private ExecutorService executorService;
     private ReplayService replayService;
     private JsonParseService jsonParseService;
@@ -67,7 +63,7 @@ public class MatchController {
     @FXML
     private TableColumn<MatchDTO, String> tableColumnPlayersRed;
 
-    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchDetailController matchdetailController) {
+    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
@@ -75,7 +71,8 @@ public class MatchController {
         this.matchService = matchService;
         this.playerService = playerService;
         this.playerController = playerController;
-        this.matchdetailController = matchdetailController;
+        this.matchStatsOverviewController = matchStatsOverviewController;
+        this.ballStatisticsController = ballStatisticsController;
     }
 
     /**
@@ -119,7 +116,9 @@ public class MatchController {
 
         // load match details for the new window
         if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
-            matchdetailController.loadBasicMatchData(tableViewMatches.getSelectionModel().getSelectedItem());
+            MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
+            matchStatsOverviewController.loadBasicMatchData(selectedMatch);
+            ballStatisticsController.loadBallStatistics(selectedMatch);
             // show application
             matchdetailsStage.show();
             matchdetailsStage.toFront();
