@@ -23,7 +23,7 @@
         <commons.version>2.6</commons.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <jsonpath.version>2.4.0</jsonpath.version>
-        <contour2dplot.version>1.0</contour2dplot.version>
+        <jfreechart-fx.version>1.0.1</jfreechart-fx.version>
         <!-- runtime dependencies -->
         <logback.version>1.2.3</logback.version>
         <!-- test dependencies -->
@@ -83,14 +83,9 @@
             <version>${commons-math3.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.contour2dplot</groupId>
-            <artifactId>contour2dplot</artifactId>
-            <version>${contour2dplot.version}</version> <!-- If you have an error here run "mvnw validate" -->
-        </dependency>
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart-fx</artifactId>
+            <version>${jfreechart-fx.version}</version>
         </dependency>
         <!-- JavaFX dependencies -->
         <dependency>
@@ -175,28 +170,6 @@
                         </transformer>
                     </transformers>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>${maven-install-plugin.version}</version>
-                <configuration>
-                    <groupId>org.contour2dplot</groupId>
-                    <artifactId>contour2dplot</artifactId>
-                    <version>1.0</version>
-                    <packaging>jar</packaging>
-                    <file>${project.basedir}/lib/Contour2DPlot.jar</file>
-                    <generatePom>true</generatePom>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>install-jar-lib</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
