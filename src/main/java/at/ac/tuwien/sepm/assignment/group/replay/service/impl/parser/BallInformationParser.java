@@ -23,6 +23,8 @@ public class BallInformationParser {
 
     private EnumMap<TeamSide, Integer> hitCount;
 
+    private SortedMap<Double, TeamSide> hitTimes;
+
     private ArrayList<RigidBodyInformation> rigidBodyInformations = new ArrayList<>();
 
     public ArrayList<RigidBodyInformation> getRigidBodyInformations() {
@@ -47,6 +49,7 @@ public class BallInformationParser {
     void setup(){
         rigidBodyInformations=new ArrayList<>();
         hitCount = new EnumMap<>(TeamSide.class);
+        hitTimes = new TreeMap<>();
     }
 
     void parse(int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
@@ -68,7 +71,7 @@ public class BallInformationParser {
 
             TeamSide side = TeamSide.getById(hit).get();
             hitCount.put(side,hitCount.getOrDefault(side,0)+1);
-            //todo save time
+            hitTimes.put(frameTime, side);
 
         } catch (NullPointerException e){
             LOG.debug("No Hit Information found");
@@ -78,5 +81,9 @@ public class BallInformationParser {
 
     public EnumMap<TeamSide, Integer> getHitCount() {
         return hitCount;
+    }
+
+    SortedMap<Double, TeamSide> getHitTimes() {
+        return hitTimes;
     }
 }

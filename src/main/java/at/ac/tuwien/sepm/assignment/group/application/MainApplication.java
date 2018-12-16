@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.application;
 
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -35,6 +36,8 @@ public final class MainApplication extends Application {
             if (context != null) {
                 context.close();
             }
+            Platform.exit();
+            System.exit(0);
         });
 
         context = new AnnotationConfigApplicationContext("at.ac.tuwien.sepm.assignment.group");

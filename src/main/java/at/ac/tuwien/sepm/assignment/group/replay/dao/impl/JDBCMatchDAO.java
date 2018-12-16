@@ -23,7 +23,8 @@ import java.util.List;
 public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?";
+    private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?," +
+        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?";
     private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
@@ -56,7 +57,10 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setTimestamp(1, Timestamp.valueOf(matchDTO.getDateTime()));
             ps.setInt(2, matchDTO.getTeamSize());
             ps.setString(3, matchDTO.getReadId());
-
+            ps.setDouble(4, matchDTO.getTimeBallInBlueSide());
+            ps.setDouble(5, matchDTO.getTimeBallInRedSide());
+            ps.setInt(6, matchDTO.getPossessionBlue());
+            ps.setInt(7, matchDTO.getPossessionRed());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
@@ -115,6 +119,10 @@ public class JDBCMatchDAO implements MatchDAO {
                     match.setDateTime(rs.getTimestamp("dateTime").toLocalDateTime());
                     match.setTeamSize(rs.getInt("teamSize"));
                     match.setReadId(rs.getString("readId"));
+                    match.setPossessionBlue(rs.getInt("possessionBlue"));
+                    match.setPossessionRed(rs.getInt("possessionRed"));
+                    match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
+                    match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
 
                     // retrieve the players from the match
                     List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
