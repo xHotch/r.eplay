@@ -89,13 +89,13 @@ public class RigidBodyStatistic {
         LOG.debug("Speed {} Count {} CountFrame {} negativeSideTime {} positiveSideTime {} groundTime {} airTime {}", averageSpeed, count, countFrame, negativeSideTime, positiveSideTime, groundTime, airTime);
     }
 
-    double[][] getHeatmap(List<RigidBodyInformation> rigidBodyList)
+    public double[][] getHeatmap(List<RigidBodyInformation> rigidBodyList)
     {
-        double[][] heatmapData = new double[10240][8192];
+        double[][] heatmapData = new double[12240][8192];
         for (RigidBodyInformation rigidBody : rigidBodyList) {
             int x = ((int) Math.round(rigidBody.getPosition().getX())) + 4096;
-            int y = ((int) Math.round(rigidBody.getPosition().getY())) + 5120;
-            if(y < heatmapData.length && x < heatmapData[0].length) heatmapData[y][x] += 1;
+            int y = ((int) Math.round(rigidBody.getPosition().getY())) + 6120;
+            if(y >= 0 && x >= 0 && y < heatmapData.length && x < heatmapData[0].length) heatmapData[y][x] += 1;
             else LOG.debug("Coordinate not in dimensions x: {} y: {}",x,y);
         }
         return heatmapData;
