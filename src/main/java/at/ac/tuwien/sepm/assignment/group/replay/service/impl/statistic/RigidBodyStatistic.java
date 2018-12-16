@@ -2,10 +2,15 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic;
 
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.jfree.data.xy.DefaultXYZDataset;
+import org.jfree.data.xy.XYDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -89,16 +94,28 @@ public class RigidBodyStatistic {
         LOG.debug("Speed {} Count {} CountFrame {} negativeSideTime {} positiveSideTime {} groundTime {} airTime {}", averageSpeed, count, countFrame, negativeSideTime, positiveSideTime, groundTime, airTime);
     }
 
-    public double[][] getHeatmap(List<RigidBodyInformation> rigidBodyList)
+    public XYDataset getHeatmap(List<RigidBodyInformation> rigidBodyList)
     {
-        double[][] heatmapData = new double[12240][8192];
+        int width = 12240;
+        int height = 8192;
+        double[][] heatmapData = new double[width][height];
         for (RigidBodyInformation rigidBody : rigidBodyList) {
             int x = ((int) Math.round(rigidBody.getPosition().getX())) + 4096;
             int y = ((int) Math.round(rigidBody.getPosition().getY())) + 6120;
             if(y >= 0 && x >= 0 && y < heatmapData.length && x < heatmapData[0].length) heatmapData[y][x] += 1;
             else LOG.debug("Coordinate not in dimensions x: {} y: {}",x,y);
         }
-        return heatmapData;
+        DefaultXYZDataset dataset = new DefaultXYZDataset();
+        for (int w = 0; w < width; w++) {
+            double[][] data = new double[3][height];
+            for (int h = 0; h < height; h++) {
+                data[0][h] = w;
+                data[1][h] = h;
+                data[2][h] = heatmapData[w][h];
+            }
+            dataset.addSeries("Series" + w, data);
+        }
+        return dataset;
     }
 
     double getAverageSpeed() {
