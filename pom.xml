@@ -87,6 +87,11 @@
             <artifactId>contour2dplot</artifactId>
             <version>${contour2dplot.version}</version> <!-- If you have an error here run "mvnw validate" -->
         </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+        </dependency>
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
