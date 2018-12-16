@@ -13,18 +13,35 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.fx.ChartCanvas;
+import org.jfree.chart.fx.ChartViewer;
+import org.jfree.chart.fx.interaction.ChartMouseListenerFX;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.PaintScale;
+import org.jfree.chart.renderer.xy.XYBlockRenderer;
+import org.jfree.data.xy.DefaultXYZDataset;
+import org.jfree.data.xy.XYDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -40,6 +57,7 @@ import java.util.concurrent.ExecutorService;
 public class MatchController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final int N = 1000;
 
     private SpringFXMLLoader springFXMLLoader;
     //@Autowired
@@ -66,6 +84,8 @@ public class MatchController {
     private ProgressIndicator loadReplayProgressIndicator;
     @FXML
     private Button uploadReplayButton;
+    @FXML
+    private BorderPane pane;
 
     public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController) {
         this.springFXMLLoader = springFXMLLoader;
@@ -85,10 +105,52 @@ public class MatchController {
      */
     @FXML
     void initialize() {
-
         setupMatchTable();
         updateMatchTable();
+        ChartViewer chartViewer = new ChartViewer(createChart(createDataset()), false);
+        Platform.runLater(() -> pane.setCenter(chartViewer));
+    }
 
+    /**
+     * Heatmap init with JFreeChart
+     * @param dataset
+     * @return
+     */
+    private JFreeChart createChart(XYDataset dataset)
+    {
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setVisible(false);
+        yAxis.setVisible(false);
+        XYPlot plot = new XYPlot(dataset, xAxis, yAxis, null);
+        XYBlockRenderer r = new XYBlockRenderer();
+        SpectrumPaintScale ps = new SpectrumPaintScale(0, N * N);
+        r.setPaintScale(ps);
+        r.setBlockHeight(10.0f);
+        r.setBlockWidth(10.0f);
+        plot.setRenderer(r);
+        LOG.debug("Zoomable Domain: {} Range: {}",plot.isDomainZoomable(),plot.isRangeZoomable());
+        JFreeChart chart = new JFreeChart(null,null, plot,false);
+        chart.setBackgroundPaint(Color.gray);
+        return chart;
+    }
+
+    /**
+     * Example Data for heatmap
+     * @return
+     */
+    private XYDataset createDataset() {
+        DefaultXYZDataset dataset = new DefaultXYZDataset();
+        for (int i = 0; i < N; i = i + 10) {
+            double[][] data = new double[3][N];
+            for (int j = 0; j < N; j = j + 10) {
+                data[0][j] = i;
+                data[1][j] = j;
+                data[2][j] = i * j;
+            }
+            dataset.addSeries("Series" + i, data);
+        }
+        return dataset;
     }
 
     /**
@@ -230,6 +292,39 @@ public class MatchController {
         tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
         tableColumnMatchDate.setSortable(true);
         tableViewMatches.sort();
+    }
+
+    /**
+     * class for the colorspectrum of the heatmap
+     */
+    private static class SpectrumPaintScale implements PaintScale {
+
+        private static final float H1 = 0f;
+        private static final float H2 = 1f;
+        private final double lowerBound;
+        private final double upperBound;
+
+        public SpectrumPaintScale(double lowerBound, double upperBound) {
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        }
+
+        @Override
+        public double getLowerBound() {
+            return lowerBound;
+        }
+
+        @Override
+        public double getUpperBound() {
+            return upperBound;
+        }
+
+        @Override
+        public Paint getPaint(double value) {
+            float scaledValue = (float) (value / (getUpperBound() - getLowerBound()));
+            float scaledH = H1 + scaledValue * (H2 - H1);
+            return Color.getHSBColor(scaledH, 1f, 1f);
+        }
     }
 
 }
