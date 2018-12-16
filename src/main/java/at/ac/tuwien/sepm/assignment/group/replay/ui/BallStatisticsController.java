@@ -23,15 +23,11 @@ public class BallStatisticsController {
     @FXML
     private PieChart pieChartPossession;
 
-    public void loadBallStatistics(MatchDTO matchDTO){
+    void loadBallStatistics(MatchDTO matchDTO) {
 
-        pieChartTeamSide = new PieChart();
-        pieChartPossession = new PieChart();
-
-        //get ball info, set slice color and add it to the team side chart
+        //get ball info and add it to the team side chart
         PieChart.Data sideBlueSlice = new PieChart.Data("Blue Side", matchDTO.getTimeBallInBlueSide());
         PieChart.Data sideRedSlice = new PieChart.Data("Red Side", matchDTO.getTimeBallInRedSide());
-        //TODO: set color of slices
         pieChartTeamSide.getData().add(sideBlueSlice);
         pieChartTeamSide.getData().add(sideRedSlice);
 
@@ -41,10 +37,20 @@ public class BallStatisticsController {
         pieChartPossession.getData().add(posBlueTeamSlice);
         pieChartPossession.getData().add(posRedTeamSlice);
 
+        pieChartTeamSide.setStartAngle(90);
+        pieChartPossession.setStartAngle(90);
+        pieChartTeamSide.setLegendVisible(false);
+        pieChartPossession.setLegendVisible(false);
 
-        //pieChartTeamSide.setLegendVisible(false);
-        //pieChartPossession.setLegendVisible(false);
+        //set colors
+        sideBlueSlice.getNode().setStyle("-fx-pie-color: lightskyblue;");
+        sideRedSlice.getNode().setStyle("-fx-pie-color: lightcoral;");
+        posBlueTeamSlice.getNode().setStyle("-fx-pie-color: lightskyblue;");
+        posRedTeamSlice.getNode().setStyle("-fx-pie-color: lightcoral;");
 
+        //TODO: add heatmap
+
+        LOG.debug("successfully loaded ball statistics");
     }
 
 }

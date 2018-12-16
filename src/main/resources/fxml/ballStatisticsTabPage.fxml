@@ -27,7 +27,7 @@
             <Font size="48.0" />
          </font>
       </Label>
-      <PieChart fx:id="pieChartTeamSide" layoutX="20.0" layoutY="50.0" prefHeight="320.0" prefWidth="400.0" title="Zeit des Balles pro Seite" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-      <PieChart fx:id="pieChartPossession" layoutX="393.0" layoutY="50.0" prefHeight="320.0" prefWidth="400.0" title="Ballbesitz" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="40.0" />
+      <PieChart fx:id="pieChartTeamSide" layoutX="20.0" layoutY="50.0" prefHeight="320.0" prefWidth="400.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+      <PieChart fx:id="pieChartPossession" layoutX="393.0" layoutY="50.0" prefHeight="320.0" prefWidth="400.0" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="40.0" />
    </children>
 </AnchorPane>
