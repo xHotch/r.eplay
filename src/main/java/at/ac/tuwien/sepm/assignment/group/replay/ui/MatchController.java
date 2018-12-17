@@ -79,10 +79,6 @@ public class MatchController {
     private ProgressIndicator loadReplayProgressIndicator;
     @FXML
     private Button uploadReplayButton;
-    @FXML
-    private BorderPane pane;
-
-    private ChartViewer chartViewer;
 
     public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController) {
         this.springFXMLLoader = springFXMLLoader;
@@ -104,8 +100,6 @@ public class MatchController {
     void initialize() {
         setupMatchTable();
         updateMatchTable();
-        chartViewer = new ChartViewer(HeatmapChart.createChart(HeatmapChart.createDataset(),1000*1000), false);
-        Platform.runLater(() -> pane.setCenter(chartViewer));
     }
 
     /**
@@ -193,8 +187,6 @@ public class MatchController {
                     updateMatchTable();
                     playerController.updatePlayerTable();
                 });
-                HeatmapDTO heatmapDTO = jsonParseService.calculateHeatmap(matchDto.getPlayerData().get(0));
-                Platform.runLater( () -> chartViewer.setChart(HeatmapChart.createChart(heatmapDTO.getDataset(),heatmapDTO.getUpperBound())));
             } catch (FileServiceException e) {
                 LOG.error("Caught File Service Exception", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
@@ -213,7 +205,10 @@ public class MatchController {
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } finally {
+            } catch (Exception e){
+                LOG.error("Caught Exception ##############", e);
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+            }finally {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(false));
                 Platform.runLater(() -> uploadReplayButton.setDisable(false));
             }
