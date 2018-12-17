@@ -11,5 +11,8 @@
       <Tab fx:id="ballStatisticsTab" text="Ball Statistik">
           <fx:include fx:id="ballStatisticsTabPage" source="/fxml/ballStatisticsTabPage.fxml"/>
       </Tab>
+      <Tab fx:id="playerPositionTab" text="Spieler Position">
+          <fx:include fx:id="matchPlayerStatisticsTabPage" source="/fxml/matchPlayerStatisticsTabPage.fxml"/>
+      </Tab>
   </tabs>
 </TabPane>
