@@ -59,6 +59,7 @@ public class MatchController {
     private MatchStatsOverviewController matchStatsOverviewController;
     private PlayerController playerController;
     private BallStatisticsController ballStatisticsController;
+    private MatchPlayerStatisticsController matchPlayerStatisticsController;
     private ExecutorService executorService;
     private ReplayService replayService;
     private JsonParseService jsonParseService;
@@ -80,7 +81,7 @@ public class MatchController {
     @FXML
     private Button uploadReplayButton;
 
-    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController) {
+    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
@@ -90,6 +91,7 @@ public class MatchController {
         this.playerController = playerController;
         this.matchStatsOverviewController = matchStatsOverviewController;
         this.ballStatisticsController = ballStatisticsController;
+        this.matchPlayerStatisticsController = matchPlayerStatisticsController;
     }
 
     /**
@@ -134,6 +136,7 @@ public class MatchController {
             MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
             matchStatsOverviewController.loadBasicMatchData(selectedMatch);
             ballStatisticsController.loadBallStatistics(selectedMatch);
+            matchPlayerStatisticsController.loadMatchPlayerStatistics(selectedMatch);
             // show application
             matchdetailsStage.show();
             matchdetailsStage.toFront();
@@ -142,6 +145,23 @@ public class MatchController {
             AlertHelper.showErrorMessage("No match selected");
         }
 
+    }
+
+    public void onMatchDeleteButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Match delete button clicked");
+        LOG.trace("called - onMatchDeleteButtonClicked");
+        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
+            MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
+            try {
+                matchService.deleteMatch(selectedMatch);
+                updateMatchTable();
+            } catch (MatchServiceException e) {
+                LOG.error("caught MatchServiceException", e);
+                AlertHelper.showErrorMessage(e.getMessage());
+            }
+        } else {
+            AlertHelper.showErrorMessage("No match selected");
+        }
     }
 
     /**
@@ -171,11 +191,17 @@ public class MatchController {
         }
 
         executorService.submit(() -> {
+            File json;
             try {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(true));
                 Platform.runLater(() -> uploadReplayButton.setDisable(true));
-                File json = replayService.parseReplayFileToJson(inputFile);
-                MatchDTO matchDto = jsonParseService.parseMatch(json);
+                json = replayService.parseReplayFileToJson(inputFile);
+                MatchDTO matchDto;
+                try {
+                    matchDto = jsonParseService.parseMatch(json);
+                } finally {
+                    matchService.deleteFile(json);
+                }
                 LOG.debug("jsonParseFinished");
                 for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
                     playerService.createPlayer(mpdto.getPlayerDTO());

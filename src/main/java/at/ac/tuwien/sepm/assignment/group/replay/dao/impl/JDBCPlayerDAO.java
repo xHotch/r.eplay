@@ -46,7 +46,8 @@ public class JDBCPlayerDAO implements PlayerDAO {
             ps2.setLong(1, playerDTO.getPlatformID());
             try (ResultSet rs2 = ps2.executeQuery()) {
                 if (rs2.next()) {
-                    return rs2.getInt("id");
+                    playerDTO.setId(rs2.getInt("id"));
+                    return playerDTO.getId();
                 }
             }
             ps.setString(1, playerDTO.getName());

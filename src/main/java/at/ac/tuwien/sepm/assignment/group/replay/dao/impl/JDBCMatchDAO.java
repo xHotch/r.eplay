@@ -11,7 +11,6 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
@@ -25,12 +24,14 @@ public class JDBCMatchDAO implements MatchDAO {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?," +
         " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?";
-    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?";
+    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
 
     private static final String READ_MATCH_BY_READID = "Select id from match_ where readId = ?";
+
+    private static final String DELETE_MATCH = "Delete from match_ where id = ?";
 
     private final Connection connection;
 
@@ -96,6 +97,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setDouble(12,matchPlayerDTO.getHomeSideTime());
             ps.setDouble(13,matchPlayerDTO.getEnemySideTime());
             ps.setDouble(14,matchPlayerDTO.getAverageSpeed());
+            ps.setDouble(15, matchPlayerDTO.getAverageDistanceToBall());
 
             ps.executeUpdate();
 
@@ -169,6 +171,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     matchPlayer.setHomeSideTime(rs.getDouble("homeSideTime"));
                     matchPlayer.setEnemySideTime(rs.getDouble("enemySideTime"));
                     matchPlayer.setAverageSpeed(rs.getDouble("averageSpeed"));
+                    matchPlayer.setAverageDistanceToBall(rs.getDouble("averageDistanceToBall"));
 
                     result.add(matchPlayer);
                 }
@@ -178,5 +181,16 @@ public class JDBCMatchDAO implements MatchDAO {
             throw new MatchPersistenceException(msg, e);
         }
         return result;
+    }
+
+    @Override
+    public void deleteMatch(MatchDTO matchDTO) throws MatchPersistenceException {
+        LOG.trace("Called - deleteMatch");
+        try (PreparedStatement ps = connection.prepareStatement(DELETE_MATCH)) {
+            ps.setInt(1, matchDTO.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new MatchPersistenceException("Could not delete match", e);
+        }
     }
 }

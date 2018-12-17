@@ -210,7 +210,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
      */
     private void calculate(MatchDTO matchDTO) {
         LOG.trace("Called - calculate");
-        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer());
+        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations()); //TODO link actorID to matchplayer
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
     }
 

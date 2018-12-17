@@ -1,19 +1,24 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -26,9 +31,11 @@ public class SimpleMatchService implements MatchService {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private MatchDAO matchDAO;
+    private FolderDAO folderDAO;
 
-    public SimpleMatchService(MatchDAO matchDAO) {
+    public SimpleMatchService(MatchDAO matchDAO, FolderDAO folderDAO) {
         this.matchDAO = matchDAO;
+        this.folderDAO = folderDAO;
     }
 
     @Override
@@ -55,6 +62,31 @@ public class SimpleMatchService implements MatchService {
             throw new MatchServiceException(message,e);
         }
     }
+
+    @Override
+    public void deleteMatch(MatchDTO matchDTO) throws MatchServiceException {
+        LOG.trace("called - deleteMatch");
+        try {
+            matchDAO.deleteMatch(matchDTO);
+        } catch (MatchPersistenceException e) {
+            throw new MatchServiceException("could not delete match",e);
+        }
+    }
+
+    @Override
+    public void deleteFile(File file) throws FileServiceException {
+        LOG.trace("Called - deleteFile");
+        String extension = FilenameUtils.getExtension(file.getName());
+        if (!extension.equals("json")){
+            throw new FileServiceException("Can not delete File with type " + extension);
+        }
+        try {
+            folderDAO.deleteFile(file);
+        } catch (FilePersistenceException e){
+            throw new FileServiceException("Could not delete File", e);
+        }
+    }
+
 
     private void matchDTOValidator(MatchDTO matchDTO) throws MatchValidationException {
         LOG.trace("Called - matchDTOValidator");

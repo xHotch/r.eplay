@@ -48,16 +48,13 @@ public class PlayerTest {
     AnnotationConfigApplicationContext context;
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException{
 
-        // needed to get the spring context so all components work
-        context = new AnnotationConfigApplicationContext("at.ac.tuwien.sepm.assignment.group");
+        jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
 
-        // get the PlayerDAO component from the spring framework
-        playerDAO = (JDBCPlayerDAO) context.getBean("JDBCPlayerDAO");
 
-        // get the MatchDAO component from the spring framework
-        matchDAO = (JDBCMatchDAO) context.getBean("JDBCMatchDAO");
+        playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO);
 
 
 
@@ -80,8 +77,6 @@ public class PlayerTest {
         Connection connection;
         try {
 
-            // get the connection manager component
-            jdbcConnectionManager = (JDBCConnectionManager) context.getBean("JDBCConnectionManager");
             connection = jdbcConnectionManager.getConnection();
             // drop all the tables for clean tests
             PreparedStatement dropMatchPlayer = connection.prepareStatement("DROP TABLE IF EXISTS MATCHPLAYER");

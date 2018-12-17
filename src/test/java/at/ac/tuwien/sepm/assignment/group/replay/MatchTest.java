@@ -1,7 +1,12 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
@@ -14,6 +19,8 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
+import org.apache.commons.io.FileUtils;
+import org.h2.jdbc.JdbcSQLException;
 import org.hamcrest.CoreMatchers;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -22,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.time.LocalDate;
@@ -50,6 +58,10 @@ public class MatchTest {
 
     private MatchDAO matchDAO;
 
+    private FolderDAO folderDAO;
+    private PlayerDAO playerDAO;
+
+
     private MatchDTO matchDTO;
 
     private MatchService matchService;
@@ -58,20 +70,25 @@ public class MatchTest {
 
     private List<MatchDTO> retrievedMatches;
 
-    private AnnotationConfigApplicationContext context;
+
 
     @Before
-    public void setUp(){
+    public void setUp() throws CouldNotCreateFolderException, SQLException{
 
-        // needed to get the spring context so all components work
-        context = new AnnotationConfigApplicationContext("at.ac.tuwien.sepm.assignment.group");
+        jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
 
-        // get the MatchDAO component from the spring framework
-        matchDAO = (JDBCMatchDAO)context.getBean("JDBCMatchDAO");
 
-        matchService = new SimpleMatchService(matchDAO);
+        playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO);
 
-        jdbcConnectionManager = (JDBCConnectionManager) context.getBean("JDBCConnectionManager");
+
+        // create UserFolderDAO
+        folderDAO = new UserFolderDAO("testParserDir", "testFileDir");
+
+
+        matchService = new SimpleMatchService(matchDAO, folderDAO);
+
+
     }
 
     @After
@@ -97,12 +114,17 @@ public class MatchTest {
 
         }
 
-        // finally close the spring framework context
-        if (context != null) {
-            context.close();
+
+
+        try {
+            FileUtils.deleteDirectory(folderDAO.getFileDirectory());
+            FileUtils.deleteDirectory(folderDAO.getParserDirectory());
+        } catch (IOException e) {
+            LOG.error("Exception while tearing Down Replay Service test", e);
         }
 
     }
+
     @Test(expected = MatchAlreadyExistsException.class)
     public void sameMatchTest() throws SQLException, MatchPersistenceException, MatchAlreadyExistsException {
         // set up a match entity and define the object variables
@@ -126,6 +148,7 @@ public class MatchTest {
         setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED, 10, 2,3, 5,1);
         setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
 
+
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setInt(1,1);
         ps.setString(2,"Player red");
@@ -137,8 +160,9 @@ public class MatchTest {
         ps.setInt(3,345333);
         ps.setBoolean(4,true);
         ps.executeUpdate();
-
         if (!ps.isClosed()) ps.close();
+
+
 
         playerMatchList.add(playerRED);
         playerMatchList.add(playerBLUE);

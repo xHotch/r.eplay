@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-class GameInformationParser {
+public class GameInformationParser {
 
     private ReadContext ctx;
 
