@@ -25,16 +25,19 @@ public class PlayerStatistic {
         this.rigidBodyStatistic = rigidBodyStatistic;
     }
 
-    public void calculate(List<MatchPlayerDTO> matchPlayerDTOList,Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers) {
+    public void calculate(List<MatchPlayerDTO> matchPlayerDTOList,Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers, List<RigidBodyInformation> rigidBodyBall) {
         LOG.trace("Called - calculate");
-        matchPlayerDTOList.forEach(dto -> setMatchPlayerData(dto,rigidBodyPlayers.get(dto.getActorId())));
+        matchPlayerDTOList.forEach(dto -> {
+            setMatchPlayerData(dto, rigidBodyPlayers.get(dto.getActorId()), rigidBodyBall);
+        });
     }
 
-    void setMatchPlayerData(MatchPlayerDTO matchPlayerDTO, List<RigidBodyInformation> rigidBodyPlayer){
+    void setMatchPlayerData(MatchPlayerDTO matchPlayerDTO, List<RigidBodyInformation> rigidBodyPlayer, List<RigidBodyInformation> rigidBodyBall){
         rigidBodyStatistic.calculate(rigidBodyPlayer);
         matchPlayerDTO.setAirTime(rigidBodyStatistic.getAirTime());
         matchPlayerDTO.setGroundTime(rigidBodyStatistic.getGroundTime());
         matchPlayerDTO.setAverageSpeed(rigidBodyStatistic.getAverageSpeed());
+        matchPlayerDTO.setAverageDistanceToBall(rigidBodyStatistic.averageDistanceTo(rigidBodyPlayer, rigidBodyBall));
         if (matchPlayerDTO.getTeam() == TeamSide.RED) {
             matchPlayerDTO.setHomeSideTime(rigidBodyStatistic.getPositiveSideTime());
             matchPlayerDTO.setEnemySideTime(rigidBodyStatistic.getNegativeSideTime());

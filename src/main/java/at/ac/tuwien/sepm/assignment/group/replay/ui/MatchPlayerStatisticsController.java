@@ -7,7 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,12 @@ public class MatchPlayerStatisticsController {
     private PieChart pcTimeInSide;
     @FXML
     private ChoiceBox<String> cbMatchPlayer;
+    @FXML
+    private BarChart<String, Double> bcAvgDistanceToBall;
+    @FXML
+    private NumberAxis bcYAxis;
+    @FXML
+    private CategoryAxis bcXAxis;
 
 
     void loadMatchPlayerStatistics(MatchDTO matchDTO) {
@@ -45,12 +51,12 @@ public class MatchPlayerStatisticsController {
         }
         cbMatchPlayer.setItems(matchPlayers);
 
+        //add change listener, so the diagrams are updated when another player is selected
         ChangeListener<String> changeListener = (observable, oldName, newName) -> {
             if (newName != null) {
                 showCurrentPlayerStatistics(newName);
             }
         };
-
         cbMatchPlayer.getSelectionModel().selectedItemProperty().addListener(changeListener);
     }
 
@@ -89,8 +95,6 @@ public class MatchPlayerStatisticsController {
 
         pcAirGroundTime.setStartAngle(90);
         pcTimeInSide.setStartAngle(90);
-        pcAirGroundTime.setLegendVisible(false);
-        pcTimeInSide.setLegendVisible(false);
 
         //set colors
         String lightskyblue = "-fx-pie-color: lightskyblue;";
@@ -105,8 +109,6 @@ public class MatchPlayerStatisticsController {
             enemySideTimeSlice.getNode().setStyle(lightskyblue);
         }
 
-        //TODO: add heatmap
-
-
+        //TODO: add heatmap and show distance to ball
     }
 }

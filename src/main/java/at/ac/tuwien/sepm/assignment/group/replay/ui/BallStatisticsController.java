@@ -40,8 +40,6 @@ public class BallStatisticsController {
 
         pieChartTeamSide.setStartAngle(90);
         pieChartPossession.setStartAngle(90);
-        pieChartTeamSide.setLegendVisible(false);
-        pieChartPossession.setLegendVisible(false);
 
         //set colors
         sideBlueSlice.getNode().setStyle("-fx-pie-color: lightskyblue;");

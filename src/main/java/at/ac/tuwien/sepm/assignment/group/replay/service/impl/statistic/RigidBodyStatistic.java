@@ -32,7 +32,7 @@ public class RigidBodyStatistic {
         int count = 0;
         int i = 0;
         int j = 0;
-        while (i < rigidBodyList1.length || j < rigidBodyList2.length) {
+        while (i < rigidBodyList1.length && j < rigidBodyList2.length) {
             if (rigidBodyList1[i].getFrameTime() == rigidBodyList2[j].getFrameTime()) {
                 positionBody1 = rigidBodyList1[i].getPosition();
                 positionBody2 = rigidBodyList2[j].getPosition();
@@ -41,14 +41,13 @@ public class RigidBodyStatistic {
             } else if (rigidBodyList1[i].getFrameTime() < rigidBodyList2[j].getFrameTime()) {
                 positionBody1 = rigidBodyList1[i].getPosition();
                 i++;
-            } else if (rigidBodyList1[i].getFrameTime() > rigidBodyList2[j].getFrameTime()) {
+            } else {
                 positionBody2 = rigidBodyList2[j].getPosition();
                 j++;
             }
             distance += positionBody1.distance(positionBody2);
             count++;
         }
-
         return count != 0 ? distance / count : 0;
     }
 

@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   homeSideTime double,
   enemySideTime double,
   averageSpeed double,
+  averageDistanceToBall double,
   FOREIGN KEY (playerid) REFERENCES player(id),
   FOREIGN KEY (matchid) REFERENCES match_(id),
   PRIMARY KEY (playerid,matchid)

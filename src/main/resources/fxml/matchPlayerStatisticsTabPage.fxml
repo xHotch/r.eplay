@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -10,9 +13,9 @@
    <children>
       <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
       <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
-      <PieChart fx:id="pcAirGroundTime" layoutX="40.0" layoutY="80.0" prefHeight="271.0" prefWidth="450.0" title="Zeit am Boden / Zeit in der Luft" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="80.0" />
-      <PieChart fx:id="pcTimeInSide" layoutX="538.0" layoutY="80.0" prefHeight="271.0" prefWidth="450.0" title="Zeit in der eigenen/gegnerischen Hälfte" AnchorPane.leftAnchor="538.0" AnchorPane.topAnchor="80.0" />
-      <Label layoutX="114.0" layoutY="377.0" text="Durchschnittliche Entfernung vom Ball" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="377.0">
+      <PieChart fx:id="pcAirGroundTime" layoutX="41.0" layoutY="65.0" legendVisible="false" prefHeight="271.0" prefWidth="450.0" title="Zeit am Boden / Zeit in der Luft" AnchorPane.leftAnchor="41.0" AnchorPane.topAnchor="65.0" />
+      <PieChart fx:id="pcTimeInSide" layoutX="538.0" layoutY="65.0" legendVisible="false" prefHeight="271.0" prefWidth="450.0" title="Zeit in der eigenen/gegnerischen Hälfte" AnchorPane.leftAnchor="538.0" AnchorPane.topAnchor="65.0" />
+      <Label layoutX="114.0" layoutY="377.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="377.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -22,15 +25,18 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="233.0" layoutY="474.0" text="???" AnchorPane.leftAnchor="233.0" AnchorPane.topAnchor="474.0">
-         <font>
-            <Font size="48.0" />
-         </font>
-      </Label>
       <Label layoutX="664.0" layoutY="474.0" text="Heatmap" AnchorPane.leftAnchor="664.0" AnchorPane.topAnchor="474.0">
          <font>
             <Font size="48.0" />
          </font>
       </Label>
+      <BarChart fx:id="bcAvgDistanceToBall" layoutX="40.0" layoutY="376.0" prefHeight="278.0" prefWidth="438.0" title="Durchschnittliche Entfernung vom Ball">
+        <xAxis>
+          <CategoryAxis fx:id="bcXAxis" prefHeight="24.0" prefWidth="381.0" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="bcYAxis" autoRanging="false" />
+        </yAxis>
+      </BarChart>
    </children>
 </AnchorPane>
