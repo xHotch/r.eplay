@@ -63,6 +63,9 @@ public class BallStatisticsController {
 
         heatmapData = jsonParseService.calculateHeatmap();
         heatmapView.setImage(SwingFXUtils.toFXImage(heatmapData.get("ball").getImage(), null));
+        heatmapView.setRotate(270);
+        heatmapView.setScaleX(1.5);
+        heatmapView.setScaleY(1.5);
 
     }
 

@@ -60,6 +60,8 @@ public class MatchPlayerStatisticsController {
      * @param matchDTO MatchDTO of which the players should be selectable
      */
     void loadMatchPlayerStatistics(MatchDTO matchDTO) {
+
+
         LOG.trace("called loadMatchPlayerStatistics");
 
         this.matchDTO = matchDTO;
@@ -171,5 +173,8 @@ public class MatchPlayerStatisticsController {
         }
 
         heatmapView.setImage(SwingFXUtils.toFXImage(heatmapData.get(selectedPlayer.getName()).getImage(), null));
+        heatmapView.setRotate(270);
+        heatmapView.setScaleX(1.5);
+        heatmapView.setScaleY(1.5);
     }
 }
