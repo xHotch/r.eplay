@@ -44,4 +44,8 @@ public class JDBCConnectionManager {
             connection = null;
         }
     }
+
+    public void setConnectionString(String connectionString) {
+        this.connectionString = connectionString;
+    }
 }

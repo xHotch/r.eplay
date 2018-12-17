@@ -9,6 +9,8 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -70,6 +73,8 @@ public class JsonParseServiceTest {
         jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic);
 
     }
+
+
 
     @Test
     public void testParseMatchReturnsCorrectMatchDto() {
