@@ -1,13 +1,11 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -47,9 +45,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
+    private RigidBodyStatistic rigidBodyStatistic;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, RigidBodyStatistic rigidBodyStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParse = gameInformationParse;
@@ -58,6 +57,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
         this.ballStatistic = ballStatistic;
+        this.rigidBodyStatistic = rigidBodyStatistic;
     }
 
     @Override
@@ -104,6 +104,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.debug("End  Calculate");
 
         return matchDTO;
+    }
+
+    @Override
+    public HeatmapDTO calculateHeatmap(MatchPlayerDTO matchPlayerDTO) {
+        return rigidBodyStatistic.getHeatmap(carInformationParser.getRigidBodyListPlayer().get(matchPlayerDTO.getActorId()));
     }
 
     /**

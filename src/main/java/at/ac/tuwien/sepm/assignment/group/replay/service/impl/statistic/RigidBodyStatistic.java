@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
+import at.ac.tuwien.sepm.assignment.group.replay.ui.HeatmapChart;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYDataset;
@@ -8,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
+import java.io.*;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -94,15 +96,21 @@ public class RigidBodyStatistic {
         LOG.debug("Speed {} Count {} CountFrame {} negativeSideTime {} positiveSideTime {} groundTime {} airTime {}", averageSpeed, count, countFrame, negativeSideTime, positiveSideTime, groundTime, airTime);
     }
 
-    public XYDataset getHeatmap(List<RigidBodyInformation> rigidBodyList)
+    public HeatmapDTO getHeatmap(List<RigidBodyInformation> rigidBodyList)
     {
-        int width = 12240;
-        int height = 8192;
+        int width = 12240 / 10;
+        int height = 8192 / 10;
+        double upperbound = 0;
         double[][] heatmapData = new double[width][height];
         for (RigidBodyInformation rigidBody : rigidBodyList) {
             int x = ((int) Math.round(rigidBody.getPosition().getX())) + 4096;
             int y = ((int) Math.round(rigidBody.getPosition().getY())) + 6120;
-            if(y >= 0 && x >= 0 && y < heatmapData.length && x < heatmapData[0].length) heatmapData[y][x] += 1;
+            if(y >= 0 && x >= 0 && y <= 12240 && x <= 8192)
+            {
+                int iy = y / 10;
+                int ix = x / 10;
+                heatmapData[iy][ix] += 1;
+            }
             else LOG.debug("Coordinate not in dimensions x: {} y: {}",x,y);
         }
         DefaultXYZDataset dataset = new DefaultXYZDataset();
@@ -112,10 +120,30 @@ public class RigidBodyStatistic {
                 data[0][h] = w;
                 data[1][h] = h;
                 data[2][h] = heatmapData[w][h];
+                if(heatmapData[w][h] > upperbound) upperbound = heatmapData[w][h];
             }
             dataset.addSeries("Series" + w, data);
         }
-        return dataset;
+        HeatmapDTO heatmapDTO = new HeatmapDTO();
+        heatmapDTO.setDataset(dataset);
+        heatmapDTO.setUpperBound(upperbound);
+        BufferedImage bimage = HeatmapChart.createChart(dataset,upperbound).createBufferedImage(width,height);
+        heatmapDTO.setImage(bimage);
+
+        //Write image to file
+        /*
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(bimage, "png", bas);
+        byte[] byteArray=bas.toByteArray();
+        InputStream in = new ByteArrayInputStream(byteArray);
+        BufferedImage image = ImageIO.read(in);
+        File outputfile = new File("image.png");
+        ImageIO.write(image, "png", outputfile);
+        } catch (Exception e) {
+            LOG.error("Exception",e);
+        }*/
+        return heatmapDTO;
     }
 
     double getAverageSpeed() {
