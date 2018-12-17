@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-class PlayerInformationParser {
+public class PlayerInformationParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

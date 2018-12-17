@@ -29,6 +29,8 @@ public class CarInformationParser {
     //Map that maps ActorID from a car to a player. Key = CarActorId, Value = playerActorId
     private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
 
+
+
     //Map that maps ActorID from a Car to a list of RigidBodyInformation
     private LinkedHashMap<Integer, List<RigidBodyInformation>> rigidBodyMap = new LinkedHashMap<>();
 
@@ -112,9 +114,14 @@ public class CarInformationParser {
         return rigidBodyPlayers;
     }
 
-    LinkedHashMap<Integer, Integer> getPlayerCarMap() {
+    public LinkedHashMap<Integer, Integer> getPlayerCarMap() {
         return playerCarMap;
     }
+
+    public LinkedHashMap<Integer, List<RigidBodyInformation>> getRigidBodyMap() {
+        return rigidBodyMap;
+    }
+
 
     void setCtx(ReadContext ctx) {
         this.ctx = ctx;
