@@ -177,11 +177,17 @@ public class MatchController {
         }
 
         executorService.submit(() -> {
+            File json;
             try {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(true));
                 Platform.runLater(() -> uploadReplayButton.setDisable(true));
-                File json = replayService.parseReplayFileToJson(inputFile);
-                MatchDTO matchDto = jsonParseService.parseMatch(json);
+                json = replayService.parseReplayFileToJson(inputFile);
+                MatchDTO matchDto;
+                try {
+                    matchDto = jsonParseService.parseMatch(json);
+                } finally {
+                    matchService.deleteFile(json);
+                }
                 LOG.debug("jsonParseFinished");
                 for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
                     playerService.createPlayer(mpdto.getPlayerDTO());

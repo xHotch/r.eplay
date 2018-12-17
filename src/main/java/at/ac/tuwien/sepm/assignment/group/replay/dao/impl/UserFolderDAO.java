@@ -118,6 +118,19 @@ public class UserFolderDAO implements FolderDAO {
     }
 
 
+    @Override
+    public void deleteFile(File file) throws  FilePersistenceException{
+        String extension = FilenameUtils.getExtension(file.getName());
+        if ((extension.equals("json")) || (extension.equals("replay"))){
+            boolean deleted = file.delete();
+            if (!deleted){
+                throw new FilePersistenceException("File " + file.getName() +  " could not be deleted");
+            }
+        } else {
+            throw new FilePersistenceException("Can not delete File with type " + extension);
+        }
+    }
+
     /**
      * Method that extracts all the parser files from the properties to the parserDirectory folder.
      * {@link UserFolderDAO#parserDirectory} has to be setup before the method is called.
@@ -152,6 +165,7 @@ public class UserFolderDAO implements FolderDAO {
         String rndchars = RandomStringUtils.randomAlphanumeric(8);
         return rndchars + "_" + datetime + "_" + millis + ".replay";
     }
+
 
 
 }

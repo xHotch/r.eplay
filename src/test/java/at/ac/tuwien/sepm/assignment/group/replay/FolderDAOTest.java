@@ -72,12 +72,14 @@ public class FolderDAOTest {
     }
 
     @Test
-    public void testCopyReplayFile() throws FilePersistenceException {
+    public void testCopyReplayFileAndDelete() throws FilePersistenceException {
         File copiedFile = folderDAO.copyReplayFile(replayFile);
 
 
         Assert.assertTrue(copiedFile.exists());
         Assert.assertEquals(copiedFile.getParent(), folderDAO.getFileDirectory().getAbsolutePath());
+
+        folderDAO.deleteFile(copiedFile);
     }
 
     @Test(expected = FilePersistenceException.class)
@@ -85,5 +87,19 @@ public class FolderDAOTest {
         File randomExeFile = new File("test.exe");
 
         folderDAO.copyReplayFile(randomExeFile);
+    }
+
+    @Test(expected = FilePersistenceException.class)
+    public void testFileDeletionWrongFiletype() throws FilePersistenceException{
+        File randomExeFile = new File("test.exe");
+
+        folderDAO.deleteFile(randomExeFile);
+    }
+
+    @Test(expected = FilePersistenceException.class)
+    public void testFileDeletionEmptyFile() throws FilePersistenceException{
+        File randomJsonFile = new File("test.json");
+
+        folderDAO.deleteFile(randomJsonFile);
     }
 }

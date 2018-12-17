@@ -2,10 +2,12 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -33,4 +35,14 @@ public interface MatchService {
      * @throws MatchServiceException if the dao method throws an error
      */
     void deleteMatch(MatchDTO matchDTO) throws MatchServiceException;
+
+    /**
+     * Calls DAO to delete a file.
+     * file has to be .json
+     * @param file the file to delete
+     * @throws FileServiceException if the file could not be deleted
+     */
+    void deleteFile(File file) throws FileServiceException;
+
+
 }

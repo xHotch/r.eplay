@@ -58,5 +58,12 @@ public interface FolderDAO {
      */
     File getParser(String[] necesarryFiles) throws FilePersistenceException;
 
+    /**
+     * Deletes a given File
+     * File has to be .json or .replay
+     * @param file the file to delete
+     * @throws FilePersistenceException if the file could not be deleted or the File has the wrong filetype
+     */
+    void deleteFile(File file) throws FilePersistenceException;
 
 }

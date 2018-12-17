@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
@@ -50,6 +53,8 @@ public class MatchTest {
 
     private MatchDAO matchDAO;
 
+    private FolderDAO folderDAO;
+
     private MatchDTO matchDTO;
 
     private MatchService matchService;
@@ -61,7 +66,7 @@ public class MatchTest {
     private AnnotationConfigApplicationContext context;
 
     @Before
-    public void setUp(){
+    public void setUp() throws CouldNotCreateFolderException{
 
         // needed to get the spring context so all components work
         context = new AnnotationConfigApplicationContext("at.ac.tuwien.sepm.assignment.group");
@@ -69,7 +74,11 @@ public class MatchTest {
         // get the MatchDAO component from the spring framework
         matchDAO = (JDBCMatchDAO)context.getBean("JDBCMatchDAO");
 
-        matchService = new SimpleMatchService(matchDAO);
+        // create UserFolderDAO
+        folderDAO = new UserFolderDAO("testParserDir", "testFileDir");
+
+
+        matchService = new SimpleMatchService(matchDAO, folderDAO);
 
         jdbcConnectionManager = (JDBCConnectionManager) context.getBean("JDBCConnectionManager");
     }
