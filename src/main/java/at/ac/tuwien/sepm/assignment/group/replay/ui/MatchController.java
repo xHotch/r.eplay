@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
@@ -18,13 +19,25 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.fx.ChartViewer;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.PaintScale;
+import org.jfree.chart.renderer.xy.XYBlockRenderer;
+import org.jfree.data.xy.DefaultXYZDataset;
+import org.jfree.data.xy.XYDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -87,10 +100,8 @@ public class MatchController {
      */
     @FXML
     void initialize() {
-
         setupMatchTable();
         updateMatchTable();
-
     }
 
     /**
@@ -220,10 +231,14 @@ public class MatchController {
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            } finally {
+            } catch (Exception e){
+                LOG.error("Caught Exception ##############", e);
+                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+            }finally {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(false));
                 Platform.runLater(() -> uploadReplayButton.setDisable(false));
             }
+
         });
 
     }
@@ -257,6 +272,7 @@ public class MatchController {
         tableColumnMatchDate.setSortable(true);
         tableViewMatches.sort();
     }
+
 
 }
 

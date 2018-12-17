@@ -70,7 +70,7 @@ public class JsonParseServiceTest {
         ballStatistic = new BallStatistic(rigidBodyStatistic);
         playerStatistic = new PlayerStatistic(rigidBodyStatistic);
 
-        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic);
+        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,rigidBodyStatistic);
 
     }
 

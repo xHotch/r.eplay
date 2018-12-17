@@ -2,22 +2,19 @@
 
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.BallStatisticsController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.BallStatisticsController">
    <children>
       <Label layoutX="209.0" layoutY="365.0" text="Ball Heatmap" AnchorPane.leftAnchor="209.0" AnchorPane.topAnchor="365.0">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Label layoutX="185.0" layoutY="493.0" text="Heatmap" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="493.0">
-         <font>
-            <Font size="48.0" />
-         </font>
-      </Label>
       <PieChart fx:id="pieChartTeamSide" layoutX="57.0" layoutY="80.0" legendVisible="false" prefHeight="270.0" prefWidth="450.0" title="Zeit des Balles pro Seite" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="65.0" />
       <PieChart fx:id="pieChartPossession" layoutX="518.0" layoutY="65.0" legendVisible="false" prefHeight="270.0" prefWidth="450.0" title="Ballbesitz" AnchorPane.leftAnchor="518.0" AnchorPane.topAnchor="65.0" />
+      <ImageView fx:id="heatmapView" fitHeight="246.0" fitWidth="349.0" layoutX="109.0" layoutY="401.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="109.0" AnchorPane.topAnchor="401.0" />
    </children>
 </AnchorPane>

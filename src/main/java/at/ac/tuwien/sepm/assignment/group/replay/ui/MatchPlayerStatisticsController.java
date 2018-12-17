@@ -1,14 +1,18 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
+import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Gabriel Aichinger
@@ -25,7 +30,10 @@ public class MatchPlayerStatisticsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    private JsonParseService jsonParseService;
+
     private MatchDTO matchDTO;
+    private Map<String, HeatmapDTO> heatmapData;
 
     @FXML
     private PieChart pcAirGroundTime;
@@ -39,6 +47,12 @@ public class MatchPlayerStatisticsController {
     private NumberAxis bcYAxis;
     @FXML
     private CategoryAxis bcXAxis;
+    @FXML
+    private ImageView heatmapView;
+
+    public MatchPlayerStatisticsController(JsonParseService jsonParseService) {
+        this.jsonParseService = jsonParseService;
+    }
 
     /**
      * Adds match player names to the choice box. Creates bar chart for average distance to ball for all players.
@@ -89,6 +103,8 @@ public class MatchPlayerStatisticsController {
             data.getNode().setStyle("-fx-bar-fill: lightcoral;");
         }
 
+        //calculate heatmap
+        heatmapData = jsonParseService.calculateHeatmap();
 
         //set choice box values
         cbMatchPlayer.setItems(matchPlayers);
@@ -154,6 +170,6 @@ public class MatchPlayerStatisticsController {
             enemySideTimeSlice.getNode().setStyle(lightskyblue);
         }
 
-        //TODO: add heatmap
+        heatmapView.setImage(SwingFXUtils.toFXImage(heatmapData.get(selectedPlayer.getName()).getImage(), null));
     }
 }
