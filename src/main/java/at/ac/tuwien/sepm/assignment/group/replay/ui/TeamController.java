@@ -25,9 +25,9 @@ public class TeamController {
     private ExecutorService executorService;
 
     @FXML
-    private TableView<TeamDTO> tableViewPlayers;
+    private TableView<TeamDTO> tableViewTeams;
     @FXML
-    private TableColumn<TeamDTO, String> tableColumnPlayerName;
+    private TableColumn<TeamDTO, String> tableColumnTeamName;
 
     public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService) {
         this.springFXMLLoader = springFXMLLoader;
