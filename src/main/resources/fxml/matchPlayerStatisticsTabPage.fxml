@@ -6,10 +6,11 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
    <children>
       <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
       <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
@@ -25,11 +26,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="664.0" layoutY="474.0" text="Heatmap" AnchorPane.leftAnchor="664.0" AnchorPane.topAnchor="474.0">
-         <font>
-            <Font size="48.0" />
-         </font>
-      </Label>
       <BarChart fx:id="bcAvgDistanceToBall" barGap="0.0" categoryGap="15.0" layoutX="41.0" layoutY="383.0" prefHeight="252.0" prefWidth="450.0" title="Durchschnittliche Entfernung vom Ball">
         <xAxis>
           <CategoryAxis fx:id="bcXAxis" prefHeight="24.0" prefWidth="381.0" side="BOTTOM" />
@@ -38,5 +34,6 @@
           <NumberAxis fx:id="bcYAxis" autoRanging="false" />
         </yAxis>
       </BarChart>
+      <ImageView fx:id="heatmapView" fitHeight="246.0" fitWidth="349.0" layoutX="589.0" layoutY="414.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="589.0" AnchorPane.topAnchor="414.0" />
    </children>
 </AnchorPane>

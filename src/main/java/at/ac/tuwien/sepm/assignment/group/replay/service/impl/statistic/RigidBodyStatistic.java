@@ -147,7 +147,7 @@ public class RigidBodyStatistic {
         heatChart.setHighValueColour(Color.RED);
         HeatmapDTO heatmapDTO = new HeatmapDTO();
         heatmapDTO.setImage((BufferedImage) heatChart.getChartImage());
-        /*try {
+        /*try { //Write image to file
             heatChart.saveToFile(new File("image.png"));
         } catch (IOException e) {
             LOG.error("Caught Exception ##############", e);

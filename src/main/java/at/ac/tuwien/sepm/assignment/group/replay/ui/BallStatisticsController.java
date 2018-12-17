@@ -1,13 +1,18 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
+import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Map;
 
 /**
  * Ball Statistics Tab Page Controller
@@ -18,10 +23,19 @@ import java.lang.invoke.MethodHandles;
 public class BallStatisticsController {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    private JsonParseService jsonParseService;
+    private Map<String, HeatmapDTO> heatmapData;
+
     @FXML
     private PieChart pieChartTeamSide;
     @FXML
     private PieChart pieChartPossession;
+    @FXML
+    private ImageView heatmapView;
+
+    public BallStatisticsController(JsonParseService jsonParseService) {
+        this.jsonParseService = jsonParseService;
+    }
 
     void loadBallStatistics(MatchDTO matchDTO) {
         LOG.trace("called loadBallStatistics");
@@ -47,7 +61,8 @@ public class BallStatisticsController {
         posBlueTeamSlice.getNode().setStyle("-fx-pie-color: lightskyblue;");
         posRedTeamSlice.getNode().setStyle("-fx-pie-color: lightcoral;");
 
-        //TODO: add heatmap
+        heatmapData = jsonParseService.calculateHeatmap();
+        heatmapView.setImage(SwingFXUtils.toFXImage(heatmapData.get("ball").getImage(), null));
 
     }
 

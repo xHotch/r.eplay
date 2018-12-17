@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -36,6 +38,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
     private File jFile;
     private ReadContext ctx;
+    private MatchDTO matchDTO;
+    private Map<String, HeatmapDTO> heatmapDTOMap;
 
     private RigidBodyParser rigidBodyParser;
     private PlayerInformationParser playerInformationParser;
@@ -86,6 +90,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 ballInformationParser.setup();
                 boostInformationParser.setCtx(ctx);
                 boostInformationParser.setup();
+                heatmapDTOMap = new HashMap<>();
 
                 jFile = jsonFile;
             } catch (IOException e) {
@@ -95,21 +100,32 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         }
 
         LOG.debug("Start Parse");
-        MatchDTO matchDTO = readProperties();
+        matchDTO = readProperties();
         parseFrames();
         LOG.debug("End Parse");
         playerInformationParser.setActorId(matchDTO.getPlayerData());
         LOG.debug("Start  Calculate");
         calculate(matchDTO);
         LOG.debug("End  Calculate");
-
         return matchDTO;
     }
 
     @Override
-    public HeatmapDTO calculateHeatmap(MatchPlayerDTO matchPlayerDTO) {
+    public Map<String, HeatmapDTO> calculateHeatmap() {
         //TODO save to matchPlaerDTO or reparse the file
-        return rigidBodyStatistic.getHeatmap(carInformationParser.getRigidBodyListPlayer().get(matchPlayerDTO.getActorId()));
+        if (heatmapDTOMap.isEmpty()) {
+            List<MatchPlayerDTO> matchPlayerDTOS = matchDTO.getPlayerData();
+            for (Map.Entry<Integer, List<RigidBodyInformation>> rigidBodyEntry : carInformationParser.getRigidBodyListPlayer().entrySet()) {
+                String name = "";
+                for (MatchPlayerDTO matchPlayer : matchPlayerDTOS) {
+                    if (matchPlayer.getActorId() == rigidBodyEntry.getKey()) name = matchPlayer.getName();
+                }
+                if (name.isEmpty()) name = "player" + rigidBodyEntry.getKey();
+                heatmapDTOMap.put(name, rigidBodyStatistic.getHeatmap(rigidBodyEntry.getValue()));
+            }
+            heatmapDTOMap.put("ball", rigidBodyStatistic.getHeatmap(ballInformationParser.getRigidBodyInformations()));
+        }
+        return heatmapDTOMap;
     }
 
     /**
@@ -212,6 +228,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - calculate");
         playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations()); //TODO link actorID to matchplayer
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
+        calculateHeatmap();
     }
 
     /**
