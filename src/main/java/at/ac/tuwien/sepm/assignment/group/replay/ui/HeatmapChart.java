@@ -35,8 +35,8 @@ public class HeatmapChart {
         XYBlockRenderer r = new XYBlockRenderer();
         SpectrumPaintScale ps = new SpectrumPaintScale(0,upperbound);
         r.setPaintScale(ps);
-        r.setBlockHeight(10.0f);
-        r.setBlockWidth(10.0f);
+        r.setBlockHeight(1.0f);
+        r.setBlockWidth(1.0f);
         plot.setRenderer(r);
         LOG.debug("Zoomable Domain: {} Range: {}",plot.isDomainZoomable(),plot.isRangeZoomable());
         JFreeChart chart = new JFreeChart(null,null, plot,false);
@@ -65,12 +65,12 @@ public class HeatmapChart {
     /**
      * class for the colorspectrum of the heatmap
      */
-    private static class SpectrumPaintScale implements PaintScale {
+    public static class SpectrumPaintScale implements PaintScale {
 
-        private static final float H1 = 0f;
-        private static final float H2 = 1f;
-        private final double lowerBound;
-        private final double upperBound;
+        private static final float H1 = 0.0f;
+        private static final float H2 = 0.7f;
+        private double lowerBound;
+        private double upperBound;
 
         public SpectrumPaintScale(double lowerBound, double upperBound) {
             this.lowerBound = lowerBound;
@@ -89,6 +89,7 @@ public class HeatmapChart {
 
         @Override
         public Paint getPaint(double value) {
+
             float scaledValue = (float) (value / (getUpperBound() - getLowerBound()));
             float scaledH = H1 + scaledValue * (H2 - H1);
             return Color.getHSBColor(scaledH, 1f, 1f);
