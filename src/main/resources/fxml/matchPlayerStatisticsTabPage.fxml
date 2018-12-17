@@ -30,7 +30,7 @@
             <Font size="48.0" />
          </font>
       </Label>
-      <BarChart fx:id="bcAvgDistanceToBall" layoutX="40.0" layoutY="376.0" prefHeight="278.0" prefWidth="438.0" title="Durchschnittliche Entfernung vom Ball">
+      <BarChart fx:id="bcAvgDistanceToBall" barGap="0.0" categoryGap="15.0" layoutX="41.0" layoutY="383.0" prefHeight="252.0" prefWidth="450.0" title="Durchschnittliche Entfernung vom Ball">
         <xAxis>
           <CategoryAxis fx:id="bcXAxis" prefHeight="24.0" prefWidth="381.0" side="BOTTOM" />
         </xAxis>

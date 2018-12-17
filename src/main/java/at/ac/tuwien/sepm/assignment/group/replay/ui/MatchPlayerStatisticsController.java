@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Gabriel Aichinger
@@ -38,17 +40,57 @@ public class MatchPlayerStatisticsController {
     @FXML
     private CategoryAxis bcXAxis;
 
-
+    /**
+     * Adds match player names to the choice box. Creates bar chart for average distance to ball for all players.
+     *
+     * @param matchDTO MatchDTO of which the players should be selectable
+     */
     void loadMatchPlayerStatistics(MatchDTO matchDTO) {
         LOG.trace("called loadMatchPlayerStatistics");
 
         this.matchDTO = matchDTO;
 
-        //set players in choice box
+        //create series that can be added to the bar chart
+        XYChart.Series<String, Double> seriesBlue = new XYChart.Series<>();
+        XYChart.Series<String, Double> seriesRed = new XYChart.Series<>();
+
+        //set players in choice box and add data to series
         ObservableList<String> matchPlayers = FXCollections.observableArrayList();
+        List<String> blueTeam = new LinkedList<>();
+        List<String> redTeam = new LinkedList<>();
+
         for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
-            matchPlayers.add(player.getPlayerDTO().getName());
+            if (player.getTeam() == TeamSide.BLUE) {
+                blueTeam.add(player.getPlayerDTO().getName());
+                seriesBlue.getData().add(new XYChart.Data<>(player.getPlayerDTO().getName(), player.getAverageDistanceToBall()));
+            } else {
+                redTeam.add(player.getPlayerDTO().getName());
+                seriesRed.getData().add(new XYChart.Data<>(player.getPlayerDTO().getName(), player.getAverageDistanceToBall()));
+            }
         }
+        matchPlayers.addAll(blueTeam);
+        matchPlayers.addAll(redTeam);
+
+        //add series to bar chart
+        bcAvgDistanceToBall.getData().add(seriesBlue);
+        bcAvgDistanceToBall.getData().add(seriesRed);
+
+        //set bar chart properties
+        bcAvgDistanceToBall.setBarGap(-17);
+        bcXAxis.setTickLabelRotation(90);
+        bcYAxis.setAutoRanging(true);
+        bcAvgDistanceToBall.setLegendVisible(false);
+
+        //set color for bars depending on team
+        for (XYChart.Data data : seriesBlue.getData()) {
+            data.getNode().setStyle("-fx-bar-fill: lightskyblue;");
+        }
+        for (XYChart.Data data : seriesRed.getData()) {
+            data.getNode().setStyle("-fx-bar-fill: lightcoral;");
+        }
+
+
+        //set choice box values
         cbMatchPlayer.setItems(matchPlayers);
 
         //add change listener, so the diagrams are updated when another player is selected
@@ -58,7 +100,9 @@ public class MatchPlayerStatisticsController {
             }
         };
         cbMatchPlayer.getSelectionModel().selectedItemProperty().addListener(changeListener);
+
     }
+
 
     /**
      * updates diagrams depending on which player was selected
@@ -98,9 +142,10 @@ public class MatchPlayerStatisticsController {
 
         //set colors
         String lightskyblue = "-fx-pie-color: lightskyblue;";
-
+        //set air and ground time colors
         airTimeSlice.getNode().setStyle(lightskyblue);
         groundTimeSlice.getNode().setStyle("-fx-pie-color: tan;");
+        //set home side color depending on the team of the player
         if (selectedPlayer.getTeam() == TeamSide.BLUE) {
             homeSideTimeSlice.getNode().setStyle(lightskyblue);
             enemySideTimeSlice.getNode().setStyle("-fx-pie-color: lightcoral;");
@@ -109,6 +154,6 @@ public class MatchPlayerStatisticsController {
             enemySideTimeSlice.getNode().setStyle(lightskyblue);
         }
 
-        //TODO: add heatmap and show distance to ball
+        //TODO: add heatmap
     }
 }
