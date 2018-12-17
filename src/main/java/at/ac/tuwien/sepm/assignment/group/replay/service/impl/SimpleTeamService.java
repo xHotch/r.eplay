@@ -50,6 +50,9 @@ public class SimpleTeamService implements TeamService {
         if (teamDTO.getTeamSize() > 3) {
             errMsg += "TeamSize is bigger as 3\n";
         }
+        if (teamDTO.getPlayers().size() != teamDTO.getTeamSize()) {
+            errMsg += "Amount of selected players must fit team size\n";
+        }
         if (!errMsg.equals("")) {
             throw new TeamValidationException(errMsg);
         }

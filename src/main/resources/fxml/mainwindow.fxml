@@ -11,5 +11,8 @@
     <Tab fx:id="playerTab" text="Spieler">
         <fx:include fx:id="playerTabPage" source="/fxml/playerTabPage.fxml"/>
     </Tab>
+      <Tab fx:id="teamTab" text="Teams">
+          <fx:include fx:id="teamTabPage" source="/fxml/teamTabPage.fxml"/>
+      </Tab>
   </tabs>
 </TabPane>
