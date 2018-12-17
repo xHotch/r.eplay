@@ -33,6 +33,7 @@ public class NewTeamController {
     private ExecutorService executorService;
     private PlayerService playerService;
     private TeamService teamService;
+    private TeamController teamController;
 
     @FXML
     private TableView<PlayerDTO> tableViewPlayers;
@@ -46,12 +47,16 @@ public class NewTeamController {
 
     @FXML
     public void onSaveTeamButtonClicked(ActionEvent event) {
+        LOG.trace("called - onSaveTeamButtonClicked");
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(textFieldName.getText());
         teamDTO.setTeamSize(comboBoxTeamSize.getSelectionModel().getSelectedItem());
         teamDTO.setPlayers(tableViewPlayers.getSelectionModel().getSelectedItems());
         try {
             teamService.createTeam(teamDTO);
+            LOG.debug("after create Team");
+            teamController.updateTeamTable();
+            LOG.debug("after update TeamTable");
             ((Stage)(((Node)event.getSource()).getScene().getWindow())).close();
         } catch (TeamValidationException e) {
             AlertHelper.showErrorMessage(e.getMessage());
@@ -64,11 +69,12 @@ public class NewTeamController {
     }
 
 
-    public NewTeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService, TeamService teamService) {
+    public NewTeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService, TeamService teamService, TeamController teamController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.playerService = playerService;
         this.teamService = teamService;
+        this.teamController = teamController;
     }
 
     /**

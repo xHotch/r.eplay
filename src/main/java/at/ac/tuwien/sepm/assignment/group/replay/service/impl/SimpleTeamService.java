@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 /**
  * @author Markus Kogelbauer
@@ -35,6 +36,15 @@ public class SimpleTeamService implements TeamService {
         } catch (TeamPersistenceException e) {
             String msg = "Failed to create team";
             throw new TeamServiceException(msg, e);
+        }
+    }
+
+    @Override
+    public List<TeamDTO> readTeams() throws TeamServiceException {
+        try {
+            return teamDAO.readTeams();
+        } catch (TeamPersistenceException e) {
+            throw new TeamServiceException("failed to read teams", e);
         }
     }
 
