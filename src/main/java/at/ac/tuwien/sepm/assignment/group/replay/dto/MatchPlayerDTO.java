@@ -18,6 +18,7 @@ public class MatchPlayerDTO {
     private double homeSideTime;
     private double enemySideTime;
     private double averageSpeed;
+    private double averageDistanceToBall;
     private double airTime;
     private double groundTime;
     private int actorId;
@@ -120,6 +121,14 @@ public class MatchPlayerDTO {
 
     public void setAverageSpeed(double averageSpeed) {
         this.averageSpeed = averageSpeed;
+    }
+
+    public double getAverageDistanceToBall() {
+        return averageDistanceToBall;
+    }
+
+    public void setAverageDistanceToBall(double averageDistanceToBall) {
+        this.averageDistanceToBall = averageDistanceToBall;
     }
 
     public double getAirTime() {
