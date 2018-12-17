@@ -4,13 +4,16 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.ui.HeatmapChart;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.jfree.data.general.HeatMapDataset;
+import org.jfree.data.general.HeatMapUtils;
 import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.tc33.jheatchart.HeatChart;
 
-import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.invoke.MethodHandles;
@@ -98,37 +101,65 @@ public class RigidBodyStatistic {
 
     public HeatmapDTO getHeatmap(List<RigidBodyInformation> rigidBodyList)
     {
-        int width = 12240 / 10;
-        int height = 8192 / 10;
+        int fieldWidth = 12240;
+        int fieldHeight = 8192;
+        int divideFactor = 100;
+        int width = fieldWidth / divideFactor + 1;
+        int height = fieldHeight / divideFactor + 1;
         double upperbound = 0;
         double[][] heatmapData = new double[width][height];
+        int index = 0;
+        int size = 0;
         for (RigidBodyInformation rigidBody : rigidBodyList) {
             int x = ((int) Math.round(rigidBody.getPosition().getX())) + 4096;
             int y = ((int) Math.round(rigidBody.getPosition().getY())) + 6120;
-            if(y >= 0 && x >= 0 && y <= 12240 && x <= 8192)
+            if(y >= 0 && x >= 0 && y <= fieldWidth && x <= fieldHeight)
             {
-                int iy = y / 10;
-                int ix = x / 10;
-                heatmapData[iy][ix] += 1;
+                int iy = y / divideFactor;
+                int ix = x / divideFactor;
+                if(iy < heatmapData.length && ix < heatmapData[0].length) heatmapData[iy][ix] += 1;
+                else LOG.debug("Coordinate not in array x: {} y: {}",ix,iy);
             }
             else LOG.debug("Coordinate not in dimensions x: {} y: {}",x,y);
         }
-        DefaultXYZDataset dataset = new DefaultXYZDataset();
-        for (int w = 0; w < width; w++) {
-            double[][] data = new double[3][height];
-            for (int h = 0; h < height; h++) {
-                data[0][h] = w;
-                data[1][h] = h;
-                data[2][h] = heatmapData[w][h];
-                if(heatmapData[w][h] > upperbound) upperbound = heatmapData[w][h];
+        for (int i = 0; i < heatmapData.length; i++) {
+            for (int j = 0; j < heatmapData[0].length; j++) {
+                if (heatmapData[i][j] > 0)
+                {
+                    size++;
+                }
             }
-            dataset.addSeries("Series" + w, data);
         }
+        double[][] data = new double[3][size];
+        for (int i = 0; i < heatmapData.length; i++) {
+            for (int j = 0; j < heatmapData[0].length; j++) {
+                if (heatmapData[i][j] > 0) {
+                    data[0][index] = i;
+                    data[1][index] = j;
+                    data[2][index] = heatmapData[i][j];
+                    if(upperbound < heatmapData[i][j]) upperbound =heatmapData[i][j];
+                    index++;
+                }
+            }
+        }
+        HeatChart heatChart = new HeatChart(heatmapData);
+        heatChart.setColourScale(0.5);
+        heatChart.setLowValueColour(Color.WHITE);
+        heatChart.setHighValueColour(Color.RED);
         HeatmapDTO heatmapDTO = new HeatmapDTO();
+        heatmapDTO.setImage((BufferedImage) heatChart.getChartImage());
+        /*try {
+            heatChart.saveToFile(new File("image.png"));
+        } catch (IOException e) {
+            LOG.error("Caught Exception ##############", e);
+        }*/
+        //TODO heatmap Jfreechart vlt löschen?
+        /*DefaultXYZDataset dataset = new DefaultXYZDataset();
+        dataset.addSeries("Series", data);
         heatmapDTO.setDataset(dataset);
         heatmapDTO.setUpperBound(upperbound);
         BufferedImage bimage = HeatmapChart.createChart(dataset,upperbound).createBufferedImage(width,height);
-        heatmapDTO.setImage(bimage);
+        heatmapDTO.setImage(bimage);*/
 
         //Write image to file
         /*
