@@ -108,6 +108,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
     @Override
     public HeatmapDTO calculateHeatmap(MatchPlayerDTO matchPlayerDTO) {
+        //TODO save to matchPlaerDTO or reparse the file
         return rigidBodyStatistic.getHeatmap(carInformationParser.getRigidBodyListPlayer().get(matchPlayerDTO.getActorId()));
     }
 
@@ -209,7 +210,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
      */
     private void calculate(MatchDTO matchDTO) {
         LOG.trace("Called - calculate");
-        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer()); //TODO link actorID to matchplayer
+        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer());
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
     }
 
