@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 
 import java.io.File;
@@ -23,4 +25,11 @@ public interface JsonParseService {
      * @throws FileServiceException if the file couldn't be parsed
      */
     MatchDTO parseMatch(File jsonFile) throws FileServiceException;
+
+    /**
+     * Get the calculate the heatmap for a player
+     * @param matchPlayerDTO the player data
+     * @return HeatmapDTO with the dataset for the heatmap
+     */
+    HeatmapDTO calculateHeatmap(MatchPlayerDTO matchPlayerDTO);
 }
