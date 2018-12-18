@@ -1,6 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamValidationException;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,15 +27,17 @@ public class TeamController {
 
     private SpringFXMLLoader springFXMLLoader;
     private ExecutorService executorService;
+    private TeamService teamService;
 
     @FXML
     private TableView<TeamDTO> tableViewTeams;
     @FXML
     private TableColumn<TeamDTO, String> tableColumnTeamName;
 
-    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService) {
+    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
+        this.teamService = teamService;
     }
 
     /**
@@ -46,12 +52,12 @@ public class TeamController {
     public void onNewTeamButtonClicked(ActionEvent actionEvent) {
         Stage newTeamStage = new Stage();
         // setup application
-        newTeamStage.setTitle("Matchdetails");
+        newTeamStage.setTitle("Neues Team");
         newTeamStage.setWidth(1024);
         newTeamStage.setHeight(768);
         newTeamStage.centerOnScreen();
         newTeamStage.setOnCloseRequest(event -> {
-            LOG.debug("Match Details window closed");
+            LOG.debug("New Team window closed");
         });
 
 
@@ -63,5 +69,29 @@ public class TeamController {
         newTeamStage.toFront();
         newTeamStage.showAndWait();
 
+    }
+
+    /**
+     * Deletes a selected Team
+     * @param actionEvent Actionevent from the button
+     */
+    public void onDeleteTeamButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Delete Team Button clicked");
+        LOG.trace("called - onDeleteTeamButtonClicked");
+        if (tableViewTeams.getSelectionModel().getSelectedItem() != null) {
+            TeamDTO selectedTeam = tableViewTeams.getSelectionModel().getSelectedItem();
+            try {
+                teamService.deleteTeam(selectedTeam);
+                //TODO: updateTeamTable();
+            } catch (TeamValidationException e) {
+                LOG.error("caught TeamValidationException", e);
+                AlertHelper.showErrorMessage(e.getMessage());
+            } catch (TeamServiceException e) {
+                LOG.error("caught TeamServiceException", e);
+                AlertHelper.showErrorMessage(e.getMessage());
+            }
+        } else {
+            AlertHelper.showErrorMessage("No team selected");
+        }
     }
 }

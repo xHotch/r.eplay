@@ -38,6 +38,18 @@ public class SimpleTeamService implements TeamService {
         }
     }
 
+    @Override
+    public void deleteTeam(TeamDTO teamDTO) throws TeamValidationException, TeamServiceException {
+        LOG.trace("Called - deleteTeam");
+        teamDTOValidator(teamDTO);
+        try {
+            teamDAO.deleteTeam(teamDTO);
+        } catch (TeamPersistenceException e) {
+            String msg = "Failed to delete team";
+            throw new TeamServiceException(msg, e);
+        }
+    }
+
     private void teamDTOValidator(TeamDTO teamDTO) throws TeamValidationException {
         LOG.trace("Called - teamDTOValidator");
         String errMsg = "";

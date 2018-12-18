@@ -19,6 +19,8 @@ public class JDBCTeamDAO implements TeamDAO {
 
     private static final String INSERT_TEAM = "INSERT INTO team SET name = ?, teamSize = ?";
     private static final String INSERT_TEAMPLAYER = "INSERT INTO teamPlayer SET teamId = ?, playerId = ?";
+    private static final String DELETE_TEAM = "Delete from team where id = ?";
+    private static final String DELETE_TEAMPLAYER = "Delete from teamPlayer where teamId = ? and playerId = ?";
 
     private final Connection connection;
 
@@ -53,6 +55,32 @@ public class JDBCTeamDAO implements TeamDAO {
                 ps.executeUpdate();
             } catch (SQLException e) {
                 String msg = "Could not add player to team";
+                throw new TeamPersistenceException(msg, e);
+            }
+        }
+    }
+
+    @Override
+    public void deleteTeam(TeamDTO teamDTO) throws TeamPersistenceException {
+        LOG.trace("Called - deleteTeam");
+
+        try (PreparedStatement ps = connection.prepareStatement(DELETE_TEAM)) {
+            ps.setLong(1, teamDTO.getId());
+
+            ps.executeUpdate();
+        }  catch (SQLException e) {
+            String msg = "Could not delete team";
+            throw new TeamPersistenceException(msg, e);
+        }
+
+        for (PlayerDTO playerDTO : teamDTO.getPlayers()) {
+            try (PreparedStatement ps = connection.prepareStatement(DELETE_TEAMPLAYER)) {
+                ps.setLong(1, teamDTO.getId());
+                ps.setLong(2, playerDTO.getId());
+
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                String msg = "Could not delete player from team";
                 throw new TeamPersistenceException(msg, e);
             }
         }

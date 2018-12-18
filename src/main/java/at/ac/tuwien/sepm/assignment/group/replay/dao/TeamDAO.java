@@ -14,4 +14,11 @@ public interface TeamDAO {
      * @throws TeamPersistenceException if something failed during persistence of the new team
      */
     void createTeam(TeamDTO teamDTO) throws TeamPersistenceException;
+
+    /**
+     * Deletes a Team
+     * @param teamDTO the team to delete
+     * @throws TeamPersistenceException if something failed during persistence of the team
+     */
+    void deleteTeam(TeamDTO teamDTO) throws TeamPersistenceException;
 }

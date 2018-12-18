@@ -18,4 +18,12 @@ public interface TeamService {
      * @throws TeamServiceException if there occurs an error during persistence
      */
     void createTeam(TeamDTO teamDTO) throws TeamValidationException, TeamServiceException;
+
+    /**
+     * Validates and deletes a team
+     * @param teamDTO the team which should be deleted
+     * @throws TeamValidationException if there is invalid data in the team
+     * @throws TeamServiceException if there occurs an error during persistence
+     */
+    void deleteTeam(TeamDTO teamDTO) throws TeamValidationException, TeamServiceException;
 }

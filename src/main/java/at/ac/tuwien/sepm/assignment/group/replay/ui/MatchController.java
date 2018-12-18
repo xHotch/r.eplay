@@ -173,7 +173,7 @@ public class MatchController {
      * @param actionEvent Actionevent from the button
      */
     public void onUploadReplayButtonClicked(ActionEvent actionEvent) {
-        LOG.info("Image Chooser clicked");
+        LOG.info("Upload Replay Button clicked");
         LOG.trace("Called - onUploadMatchButtonClicked");
 
         FileChooser fileChooser = new FileChooser();

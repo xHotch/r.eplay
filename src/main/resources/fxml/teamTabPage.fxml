@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamController">
     <children>
         <TableView fx:id="tableViewTeams" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
             <columns>
@@ -13,7 +13,7 @@
             </columns>
         </TableView>
         <Button layoutX="20.0" layoutY="672.0" mnemonicParsing="false" onAction="#onNewTeamButtonClicked" text="Neues Team" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
-        <Button disable="true" layoutX="154.0" layoutY="672.0" mnemonicParsing="false" text="Team löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
+        <Button layoutX="154.0" layoutY="672.0" mnemonicParsing="false" onAction="#onDeleteTeamButtonClicked" text="Team löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
         <Button disable="true" layoutX="282.0" layoutY="672.0" mnemonicParsing="false" text="Teamdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="280.0" />
     </children>
 </AnchorPane>
