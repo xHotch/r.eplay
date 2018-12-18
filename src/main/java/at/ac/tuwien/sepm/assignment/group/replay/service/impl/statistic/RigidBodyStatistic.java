@@ -2,12 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.HeatmapDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
-import at.ac.tuwien.sepm.assignment.group.replay.ui.HeatmapChart;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.jfree.data.general.HeatMapDataset;
-import org.jfree.data.general.HeatMapUtils;
-import org.jfree.data.xy.DefaultXYZDataset;
-import org.jfree.data.xy.XYDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,7 +10,6 @@ import org.tc33.jheatchart.HeatChart;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -25,6 +19,8 @@ import java.util.List;
 @Service
 public class RigidBodyStatistic {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    private static final double airThreshold = 30.0;
 
     private double averageSpeed;
     private double positiveSideTime = 0;
@@ -85,7 +81,7 @@ public class RigidBodyStatistic {
                 if (rigidBody1.getPosition().getY() < 0) negativeSideTime += deltaTime;
                 else positiveSideTime += deltaTime;
                 //ground / air time
-                if (rigidBody1.getPosition().getZ() < 18) groundTime += deltaTime;
+                if (rigidBody1.getPosition().getZ() < airThreshold) groundTime += deltaTime;
                 else airTime += deltaTime;
                 //average Speed
                 frameSpeed = distance / deltaTime;
