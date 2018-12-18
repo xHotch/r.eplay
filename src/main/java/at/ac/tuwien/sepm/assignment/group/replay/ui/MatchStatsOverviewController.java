@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -164,12 +165,14 @@ public class MatchStatsOverviewController {
      * Helper Method to setup up the Player Table Columns
      */
     private void setUpPlayerTable() {
+        tableTeamBlue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         playerNameBlue.setCellValueFactory(new PropertyValueFactory<>("name"));
         playerGoalsBlue.setCellValueFactory(new PropertyValueFactory<>("goals"));
         playerShotsBlue.setCellValueFactory(new PropertyValueFactory<>("shots"));
         playerSavesBlue.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsBlue.setCellValueFactory(new PropertyValueFactory<>("assists"));
 
+        tableTeamRed.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         playerNameRed.setCellValueFactory(new PropertyValueFactory<>("name"));
         playerGoalsRed.setCellValueFactory(new PropertyValueFactory<>("goals"));
         playerShotsRed.setCellValueFactory(new PropertyValueFactory<>("shots"));

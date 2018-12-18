@@ -109,7 +109,7 @@ public class TeamController {
             TeamDTO selectedTeam = tableViewTeams.getSelectionModel().getSelectedItem();
             try {
                 teamService.deleteTeam(selectedTeam);
-                //TODO: updateTeamTable();
+                updateTeamTable();
             } catch (TeamValidationException e) {
                 LOG.error("caught TeamValidationException", e);
                 AlertHelper.showErrorMessage(e.getMessage());
