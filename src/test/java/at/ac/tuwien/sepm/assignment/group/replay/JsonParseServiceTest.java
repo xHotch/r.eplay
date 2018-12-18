@@ -62,7 +62,7 @@ public class JsonParseServiceTest {
         rigidBodyParser = new RigidBodyParser();
         ballInformationParser = new BallInformationParser(rigidBodyParser);
         carInformationParser = new CarInformationParser(rigidBodyParser);
-        boostInformationParser = new BoostInformationParser(rigidBodyParser);
+        boostInformationParser = new BoostInformationParser(carInformationParser);
         gameInformationParser = new GameInformationParser();
         playerInformationParser = new PlayerInformationParser();
 

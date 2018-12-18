@@ -60,6 +60,7 @@ public class MatchController {
     private PlayerController playerController;
     private BallStatisticsController ballStatisticsController;
     private MatchPlayerStatisticsController matchPlayerStatisticsController;
+    private BoostStatisticsController boostStatisticsController;
     private ExecutorService executorService;
     private ReplayService replayService;
     private JsonParseService jsonParseService;
@@ -81,7 +82,7 @@ public class MatchController {
     @FXML
     private Button uploadReplayButton;
 
-    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController) {
+    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, BoostStatisticsController boostStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
@@ -91,6 +92,7 @@ public class MatchController {
         this.playerController = playerController;
         this.matchStatsOverviewController = matchStatsOverviewController;
         this.ballStatisticsController = ballStatisticsController;
+        this.boostStatisticsController = boostStatisticsController;
         this.matchPlayerStatisticsController = matchPlayerStatisticsController;
     }
 
@@ -137,6 +139,7 @@ public class MatchController {
             matchStatsOverviewController.loadBasicMatchData(selectedMatch);
             ballStatisticsController.loadBallStatistics(selectedMatch);
             matchPlayerStatisticsController.loadMatchPlayerStatistics(selectedMatch);
+            boostStatisticsController.loadBoostStatistics(selectedMatch);
             // show application
             matchdetailsStage.show();
             matchdetailsStage.toFront();
