@@ -31,6 +31,7 @@
             <TableColumn fx:id="playerShotsBlue" prefWidth="75.0" text="Schüsse" />
             <TableColumn fx:id="playerSavesBlue" prefWidth="75.0" text="Saves" />
             <TableColumn fx:id="playerAssistsBlue" prefWidth="75.0" text="Assists" />
+            <TableColumn fx:id="playerAvgSpeedBlue" prefWidth="195.0" text="Durchschnittsgeschwindigkeit" />
          </columns>
       </TableView>
       <Label layoutX="30.0" layoutY="130.0" text="Team Rot" AnchorPane.bottomAnchor="265.0" AnchorPane.leftAnchor="20.0">
@@ -45,6 +46,7 @@
             <TableColumn fx:id="playerShotsRed" prefWidth="75.0" text="Schüsse" />
             <TableColumn fx:id="playerSavesRed" prefWidth="75.0" text="Saves" />
             <TableColumn fx:id="playerAssistsRed" prefWidth="75.0" text="Assists" />
+            <TableColumn fx:id="playerAvgSpeedRed" prefWidth="195.0" text="Durchschnittsgeschwindigkeit" />
          </columns>
       </TableView>
       <Button layoutX="22.0" layoutY="663.0" mnemonicParsing="false" onAction="#onSavePlayerButtonClicked" text="Spieler speichern" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
