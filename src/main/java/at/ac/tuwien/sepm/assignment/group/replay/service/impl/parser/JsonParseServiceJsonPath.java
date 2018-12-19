@@ -182,6 +182,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
                             break;
 
+                        case "TAGame.VehiclePickup_Boost_TA":
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            break;
+
                         default:
                             //Information not relevant for our project
                             break;

@@ -124,6 +124,8 @@ public class MatchPlayerDTO {
         return averageSpeed;
     }
 
+    public int getAverageSpeedAsInt() {return (int) averageSpeed;}
+
     public void setAverageSpeed(double averageSpeed) {
         this.averageSpeed = averageSpeed;
     }
@@ -175,4 +177,5 @@ public class MatchPlayerDTO {
     public void setActorId(int actorId) {
         this.actorId = actorId;
     }
+
 }

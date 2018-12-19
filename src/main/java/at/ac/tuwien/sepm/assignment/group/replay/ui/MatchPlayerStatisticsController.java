@@ -165,5 +165,8 @@ public class MatchPlayerStatisticsController {
         }
 
         heatmapView.setImage(SwingFXUtils.toFXImage(selectedPlayer.getHeatmapImage(), null));
+        heatmapView.setRotate(270);
+        heatmapView.setScaleX(1.5);
+        heatmapView.setScaleY(1.5);
     }
 }

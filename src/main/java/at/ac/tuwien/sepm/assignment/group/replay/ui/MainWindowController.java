@@ -35,6 +35,8 @@ public class MainWindowController {
     // Inject controller
     //@FXML private PlayerController playerTabPageController;
 
+    @FXML private Tab teamTab;
+
     public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;

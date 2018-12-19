@@ -62,7 +62,7 @@ public class JsonParseServiceTest {
         rigidBodyParser = new RigidBodyParser();
         ballInformationParser = new BallInformationParser(rigidBodyParser);
         carInformationParser = new CarInformationParser(rigidBodyParser);
-        boostInformationParser = new BoostInformationParser(rigidBodyParser);
+        boostInformationParser = new BoostInformationParser(carInformationParser);
         gameInformationParser = new GameInformationParser();
         playerInformationParser = new PlayerInformationParser();
 
@@ -70,7 +70,7 @@ public class JsonParseServiceTest {
         ballStatistic = new BallStatistic(rigidBodyStatistic);
         playerStatistic = new PlayerStatistic(rigidBodyStatistic);
 
-        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic);
+        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,rigidBodyStatistic);
 
     }
 

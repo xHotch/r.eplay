@@ -19,6 +19,8 @@ import java.util.List;
 public class RigidBodyStatistic {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    private static final double airThreshold = 30.0;
+
     private double averageSpeed;
     private double positiveSideTime = 0;
     private double negativeSideTime = 0;
@@ -78,7 +80,7 @@ public class RigidBodyStatistic {
                 if (rigidBody1.getPosition().getY() < 0) negativeSideTime += deltaTime;
                 else positiveSideTime += deltaTime;
                 //ground / air time
-                if (rigidBody1.getPosition().getZ() < 18) groundTime += deltaTime;
+                if (rigidBody1.getPosition().getZ() < airThreshold) groundTime += deltaTime;
                 else airTime += deltaTime;
                 //average Speed
                 frameSpeed = distance / deltaTime;

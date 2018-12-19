@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -57,15 +58,19 @@ public class MatchStatsOverviewController {
     @FXML
     private TableColumn<MatchPlayerDTO, Integer> playerAssistsBlue;
     @FXML
+    private TableColumn<MatchPlayerDTO, Double> playerAvgSpeedBlue;
+    @FXML
     private TableColumn<MatchPlayerDTO, String> playerNameRed;
     @FXML
     private TableColumn<MatchPlayerDTO, Integer> playerGoalsRed;
     @FXML
-    private TableColumn<MatchPlayerDTO, Integer>playerShotsRed;
+    private TableColumn<MatchPlayerDTO, Integer> playerShotsRed;
     @FXML
-    private TableColumn<MatchPlayerDTO, Integer>playerSavesRed;
+    private TableColumn<MatchPlayerDTO, Integer> playerSavesRed;
     @FXML
-    private TableColumn<MatchPlayerDTO, Integer>playerAssistsRed;
+    private TableColumn<MatchPlayerDTO, Integer> playerAssistsRed;
+    @FXML
+    private TableColumn<MatchPlayerDTO, Double> playerAvgSpeedRed;
 
     public MatchStatsOverviewController(PlayerService playerService, PlayerController playerController) {
         this.playerService = playerService;
@@ -87,7 +92,7 @@ public class MatchStatsOverviewController {
      *
      * @param match to get the basic information from.
      */
-    public void loadBasicMatchData(MatchDTO match) {
+    void loadBasicMatchData(MatchDTO match) {
 
         int mode = match.getTeamSize();
         this.labelGameMode.setText(mode + "vs" + mode);
@@ -111,14 +116,14 @@ public class MatchStatsOverviewController {
         ObservableList<MatchPlayerDTO> playerListBlue = FXCollections.observableArrayList();
         ObservableList<MatchPlayerDTO> playerListRed = FXCollections.observableArrayList();
 
-        for (MatchPlayerDTO player:matchPlayers) {
+        for (MatchPlayerDTO player : matchPlayers) {
             // team blue
-            if(player.getTeam() == TeamSide.BLUE){
+            if (player.getTeam() == TeamSide.BLUE) {
                 blueGoals += player.getGoals();
 
                 playerListBlue.add(player);
             }
-            if(player.getTeam() == TeamSide.RED){
+            if (player.getTeam() == TeamSide.RED) {
                 redGoals += player.getGoals();
 
                 playerListRed.add(player);
@@ -164,17 +169,21 @@ public class MatchStatsOverviewController {
      * Helper Method to setup up the Player Table Columns
      */
     private void setUpPlayerTable() {
+        tableTeamBlue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         playerNameBlue.setCellValueFactory(new PropertyValueFactory<>("name"));
         playerGoalsBlue.setCellValueFactory(new PropertyValueFactory<>("goals"));
         playerShotsBlue.setCellValueFactory(new PropertyValueFactory<>("shots"));
         playerSavesBlue.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsBlue.setCellValueFactory(new PropertyValueFactory<>("assists"));
+        playerAvgSpeedBlue.setCellValueFactory(new PropertyValueFactory<>("averageSpeedAsInt"));
 
+        tableTeamRed.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         playerNameRed.setCellValueFactory(new PropertyValueFactory<>("name"));
         playerGoalsRed.setCellValueFactory(new PropertyValueFactory<>("goals"));
         playerShotsRed.setCellValueFactory(new PropertyValueFactory<>("shots"));
         playerSavesRed.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsRed.setCellValueFactory(new PropertyValueFactory<>("assists"));
+        playerAvgSpeedRed.setCellValueFactory(new PropertyValueFactory<>("averageSpeedAsInt"));
 
     }
 }

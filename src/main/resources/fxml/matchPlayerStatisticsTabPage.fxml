@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
    <children>
       <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
       <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
@@ -21,7 +21,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="692.0" layoutY="377.0" text="Position Heatmap" AnchorPane.leftAnchor="692.0" AnchorPane.topAnchor="377.0">
+      <Label layoutX="692.0" layoutY="391.0" text="Position Heatmap" AnchorPane.leftAnchor="692.0" AnchorPane.topAnchor="391.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -34,6 +34,6 @@
           <NumberAxis fx:id="bcYAxis" autoRanging="false" />
         </yAxis>
       </BarChart>
-      <ImageView fx:id="heatmapView" fitHeight="246.0" fitWidth="349.0" layoutX="589.0" layoutY="414.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="589.0" AnchorPane.topAnchor="414.0" />
+      <ImageView fx:id="heatmapView" fitHeight="250.0" fitWidth="350.0" layoutX="674.0" layoutY="429.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="674.0" AnchorPane.topAnchor="429.0" />
    </children>
 </AnchorPane>
