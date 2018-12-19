@@ -119,20 +119,6 @@ public class RigidBodyStatistic {
         heatChart.setLowValueColour(Color.WHITE);
         heatChart.setHighValueColour(Color.RED);
         return (BufferedImage) heatChart.getChartImage();
-
-        //Write image to file
-        /*
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(bimage, "png", bas);
-        byte[] byteArray=bas.toByteArray();
-        InputStream in = new ByteArrayInputStream(byteArray);
-        BufferedImage image = ImageIO.read(in);
-        File outputfile = new File("image.png");
-        ImageIO.write(image, "png", outputfile);
-        } catch (Exception e) {
-            LOG.error("Exception",e);
-        }*/
     }
 
     double getAverageSpeed() {

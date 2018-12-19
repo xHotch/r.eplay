@@ -144,8 +144,8 @@ public class UserFolderDAO implements FolderDAO {
         try {
             ImageIO.write(matchDTO.getBallHeatmapImage(), "png", new File(heatmapDirectory, fileName));
             for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
-                fileName = fileID + "_" + matchPlayerDTO.getName();
-                ImageIO.write(matchDTO.getBallHeatmapImage(), "png", new File(heatmapDirectory, fileName));
+                fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
+                ImageIO.write(matchPlayerDTO.getHeatmapImage(), "png", new File(heatmapDirectory, fileName));
             }
         } catch (IOException e) {
             LOG.error("Failed to write Image",e);
@@ -160,7 +160,7 @@ public class UserFolderDAO implements FolderDAO {
         try {
             matchDTO.setBallHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
             for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
-                fileName = fileID + "_" + matchPlayerDTO.getName();
+                fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
                 matchPlayerDTO.setHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
             }
         } catch (IOException e) {

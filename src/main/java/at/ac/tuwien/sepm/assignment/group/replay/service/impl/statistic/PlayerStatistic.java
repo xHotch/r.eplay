@@ -33,6 +33,7 @@ public class PlayerStatistic {
 
     private void setMatchPlayerData(MatchPlayerDTO matchPlayerDTO, List<RigidBodyInformation> rigidBodyPlayer, List<RigidBodyInformation> rigidBodyBall){
         rigidBodyStatistic.calculate(rigidBodyPlayer);
+        matchPlayerDTO.setHeatmapImage(rigidBodyStatistic.calculateHeatmap(rigidBodyPlayer));
         matchPlayerDTO.setAirTime(rigidBodyStatistic.getAirTime());
         matchPlayerDTO.setGroundTime(rigidBodyStatistic.getGroundTime());
         matchPlayerDTO.setAverageSpeed(rigidBodyStatistic.getAverageSpeed());

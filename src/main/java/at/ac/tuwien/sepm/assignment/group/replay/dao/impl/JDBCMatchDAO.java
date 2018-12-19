@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
@@ -36,15 +37,18 @@ public class JDBCMatchDAO implements MatchDAO {
     private final Connection connection;
 
     private PlayerDAO playerDAO;
+    private FolderDAO folderDAO;
 
-    public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO) throws SQLException {
+    public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO, FolderDAO folderDAO) throws SQLException {
         this.connection = jdbcConnectionManager.getConnection();
         this.playerDAO = playerDAO;
+        this.folderDAO = folderDAO;
     }
 
     @Override
     public void createMatch(MatchDTO matchDTO) throws MatchPersistenceException, MatchAlreadyExistsException {
         LOG.trace("Called - createMatch");
+        folderDAO.saveHeatmaps(matchDTO);
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS);
             PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID)) {
 
@@ -129,7 +133,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     // retrieve the players from the match
                     List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
                     match.setPlayerData(matchPlayers);
-
+                    folderDAO.getHeatmaps(match);
                     result.add(match);
                     LOG.debug("Added match to the result list!");
                 }

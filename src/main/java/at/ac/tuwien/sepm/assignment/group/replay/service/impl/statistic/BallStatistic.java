@@ -30,6 +30,7 @@ public class BallStatistic {
     public void calculate(MatchDTO match, List<RigidBodyInformation> rigidBodyBall, SortedMap<Double, TeamSide> hitTimes) {
         LOG.trace("Called - calculate");
         rigidBodyStatistic.calculate(rigidBodyBall);
+        match.setBallHeatmapImage(rigidBodyStatistic.calculateHeatmap(rigidBodyBall));
         match.setTimeBallInBlueSide(rigidBodyStatistic.getNegativeSideTime());
         match.setTimeBallInRedSide(rigidBodyStatistic.getPositiveSideTime());
         calculatePossession(match, rigidBodyBall, hitTimes);
