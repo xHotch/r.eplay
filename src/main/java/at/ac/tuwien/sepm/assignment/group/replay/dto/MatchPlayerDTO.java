@@ -23,7 +23,6 @@ public class MatchPlayerDTO {
     private double averageDistanceToBall;
     private double airTime;
     private double groundTime;
-    private String heatmapFilename;
     private BufferedImage heatmapImage;
 
     private int actorId;
@@ -152,14 +151,6 @@ public class MatchPlayerDTO {
 
     public void setGroundTime(double groundTime) {
         this.groundTime = groundTime;
-    }
-
-    public String getHeatmapFilename() {
-        return heatmapFilename;
-    }
-
-    public void setHeatmapFilename(String heatmapFilename) {
-        this.heatmapFilename = heatmapFilename;
     }
 
     public BufferedImage getHeatmapImage() {

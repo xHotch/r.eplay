@@ -20,7 +20,6 @@ public class MatchDTO {
     private double timeBallInRedSide;
     private int possessionBlue;
     private int possessionRed;
-    private String ballHeatmapFilename;
     private BufferedImage ballHeatmapImage;
 
     public int getId() {
@@ -93,14 +92,6 @@ public class MatchDTO {
 
     public void setPossessionRed(int possessionRed) {
         this.possessionRed = possessionRed;
-    }
-
-    public String getBallHeatmapFilename() {
-        return ballHeatmapFilename;
-    }
-
-    public void setBallHeatmapFilename(String ballHeatmapFilename) {
-        this.ballHeatmapFilename = ballHeatmapFilename;
     }
 
     public BufferedImage getBallHeatmapImage() {

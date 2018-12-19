@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 
 import java.io.File;
 
@@ -65,5 +66,17 @@ public interface FolderDAO {
      * @throws FilePersistenceException if the file could not be deleted or the File has the wrong filetype
      */
     void deleteFile(File file) throws FilePersistenceException;
+
+    /**
+     * Saves the Heatmaps from the MatchDTO in the heatmaps directory
+     * @param matchDTO heatmaps to save for a Match
+     */
+    void saveHeatmaps(MatchDTO matchDTO);
+
+    /**
+     * Gets the Heatmap Images from the heatmaps directory and saves it to the MatchDTO
+     * @param matchDTO the match to get the heatmap
+     */
+    void getHeatmaps(MatchDTO matchDTO);
 
 }
