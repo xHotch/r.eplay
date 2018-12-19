@@ -51,7 +51,7 @@ public class BallStatisticsController {
         posBlueTeamSlice.getNode().setStyle("-fx-pie-color: lightskyblue;");
         posRedTeamSlice.getNode().setStyle("-fx-pie-color: lightcoral;");
 
-        heatmapView.setImage(SwingFXUtils.toFXImage(, null));
+        heatmapView.setImage(SwingFXUtils.toFXImage(matchDTO.getBallHeatmapImage(), null));
 
     }
 

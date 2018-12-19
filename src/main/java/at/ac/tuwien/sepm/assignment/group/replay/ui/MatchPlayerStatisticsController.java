@@ -164,6 +164,6 @@ public class MatchPlayerStatisticsController {
             enemySideTimeSlice.getNode().setStyle(lightskyblue);
         }
 
-        heatmapView.setImage(SwingFXUtils.toFXImage(, null));
+        heatmapView.setImage(SwingFXUtils.toFXImage(selectedPlayer.getHeatmapImage(), null));
     }
 }
