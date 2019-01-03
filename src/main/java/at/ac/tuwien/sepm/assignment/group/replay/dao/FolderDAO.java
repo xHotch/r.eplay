@@ -66,4 +66,11 @@ public interface FolderDAO {
      */
     void deleteFile(File file) throws FilePersistenceException;
 
+    /**
+     * Returns a File with the given FileName from the File Folder
+     * @param fileName the FileName
+     * @return the File from the File Folder
+     */
+    File getFile(String fileName);
+
 }

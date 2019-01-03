@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.FrameDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
@@ -25,6 +26,7 @@ public class CarInformationParser {
     private double frameTime;
     private double frameDelta;
     private boolean gamePaused;
+    private FrameDTO frameDTO;
 
     //Map that maps ActorID from a car to a player. Key = CarActorId, Value = playerActorId
     private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
@@ -63,6 +65,20 @@ public class CarInformationParser {
 
         getPlayerIDfromCar();
         parseRigidBodyInformation();
+
+    }
+
+
+    void parseVideoFrame(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused) throws FileServiceException {
+        LOG.trace("Called - parse");
+        this.actorId = actorId;
+        this.currentFrame = currentFrame;
+        this.currentActorUpdateNr = currentActorUpdateNr;
+        this.frameDTO = frameDTO;
+        this.gamePaused = gamePaused;
+
+        getPlayerIDfromCar();
+        parseFrameRigidBodyInformation();
     }
 
     /**
@@ -100,6 +116,21 @@ public class CarInformationParser {
             LOG.debug("No Information about player found");
         }
     }
+
+
+    /**
+     * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
+     */
+    private void parseFrameRigidBodyInformation() throws FileServiceException {
+        LOG.trace("Called - parseRigidBodyInformation");
+
+        try {
+            frameDTO.getCarRigidBodyInformations().put(actorId,rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused));
+        } catch (PathNotFoundException e) {
+            LOG.debug("No Information about player found");
+        }
+    }
+
 
     Map<Integer, List<RigidBodyInformation>> getRigidBodyListPlayer() {
         LOG.trace("Called - calculate");

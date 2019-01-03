@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.util.LinkedList;
@@ -23,7 +25,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?," +
-        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?";
+        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?, fileName = ?";
     private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
@@ -36,10 +38,12 @@ public class JDBCMatchDAO implements MatchDAO {
     private final Connection connection;
 
     private PlayerDAO playerDAO;
+    private FolderDAO folderDAO;
 
-    public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO) throws SQLException {
+    public JDBCMatchDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO, FolderDAO folderDAO) throws SQLException {
         this.connection = jdbcConnectionManager.getConnection();
         this.playerDAO = playerDAO;
+        this.folderDAO = folderDAO;
     }
 
     @Override
@@ -62,6 +66,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setDouble(5, matchDTO.getTimeBallInRedSide());
             ps.setInt(6, matchDTO.getPossessionBlue());
             ps.setInt(7, matchDTO.getPossessionRed());
+            ps.setString(8,matchDTO.getReplayFile().getName());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
@@ -125,6 +130,8 @@ public class JDBCMatchDAO implements MatchDAO {
                     match.setPossessionRed(rs.getInt("possessionRed"));
                     match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
                     match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
+                    match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
+                    //match.setReplayFile(new File(rs.getString("fileName")));
 
                     // retrieve the players from the match
                     List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);

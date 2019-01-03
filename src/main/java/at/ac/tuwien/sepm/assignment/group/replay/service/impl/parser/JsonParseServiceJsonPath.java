@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
@@ -43,25 +45,71 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
     private RigidBodyParser rigidBodyParser;
     private PlayerInformationParser playerInformationParser;
-    private GameInformationParser gameInformationParse;
+    private GameInformationParser gameInformationParser;
     private CarInformationParser carInformationParser;
     private BallInformationParser ballInformationParser;
     private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
     private RigidBodyStatistic rigidBodyStatistic;
+    private ReplayService replayService;
+    private MatchService matchService;
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, RigidBodyStatistic rigidBodyStatistic) {
+
+
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, RigidBodyStatistic rigidBodyStatistic, ReplayService replayService, MatchService matchService) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
-        this.gameInformationParse = gameInformationParse;
+        this.gameInformationParser = gameInformationParser;
         this.carInformationParser = carInformationParser;
         this.ballInformationParser = ballInformationParser;
         this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
         this.ballStatistic = ballStatistic;
         this.rigidBodyStatistic = rigidBodyStatistic;
+        this.replayService = replayService;
+        this.matchService = matchService;
+    }
+
+
+    private VideoDTO parseVideo(File jsonFile) throws FileServiceException {
+        LOG.trace("called - parseMatch");
+        if (jsonFile == null) {
+
+            throw new FileServiceException("Can't parse null");
+        }
+        String extension = FilenameUtils.getExtension(jsonFile.getName());
+        if (!extension.equals("json")) {
+            throw new FileServiceException("wrong file type: " + extension);
+        }
+
+            try {
+                Configuration conf = Configuration.builder().options(Option.DEFAULT_PATH_LEAF_TO_NULL).build();
+                ctx = JsonPath.using(conf).parse(jsonFile);
+
+                playerInformationParser.setCtx(ctx);
+                playerInformationParser.setUp();
+                rigidBodyParser.setCtx(ctx);
+                carInformationParser.setCtx(ctx);
+                carInformationParser.setup();
+                ballInformationParser.setCtx(ctx);
+                ballInformationParser.setup();
+
+                heatmapDTOMap = new HashMap<>();
+
+                jFile = jsonFile;
+            } catch (IOException e) {
+                throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
+            }
+
+
+
+        LOG.debug("Start Parse");
+        VideoDTO videoDTO = new VideoDTO();
+        videoDTO.setFrames(parseVideoFrames());
+        LOG.debug("End Parse");
+        return videoDTO;
     }
 
     @Override
@@ -75,7 +123,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         if (!extension.equals("json")) {
             throw new FileServiceException("wrong file type: " + extension);
         }
-        if (!jsonFile.equals(jFile) || ctx == null) {
+
             try {
                 Configuration conf = Configuration.builder().options(Option.DEFAULT_PATH_LEAF_TO_NULL).build();
                 ctx = JsonPath.using(conf).parse(jsonFile);
@@ -83,7 +131,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 playerInformationParser.setCtx(ctx);
                 playerInformationParser.setUp();
                 rigidBodyParser.setCtx(ctx);
-                gameInformationParse.setCtx(ctx);
+                gameInformationParser.setCtx(ctx);
                 carInformationParser.setCtx(ctx);
                 carInformationParser.setup();
                 ballInformationParser.setCtx(ctx);
@@ -97,7 +145,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
             }
 
-        }
+
 
         LOG.debug("Start Parse");
         matchDTO = readProperties();
@@ -108,6 +156,17 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         calculate(matchDTO);
         LOG.debug("End  Calculate");
         return matchDTO;
+    }
+
+    @Override
+    public VideoDTO getVideo(MatchDTO matchDTO) throws FileServiceException{
+
+        //get json from .replay
+        File jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
+        VideoDTO videoDTO = parseVideo(jsonFile);
+        matchService.deleteFile(jsonFile);
+
+        return videoDTO;
     }
 
     @Override
@@ -141,10 +200,13 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         HashMap<Integer, String> actors = new HashMap<>();
 
         //list that stores time when goals were scored, in order to pause the game afterwards
-        gameInformationParse.setTimeOfGoals();
+        gameInformationParser.setTimeOfGoals();
 
         //pause game at the beginning
         boolean gamePaused = true;
+
+        //Frames for video
+        VideoDTO videoDTO = new VideoDTO();
 
         try {
 
@@ -158,12 +220,18 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 LOG.debug("Frame {} has {} ActorUpdates", currentFrame, actorUpdateCount);
 
 
+
                 double frameTime = ctx.read(frame + ".Time", Double.class);
                 double frameDelta = ctx.read(frame + ".Delta", Double.class);
 
                 //pause game if goal was scored
                 if (!gamePaused){
-                gamePaused = gameInformationParse.pauseGameIfGoalWasScored(frameTime);}
+                gamePaused = gameInformationParser.pauseGameIfGoalWasScored(frameTime);}
+
+
+                //Frames for video
+                //videoDTO.addFrame(frameTime);
+                FrameDTO frameDTO = new FrameDTO(frameTime);
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -181,7 +249,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                     //resume game if countdown equals 0 (is shown after a goal before the game resumes)
                     if (gamePaused) {
-                        gamePaused = gameInformationParse.resumeGameIfCountdownIsZero(frame, currentActorUpdateNr);
+                        gamePaused = gameInformationParser.resumeGameIfCountdownIsZero(frame, currentActorUpdateNr);
                     }
                     switch (className) {
                         case "TAGame.Ball_TA":
@@ -220,6 +288,93 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         } catch (Exception e) {
             throw new FileServiceException("Exception while parsing frames", e);
         }
+    }
+
+    /**
+     * Method that loops through frames and actorupdates.
+     * Calls other classes to parse information from the json, depending on the classtype of the actor
+     *
+     * @throws FileServiceException if File could not be parsed
+     */
+    private List<FrameDTO> parseVideoFrames() throws FileServiceException {
+
+        ArrayList<FrameDTO> frameDTOS = new ArrayList<>();
+        LOG.trace("Called - parseVideoFrames");
+
+        //Map that contains the ids and Classnames from actors.
+        //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
+        HashMap<Integer, String> actors = new HashMap<>();
+
+
+        //pause game at the beginning
+        boolean gamePaused = true;
+
+        //Frames for video
+        VideoDTO videoDTO = new VideoDTO();
+
+        try {
+
+            int frameCount = ctx.read("$.Frames.length()");
+
+            LOG.debug("Match framecount : {}", frameCount);
+            for (int currentFrame = 0; currentFrame < frameCount; currentFrame++) {
+
+                String frame = "$.Frames[" + currentFrame + "]";
+                int actorUpdateCount = ctx.read(frame + ".ActorUpdates.length()");
+                LOG.debug("Frame {} has {} ActorUpdates", currentFrame, actorUpdateCount);
+
+
+
+                double frameTime = ctx.read(frame + ".Time", Double.class);
+
+
+
+
+                //Frames for video
+                //videoDTO.addFrame(frameTime);
+                FrameDTO frameDTO = new FrameDTO(frameTime);
+
+
+                int i = 0;
+                for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
+
+                    int actorId = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].Id", Integer.class);
+
+                    //New Actors have field ClassName. Check if it is a new actor
+                    String newActor = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].ClassName");
+                    if (newActor != null) {
+                        actors.put(actorId, newActor);
+                        LOG.debug("New Actor found at frame {}, actorupdate {}", currentFrame, currentActorUpdateNr);
+                    }
+
+
+                    String className = actors.get(actorId);
+
+
+                    switch (className) {
+                        case "TAGame.Ball_TA":
+                            ballInformationParser.parseVideoFrame(currentFrame, currentActorUpdateNr, frameDTO, gamePaused);
+                            i++;
+                            break;
+                        case "TAGame.Car_TA":
+                            carInformationParser.parseVideoFrame(actorId, currentFrame, currentActorUpdateNr, frameDTO, gamePaused);
+                            i++;
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                    LOG.debug(className);
+                }
+                if (i != 0){
+                    frameDTOS.add(frameDTO);
+                }
+            }
+        } catch (Exception e) {
+            throw new FileServiceException("Exception while parsing frames", e);
+        }
+        return frameDTOS;
     }
 
 

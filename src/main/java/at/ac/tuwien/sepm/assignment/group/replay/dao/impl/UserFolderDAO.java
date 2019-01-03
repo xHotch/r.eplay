@@ -117,6 +117,13 @@ public class UserFolderDAO implements FolderDAO {
         return replayToJsonParser;
     }
 
+    public File getFile(String fileName) {
+        LOG.trace("Called - getFile");
+        File file = new File(fileDirectory + fileName);
+
+        return file;
+    }
+
 
     @Override
     public void deleteFile(File file) throws  FilePersistenceException{

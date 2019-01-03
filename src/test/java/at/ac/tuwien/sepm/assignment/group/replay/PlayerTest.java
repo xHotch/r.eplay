@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
@@ -42,19 +45,22 @@ public class PlayerTest {
     private PlayerDTO player1, player2;
     private MatchPlayerDTO matchPlayer1;
     private MatchDAO matchDAO;
+    private FolderDAO mockFolderDAO;
     private PlayerService playerService;
     private List<PlayerDTO> retrievedPlayers;
 
     AnnotationConfigApplicationContext context;
 
     @Before
-    public void setUp() throws SQLException{
+    public void setUp() throws SQLException, CouldNotCreateFolderException {
 
         jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
 
 
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO);
+        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles");
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO,mockFolderDAO);
+
 
 
 

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import org.apache.commons.io.FilenameUtils;
@@ -35,7 +36,7 @@ public class ReplayServiceRLRP implements ReplayService {
 
 
     @Override
-    public File parseReplayFileToJson(File file) throws FileServiceException {
+    public File parseReplayFileToJson(File replayFile) throws FileServiceException {
         LOG.trace("Called - parseReplayFileToJson");
 
         File jsonFile;
@@ -45,12 +46,12 @@ public class ReplayServiceRLRP implements ReplayService {
                 String[] necessaryFiles = new String[]{"CommandLine.dll", "KellermanSoftware.Compare-NET-Objects.dll", "Newtonsoft.Json.dll", "RocketLeagueReplayParser.dll", "RocketLeagueReplayParser.exe"};
                 replayToJsonParser = folderDAO.getParser(necessaryFiles);
             }
-            String extension = FilenameUtils.getExtension(file.getName());
+            String extension = FilenameUtils.getExtension(replayFile.getName());
             if (!extension.equals("replay")) {
                 throw new FileServiceException("Wrong file type: " + extension);
             }
 
-            File replayFile = folderDAO.copyReplayFile(file);
+
 
             String[] cmd = {replayToJsonParser.getAbsolutePath(), replayFile.getAbsolutePath()};
             Process proc = new ProcessBuilder(cmd).start();
@@ -77,6 +78,19 @@ public class ReplayServiceRLRP implements ReplayService {
 
         LOG.debug("Created JSON File at: {}", jsonFile.getAbsolutePath());
         return jsonFile;
+    }
+
+    @Override
+    public File copyReplayFile(File inputFile) throws FileServiceException {
+        String extension = FilenameUtils.getExtension(inputFile.getName());
+        if (!extension.equals("replay")) {
+            throw new FileServiceException("Wrong file type: " + extension);
+        }
+        try {
+            return folderDAO.copyReplayFile(inputFile);
+        } catch (FilePersistenceException e){
+            throw new FileServiceException("Could not copy replay File", e);
+        }
     }
 
 

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
@@ -27,6 +28,7 @@ public interface MatchService {
      */
     void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, ReplayAlreadyExistsException;
 
+
     List<MatchDTO> getMatches() throws MatchServiceException;
 
     /**
@@ -43,6 +45,7 @@ public interface MatchService {
      * @throws FileServiceException if the file could not be deleted
      */
     void deleteFile(File file) throws FileServiceException;
+
 
 
 }

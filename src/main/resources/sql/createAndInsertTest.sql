@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS match_
   timeBallInBlueSide double,
   timeBallInRedSide double,
   possessionBlue int,
-  possessionRed int
+  possessionRed int,
+  fileName VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS player

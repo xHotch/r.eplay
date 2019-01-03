@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.FrameDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
@@ -20,6 +21,7 @@ public class BallInformationParser {
     private double frameTime;
     private double frameDelta;
     private boolean gamePaused;
+    private FrameDTO frameDTO;
 
     private EnumMap<TeamSide, Integer> hitCount;
 
@@ -64,6 +66,22 @@ public class BallInformationParser {
         rigidBodyInformations.add(rigidBodyParser.parseRigidBodyInformation(this.currentFrame, this.currentActorUpdateNr, this.frameTime, this.frameDelta, this.gamePaused));
         parseHitInformation();
     }
+
+    void parseVideoFrame(int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused) throws FileServiceException {
+        LOG.trace("Called - parse");
+
+        this.currentFrame = currentFrame;
+        this.currentActorUpdateNr = currentActorUpdateNr;
+        this.gamePaused = gamePaused;
+        this.frameDTO=frameDTO;
+
+        frameDTO.setBallRigidBodyInformation(rigidBodyParser.parseRigidBodyInformation(this.currentFrame, this.currentActorUpdateNr, this.frameTime, this.frameDelta, this.gamePaused));
+    }
+
+
+
+
+
 
     private void parseHitInformation(){
         try {

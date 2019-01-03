@@ -7,6 +7,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
@@ -33,9 +36,11 @@ public class SimpleMatchService implements MatchService {
     private MatchDAO matchDAO;
     private FolderDAO folderDAO;
 
+
     public SimpleMatchService(MatchDAO matchDAO, FolderDAO folderDAO) {
         this.matchDAO = matchDAO;
         this.folderDAO = folderDAO;
+
     }
 
     @Override
@@ -86,6 +91,8 @@ public class SimpleMatchService implements MatchService {
             throw new FileServiceException("Could not delete File", e);
         }
     }
+
+
 
 
     private void matchDTOValidator(MatchDTO matchDTO) throws MatchValidationException {

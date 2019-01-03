@@ -198,13 +198,16 @@ public class MatchController {
             try {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(true));
                 Platform.runLater(() -> uploadReplayButton.setDisable(true));
-                json = replayService.parseReplayFileToJson(inputFile);
+                File replayFile = replayService.copyReplayFile(inputFile);
+                json = replayService.parseReplayFileToJson(replayFile);
                 MatchDTO matchDto;
                 try {
                     matchDto = jsonParseService.parseMatch(json);
+                    matchDto.setReplayFile(replayFile);
                 } finally {
                     matchService.deleteFile(json);
                 }
+                //jsonParseService.getVideo(matchDto);
                 LOG.debug("jsonParseFinished");
                 for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
                     playerService.createPlayer(mpdto.getPlayerDTO());
@@ -212,6 +215,9 @@ public class MatchController {
                 LOG.debug("All players created");
                 matchService.createMatch(matchDto);
                 LOG.debug("match created");
+
+
+
                 Platform.runLater(() -> {
                     updateMatchTable();
                     playerController.updatePlayerTable();

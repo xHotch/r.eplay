@@ -1,14 +1,26 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.ReplayServiceRLRP;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
+import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -20,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,9 +47,11 @@ public class JsonParseServiceTest {
     private File jsonFile;
     private File badJsonFile;
     private File goodReplay;
-
+    private JDBCConnectionManager jdbcConnectionManager;
 
     private JsonParseService jsonParseService;
+    private ReplayService replayService;
+    private MatchService matchService;
     private RigidBodyParser rigidBodyParser;
     private BallInformationParser ballInformationParser;
     private CarInformationParser carInformationParser;
@@ -47,19 +62,33 @@ public class JsonParseServiceTest {
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
     private RigidBodyStatistic rigidBodyStatistic;
+    private FolderDAO mockFolderDAO;
+    private PlayerDAO playerDAO;
+    private MatchDAO matchDAO;
 
 
 
 
 
     @Before
-    public void setUp() {
+    public void setUp() throws CouldNotCreateFolderException, SQLException {
+
+        jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
+
+
         jsonFile = new File(getClass().getResource("/testJson/kurzesreplay.json").getFile());
         badJsonFile = new File(getClass().getResource("/testJson/keinreplay.json").getFile());
         goodReplay = new File(getClass().getResource("/testJson/goodReplay.json").getFile());
 
+        playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
+        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles");
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO,mockFolderDAO);
+
 
         rigidBodyParser = new RigidBodyParser();
+        replayService = new ReplayServiceRLRP(mockFolderDAO);
+        matchService = new SimpleMatchService(matchDAO, mockFolderDAO);
+
         ballInformationParser = new BallInformationParser(rigidBodyParser);
         carInformationParser = new CarInformationParser(rigidBodyParser);
         boostInformationParser = new BoostInformationParser(carInformationParser);
@@ -70,7 +99,7 @@ public class JsonParseServiceTest {
         ballStatistic = new BallStatistic(rigidBodyStatistic);
         playerStatistic = new PlayerStatistic(rigidBodyStatistic);
 
-        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,rigidBodyStatistic);
+        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,rigidBodyStatistic,replayService, matchService);
 
     }
 

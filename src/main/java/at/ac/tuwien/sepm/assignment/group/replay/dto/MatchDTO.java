@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
 import at.ac.tuwien.sepm.assignment.group.replay.ui.MainWindowController;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +20,15 @@ public class MatchDTO {
     private double timeBallInRedSide;
     private int possessionBlue;
     private int possessionRed;
+    private File replayFile;
+
+    public File getReplayFile() {
+        return replayFile;
+    }
+
+    public void setReplayFile(File replayFile) {
+        this.replayFile = replayFile;
+    }
 
     public int getId() {
         return id;
