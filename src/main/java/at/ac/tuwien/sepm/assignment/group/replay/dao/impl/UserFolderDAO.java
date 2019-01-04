@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
@@ -114,6 +115,11 @@ public class UserFolderDAO implements FolderDAO {
     }
 
     @Override
+    public File getHeatmapDirectory() {
+        return heatmapDirectory;
+    }
+
+    @Override
     public File getParser(String[] necessaryFiles) throws FilePersistenceException {
         LOG.trace("Called - getParser");
         if (replayToJsonParser == null || !replayToJsonParser.exists()) {
@@ -141,10 +147,12 @@ public class UserFolderDAO implements FolderDAO {
         LOG.trace("Called - saveHeatmaps");
         String fileID = matchDTO.getReadId();
         String fileName = fileID + "_ball.png";
+        matchDTO.setBallHeatmapFilename(fileName);
         try {
             ImageIO.write(matchDTO.getBallHeatmapImage(), "png", new File(heatmapDirectory, fileName));
             for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
                 fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
+                matchPlayerDTO.setHeatmapFilename(fileName);
                 ImageIO.write(matchPlayerDTO.getHeatmapImage(), "png", new File(heatmapDirectory, fileName));
             }
         } catch (IOException e) {
@@ -155,12 +163,11 @@ public class UserFolderDAO implements FolderDAO {
     @Override
     public void getHeatmaps(MatchDTO matchDTO) {
         LOG.trace("Called - getHeatmaps");
-        String fileID = matchDTO.getReadId();
-        String fileName = fileID + "_ball.png";
+        String fileName = matchDTO.getBallHeatmapFilename();
         try {
             matchDTO.setBallHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
             for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
-                fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
+                fileName = matchPlayerDTO.getHeatmapFilename();
                 matchPlayerDTO.setHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
             }
         } catch (IOException e) {

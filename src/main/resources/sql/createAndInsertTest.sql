@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS match_
   timeBallInBlueSide double,
   timeBallInRedSide double,
   possessionBlue int,
-  possessionRed int
+  possessionRed int,
+  ballHeatmapFilename VARCHAR(80) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS player
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   enemySideTime double,
   averageSpeed double,
   averageDistanceToBall double,
+  heatmapFilename VARCHAR(80) NOT NULL,
   FOREIGN KEY (playerid) REFERENCES player(id),
   FOREIGN KEY (matchid) REFERENCES match_(id) on delete cascade,
   PRIMARY KEY (playerid,matchid)

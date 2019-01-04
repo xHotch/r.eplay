@@ -50,6 +50,13 @@ public interface FolderDAO {
     File getFileDirectory();
 
     /**
+     * Method that returns the Directory the heatmap images are copied to
+     *
+     * @return a File containing the Folder the heatmap images are copied to
+     */
+    File getHeatmapDirectory();
+
+    /**
      * Method that returns the File with the Path to the Parser.
      * Has to call setupParser if the Parser has not been set up yet.
      *

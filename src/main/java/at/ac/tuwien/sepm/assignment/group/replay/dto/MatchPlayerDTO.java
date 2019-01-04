@@ -24,6 +24,7 @@ public class MatchPlayerDTO {
     private double airTime;
     private double groundTime;
     private BufferedImage heatmapImage;
+    private String heatmapFilename;
 
     private int actorId;
 
@@ -159,6 +160,14 @@ public class MatchPlayerDTO {
 
     public void setHeatmapImage(BufferedImage heatmapImage) {
         this.heatmapImage = heatmapImage;
+    }
+
+    public String getHeatmapFilename() {
+        return heatmapFilename;
+    }
+
+    public void setHeatmapFilename(String heatmapFilename) {
+        this.heatmapFilename = heatmapFilename;
     }
 
     public int getActorId() {

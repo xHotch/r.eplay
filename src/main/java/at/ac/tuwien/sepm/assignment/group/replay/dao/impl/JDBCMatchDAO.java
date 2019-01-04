@@ -24,8 +24,10 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?," +
-        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?";
-    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?, team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?";
+        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?, ballHeatmapFilename = ?";
+    private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?," +
+        " team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, " +
+        "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
@@ -66,6 +68,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setDouble(5, matchDTO.getTimeBallInRedSide());
             ps.setInt(6, matchDTO.getPossessionBlue());
             ps.setInt(7, matchDTO.getPossessionRed());
+            ps.setString(8, matchDTO.getBallHeatmapFilename());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
@@ -102,6 +105,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setDouble(13,matchPlayerDTO.getEnemySideTime());
             ps.setDouble(14,matchPlayerDTO.getAverageSpeed());
             ps.setDouble(15, matchPlayerDTO.getAverageDistanceToBall());
+            ps.setString(16, matchPlayerDTO.getHeatmapFilename());
 
             ps.executeUpdate();
 
@@ -129,6 +133,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     match.setPossessionRed(rs.getInt("possessionRed"));
                     match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
                     match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
+                    match.setBallHeatmapFilename(rs.getString("ballHeatmapFilename"));
 
                     // retrieve the players from the match
                     List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
@@ -176,6 +181,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     matchPlayer.setEnemySideTime(rs.getDouble("enemySideTime"));
                     matchPlayer.setAverageSpeed(rs.getDouble("averageSpeed"));
                     matchPlayer.setAverageDistanceToBall(rs.getDouble("averageDistanceToBall"));
+                    matchPlayer.setHeatmapFilename(rs.getString("heatmapFilename"));
 
                     result.add(matchPlayer);
                 }

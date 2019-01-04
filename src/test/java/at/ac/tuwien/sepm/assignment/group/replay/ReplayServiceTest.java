@@ -37,7 +37,7 @@ public class ReplayServiceTest {
     public void setUp() throws CouldNotCreateFolderException {
 
         // get the MatchDAO component from the spring framework
-        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles");
+        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles", "mockHeatmap");
         replayService = new ReplayServiceRLRP(mockFolderDAO);
         replayFile = new File(getClass().getResource("/testReplays/test.replay").getFile());
     }
@@ -47,6 +47,7 @@ public class ReplayServiceTest {
         try {
             FileUtils.deleteDirectory(mockFolderDAO.getFileDirectory());
             FileUtils.deleteDirectory(mockFolderDAO.getParserDirectory());
+            FileUtils.deleteDirectory(mockFolderDAO.getHeatmapDirectory());
         } catch (IOException e) {
             LOG.error("Exception while tearing Down Replay Service test", e);
         }

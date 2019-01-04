@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepm.assignment.group.replay;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
@@ -12,6 +15,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidat
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimplePlayerService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,17 +49,17 @@ public class PlayerTest {
     private MatchDAO matchDAO;
     private PlayerService playerService;
     private List<PlayerDTO> retrievedPlayers;
-
-    AnnotationConfigApplicationContext context;
+    private FolderDAO mockFolderDAO;
 
     @Before
-    public void setUp() throws SQLException{
+    public void setUp() throws SQLException, CouldNotCreateFolderException {
 
         jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
 
 
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO);
+        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles", "mockHeatmap");
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, mockFolderDAO);
 
 
 
@@ -89,10 +94,12 @@ public class PlayerTest {
         } catch (SQLException e) {
                 LOG.error("SQLException caught");
         }
-
-        // finally close the spring framework context
-        if (context != null) {
-            context.close();
+        try {
+            FileUtils.deleteDirectory(mockFolderDAO.getFileDirectory());
+            FileUtils.deleteDirectory(mockFolderDAO.getParserDirectory());
+            FileUtils.deleteDirectory(mockFolderDAO.getHeatmapDirectory());
+        } catch (IOException e) {
+            LOG.error("Exception while tearing Down Replay Service test", e);
         }
 
     }
