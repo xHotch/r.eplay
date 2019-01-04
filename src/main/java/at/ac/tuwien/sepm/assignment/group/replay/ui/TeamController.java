@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
@@ -17,6 +18,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 @Component
@@ -39,6 +42,16 @@ public class TeamController {
     private TableView<TeamDTO> tableViewTeams;
     @FXML
     private TableColumn<TeamDTO, String> tableColumnTeamName;
+    @FXML
+    private Text txtTeamName;
+    @FXML
+    private Text txtTeamSize;
+    @FXML
+    private Text txtPlayer1;
+    @FXML
+    private Text txtPlayer2;
+    @FXML
+    private Text txtPlayer3;
 
     public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService) {
         this.springFXMLLoader = springFXMLLoader;
@@ -54,7 +67,8 @@ public class TeamController {
     @FXML
     void initialize() {
         tableColumnTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        tableViewTeams.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> showTeamDetails(newValue));
         tableColumnTeamName.setStyle("-fx-alignment: CENTER;");
 
         updateTeamTable();
@@ -100,6 +114,7 @@ public class TeamController {
 
     /**
      * Deletes a selected Team
+     *
      * @param actionEvent Actionevent from the button
      */
     public void onDeleteTeamButtonClicked(ActionEvent actionEvent) {
@@ -110,6 +125,7 @@ public class TeamController {
             try {
                 teamService.deleteTeam(selectedTeam);
                 updateTeamTable();
+                deleteTeamTexts();
             } catch (TeamValidationException e) {
                 LOG.error("caught TeamValidationException", e);
                 AlertHelper.showErrorMessage(e.getMessage());
@@ -120,5 +136,49 @@ public class TeamController {
         } else {
             AlertHelper.showErrorMessage("No team selected");
         }
+    }
+
+    /**
+     * shows the team details for a selected team on the right side of the table
+     *
+     * @param selectedTeam team that is currently selected
+     */
+    private void showTeamDetails(TeamDTO selectedTeam) {
+        LOG.info("Show Team Details Button clicked");
+        LOG.trace("called - onShowTeamDetailsButtonClicked");
+        updateTeamDetails(selectedTeam);
+    }
+
+    /**
+     * updates team details text depending on the selected team
+     *
+     * @param selectedTeam team to be updated
+     */
+    private void updateTeamDetails(TeamDTO selectedTeam) {
+        deleteTeamTexts();
+
+        txtTeamName.setText(selectedTeam.getName());
+        txtTeamSize.setText("" + selectedTeam.getTeamSize());
+        List<PlayerDTO> players = selectedTeam.getPlayers();
+        if (selectedTeam.getTeamSize() == 3) {
+            txtPlayer1.setText(players.get(0).getName());
+            txtPlayer2.setText(players.get(1).getName());
+            txtPlayer3.setText(players.get(2).getName());
+
+        } else if (selectedTeam.getTeamSize() == 2) {
+            txtPlayer1.setText(players.get(0).getName());
+            txtPlayer2.setText(players.get(1).getName());
+        } else {
+            txtPlayer1.setText(players.get(0).getName());
+        }
+
+    }
+
+    private void deleteTeamTexts() {
+        txtTeamName.setText("");
+        txtTeamSize.setText("");
+        txtPlayer1.setText("");
+        txtPlayer2.setText("");
+        txtPlayer3.setText("");
     }
 }
