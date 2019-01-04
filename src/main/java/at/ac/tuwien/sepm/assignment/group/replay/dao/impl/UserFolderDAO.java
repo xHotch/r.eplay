@@ -119,7 +119,7 @@ public class UserFolderDAO implements FolderDAO {
 
     public File getFile(String fileName) {
         LOG.trace("Called - getFile");
-        File file = new File(fileDirectory + fileName);
+        File file = new File(fileDirectory, fileName);
 
         return file;
     }
