@@ -23,7 +23,7 @@
         <commons.version>2.6</commons.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <jsonpath.version>2.4.0</jsonpath.version>
-        <jfreechart-fx.version>1.0.1</jfreechart-fx.version>
+        <jheatchart.version>0.6</jheatchart.version>
         <!-- runtime dependencies -->
         <logback.version>1.2.3</logback.version>
         <!-- test dependencies -->
@@ -82,15 +82,10 @@
             <artifactId>commons-math3</artifactId>
             <version>${commons-math3.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart-fx</artifactId>
-            <version>${jfreechart-fx.version}</version>
-        </dependency>
-        <dependency>
+        <dependency> <!-- If there is an error here try "mvnw validate"-->
             <groupId>org.jheatchart</groupId>
             <artifactId>jheatchart</artifactId>
-            <version>0.6</version>
+            <version>${jheatchart.version}</version>
         </dependency>
         <!-- JavaFX dependencies -->
         <dependency>

@@ -1,14 +1,19 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,17 +30,18 @@ public class UserFolderDAO implements FolderDAO {
     private File replayToJsonParser;
     private File parserDirectory;
     private File fileDirectory;
+    private File heatmapDirectory;
 
 
-    public UserFolderDAO(String parserDir, String fileDir) throws CouldNotCreateFolderException {
+    public UserFolderDAO(String parserDir, String fileDir, String heatmapDir) throws CouldNotCreateFolderException {
         parserDirectory = setupDirectory(parserDir);
         fileDirectory = setupDirectory(fileDir);
+        heatmapDirectory = setupDirectory(heatmapDir);
     }
 
     //Default Folder Names
     public UserFolderDAO() throws CouldNotCreateFolderException {
-        parserDirectory = setupDirectory("parser");
-        fileDirectory = setupDirectory("files");
+        this("parser","files","heatmaps");
     }
 
     @Override
@@ -109,6 +115,11 @@ public class UserFolderDAO implements FolderDAO {
     }
 
     @Override
+    public File getHeatmapDirectory() {
+        return heatmapDirectory;
+    }
+
+    @Override
     public File getParser(String[] necessaryFiles) throws FilePersistenceException {
         LOG.trace("Called - getParser");
         if (replayToJsonParser == null || !replayToJsonParser.exists()) {
@@ -135,6 +146,39 @@ public class UserFolderDAO implements FolderDAO {
             }
         } else {
             throw new FilePersistenceException("Can not delete File with type " + extension);
+        }
+    }
+
+    @Override
+    public void saveHeatmaps(MatchDTO matchDTO) {
+        LOG.trace("Called - saveHeatmaps");
+        String fileID = matchDTO.getReadId();
+        String fileName = fileID + "_ball.png";
+        matchDTO.setBallHeatmapFilename(fileName);
+        try {
+            ImageIO.write(matchDTO.getBallHeatmapImage(), "png", new File(heatmapDirectory, fileName));
+            for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
+                fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
+                matchPlayerDTO.setHeatmapFilename(fileName);
+                ImageIO.write(matchPlayerDTO.getHeatmapImage(), "png", new File(heatmapDirectory, fileName));
+            }
+        } catch (IOException e) {
+            LOG.error("Failed to write Image",e);
+        }
+    }
+
+    @Override
+    public void getHeatmaps(MatchDTO matchDTO) {
+        LOG.trace("Called - getHeatmaps");
+        String fileName = matchDTO.getBallHeatmapFilename();
+        try {
+            matchDTO.setBallHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
+            for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
+                fileName = matchPlayerDTO.getHeatmapFilename();
+                matchPlayerDTO.setHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
+            }
+        } catch (IOException e) {
+            LOG.error("Failed to write Image",e);
         }
     }
 

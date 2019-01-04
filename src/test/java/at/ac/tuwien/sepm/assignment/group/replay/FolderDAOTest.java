@@ -35,6 +35,7 @@ public class FolderDAOTest {
     private FolderDAO folderDAO;
     private String parserDir;
     private String fileDir;
+    private String heatmapDir;
     private File replayFile;
 
 
@@ -42,18 +43,16 @@ public class FolderDAOTest {
     public void setUp() throws CouldNotCreateFolderException {
         parserDir = "testParserDir";
         fileDir = "testFileDir";
-        folderDAO = new UserFolderDAO(parserDir, fileDir);
+        heatmapDir = "testHeatmapDir";
+        folderDAO = new UserFolderDAO(parserDir, fileDir, heatmapDir);
         replayFile = new File(getClass().getResource("/testReplays/test.replay").getFile());
     }
 
     @After
-    public void tearDown() {
-        try {
+    public void tearDown() throws IOException {
             FileUtils.deleteDirectory(folderDAO.getFileDirectory());
             FileUtils.deleteDirectory(folderDAO.getParserDirectory());
-        } catch (IOException e) {
-            LOG.error("Exception while tearing Down Replay Service test", e);
-        }
+            FileUtils.deleteDirectory(folderDAO.getHeatmapDirectory());
     }
 
 
@@ -61,6 +60,7 @@ public class FolderDAOTest {
     public void testFolderCreation() {
         Assert.assertEquals(parserDir, folderDAO.getParserDirectory().getName());
         Assert.assertEquals(fileDir, folderDAO.getFileDirectory().getName());
+        Assert.assertEquals(heatmapDir, folderDAO.getHeatmapDirectory().getName());
     }
 
     @Test

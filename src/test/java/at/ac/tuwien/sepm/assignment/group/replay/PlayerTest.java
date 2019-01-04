@@ -15,6 +15,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidat
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimplePlayerService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,8 +51,6 @@ public class PlayerTest {
     private PlayerService playerService;
     private List<PlayerDTO> retrievedPlayers;
 
-    AnnotationConfigApplicationContext context;
-
     @Before
     public void setUp() throws SQLException, CouldNotCreateFolderException {
 
@@ -58,9 +58,8 @@ public class PlayerTest {
 
 
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles");
-        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO,mockFolderDAO);
-
+        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles", "mockHeatmap");
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, mockFolderDAO);
 
 
 
@@ -95,10 +94,12 @@ public class PlayerTest {
         } catch (SQLException e) {
                 LOG.error("SQLException caught");
         }
-
-        // finally close the spring framework context
-        if (context != null) {
-            context.close();
+        try {
+            FileUtils.deleteDirectory(mockFolderDAO.getFileDirectory());
+            FileUtils.deleteDirectory(mockFolderDAO.getParserDirectory());
+            FileUtils.deleteDirectory(mockFolderDAO.getHeatmapDirectory());
+        } catch (IOException e) {
+            LOG.error("Exception while tearing Down Replay Service test", e);
         }
 
     }

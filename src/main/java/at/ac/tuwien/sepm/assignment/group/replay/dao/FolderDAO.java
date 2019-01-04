@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 
 import java.io.File;
 
@@ -49,6 +50,13 @@ public interface FolderDAO {
     File getFileDirectory();
 
     /**
+     * Method that returns the Directory the heatmap images are copied to
+     *
+     * @return a File containing the Folder the heatmap images are copied to
+     */
+    File getHeatmapDirectory();
+
+    /**
      * Method that returns the File with the Path to the Parser.
      * Has to call setupParser if the Parser has not been set up yet.
      *
@@ -65,6 +73,18 @@ public interface FolderDAO {
      * @throws FilePersistenceException if the file could not be deleted or the File has the wrong filetype
      */
     void deleteFile(File file) throws FilePersistenceException;
+
+    /**
+     * Saves the Heatmaps from the MatchDTO in the heatmaps directory
+     * @param matchDTO heatmaps to save for a Match
+     */
+    void saveHeatmaps(MatchDTO matchDTO);
+
+    /**
+     * Gets the Heatmap Images from the heatmaps directory and saves it to the MatchDTO
+     * @param matchDTO the match to get the heatmap
+     */
+    void getHeatmaps(MatchDTO matchDTO);
 
     /**
      * Returns a File with the given FileName from the File Folder

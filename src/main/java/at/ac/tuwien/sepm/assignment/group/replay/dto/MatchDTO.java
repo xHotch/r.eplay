@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
 import at.ac.tuwien.sepm.assignment.group.replay.ui.MainWindowController;
 
 import java.io.File;
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class MatchDTO {
     private int possessionBlue;
     private int possessionRed;
     private File replayFile;
+    private BufferedImage ballHeatmapImage;
+    private String ballHeatmapFilename;
 
     public File getReplayFile() {
         return replayFile;
@@ -100,6 +103,22 @@ public class MatchDTO {
 
     public void setPossessionRed(int possessionRed) {
         this.possessionRed = possessionRed;
+    }
+
+    public BufferedImage getBallHeatmapImage() {
+        return ballHeatmapImage;
+    }
+
+    public void setBallHeatmapImage(BufferedImage ballHeatmapImage) {
+        this.ballHeatmapImage = ballHeatmapImage;
+    }
+
+    public String getBallHeatmapFilename() {
+        return ballHeatmapFilename;
+    }
+
+    public void setBallHeatmapFilename(String ballHeatmapFilename) {
+        this.ballHeatmapFilename = ballHeatmapFilename;
     }
 
     /**

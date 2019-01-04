@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
+import java.awt.image.BufferedImage;
+
 /**
  * @author Daniel Klampfl
  */
@@ -21,6 +23,9 @@ public class MatchPlayerDTO {
     private double averageDistanceToBall;
     private double airTime;
     private double groundTime;
+    private BufferedImage heatmapImage;
+    private String heatmapFilename;
+
     private int actorId;
 
     public MatchDTO getMatchDTO() {
@@ -147,6 +152,22 @@ public class MatchPlayerDTO {
 
     public void setGroundTime(double groundTime) {
         this.groundTime = groundTime;
+    }
+
+    public BufferedImage getHeatmapImage() {
+        return heatmapImage;
+    }
+
+    public void setHeatmapImage(BufferedImage heatmapImage) {
+        this.heatmapImage = heatmapImage;
+    }
+
+    public String getHeatmapFilename() {
+        return heatmapFilename;
+    }
+
+    public void setHeatmapFilename(String heatmapFilename) {
+        this.heatmapFilename = heatmapFilename;
     }
 
     public int getActorId() {

@@ -41,7 +41,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private File jFile;
     private ReadContext ctx;
     private MatchDTO matchDTO;
-    private Map<String, HeatmapDTO> heatmapDTOMap;
 
     private RigidBodyParser rigidBodyParser;
     private PlayerInformationParser playerInformationParser;
@@ -51,14 +50,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
-    private RigidBodyStatistic rigidBodyStatistic;
     private ReplayService replayService;
     private MatchService matchService;
 
 
 
-
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, RigidBodyStatistic rigidBodyStatistic, ReplayService replayService, MatchService matchService) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParser = gameInformationParser;
@@ -67,7 +64,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
         this.ballStatistic = ballStatistic;
-        this.rigidBodyStatistic = rigidBodyStatistic;
         this.replayService = replayService;
         this.matchService = matchService;
     }
@@ -95,8 +91,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 carInformationParser.setup();
                 ballInformationParser.setCtx(ctx);
                 ballInformationParser.setup();
-
-                heatmapDTOMap = new HashMap<>();
 
                 jFile = jsonFile;
             } catch (IOException e) {
@@ -138,14 +132,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 ballInformationParser.setup();
                 boostInformationParser.setCtx(ctx);
                 boostInformationParser.setup();
-                heatmapDTOMap = new HashMap<>();
 
                 jFile = jsonFile;
             } catch (IOException e) {
                 throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
             }
-
-
 
         LOG.debug("Start Parse");
         matchDTO = readProperties();
@@ -167,24 +158,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         matchService.deleteFile(jsonFile);
 
         return videoDTO;
-    }
-
-    @Override
-    public Map<String, HeatmapDTO> calculateHeatmap() {
-        //TODO save to matchPlaerDTO or reparse the file
-        if (heatmapDTOMap.isEmpty()) {
-            List<MatchPlayerDTO> matchPlayerDTOS = matchDTO.getPlayerData();
-            for (Map.Entry<Integer, List<RigidBodyInformation>> rigidBodyEntry : carInformationParser.getRigidBodyListPlayer().entrySet()) {
-                String name = "";
-                for (MatchPlayerDTO matchPlayer : matchPlayerDTOS) {
-                    if (matchPlayer.getActorId() == rigidBodyEntry.getKey()) name = matchPlayer.getName();
-                }
-                if (name.isEmpty()) name = "player" + rigidBodyEntry.getKey();
-                heatmapDTOMap.put(name, rigidBodyStatistic.getHeatmap(rigidBodyEntry.getValue()));
-            }
-            heatmapDTOMap.put("ball", rigidBodyStatistic.getHeatmap(ballInformationParser.getRigidBodyInformations()));
-        }
-        return heatmapDTOMap;
     }
 
     /**
@@ -218,8 +191,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 String frame = "$.Frames[" + currentFrame + "]";
                 int actorUpdateCount = ctx.read(frame + ".ActorUpdates.length()");
                 LOG.debug("Frame {} has {} ActorUpdates", currentFrame, actorUpdateCount);
-
-
 
                 double frameTime = ctx.read(frame + ".Time", Double.class);
                 double frameDelta = ctx.read(frame + ".Delta", Double.class);
@@ -387,7 +358,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - calculate");
         playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations()); //TODO link actorID to matchplayer
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
-        calculateHeatmap();
     }
 
     /**

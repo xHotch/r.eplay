@@ -81,8 +81,8 @@ public class JsonParseServiceTest {
         goodReplay = new File(getClass().getResource("/testJson/goodReplay.json").getFile());
 
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles");
-        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO,mockFolderDAO);
+        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles", "mockHeatmaps");
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, mockFolderDAO);
 
 
         rigidBodyParser = new RigidBodyParser();
@@ -99,7 +99,7 @@ public class JsonParseServiceTest {
         ballStatistic = new BallStatistic(rigidBodyStatistic);
         playerStatistic = new PlayerStatistic(rigidBodyStatistic);
 
-        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,rigidBodyStatistic,replayService, matchService);
+        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic);
 
     }
 

@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.File;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
@@ -71,7 +73,6 @@ public class MatchTest {
 
     private MatchService matchService;
 
-
     private MatchPlayerDTO playerRED, playerBLUE;
 
     private List<MatchDTO> retrievedMatches;
@@ -85,15 +86,11 @@ public class MatchTest {
 
 
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-        folderDAO = new UserFolderDAO();
-        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO,folderDAO);
-
-
-
 
         // create UserFolderDAO
-        folderDAO = new UserFolderDAO("testParserDir", "testFileDir");
+        folderDAO = new UserFolderDAO("testParserDir", "testFileDir", "testHeatmapDir");
 
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, folderDAO);
 
         matchService = new SimpleMatchService(matchDAO, folderDAO);
 
@@ -128,6 +125,7 @@ public class MatchTest {
         try {
             FileUtils.deleteDirectory(folderDAO.getFileDirectory());
             FileUtils.deleteDirectory(folderDAO.getParserDirectory());
+            FileUtils.deleteDirectory(folderDAO.getHeatmapDirectory());
         } catch (IOException e) {
             LOG.error("Exception while tearing Down Replay Service test", e);
         }
@@ -179,6 +177,7 @@ public class MatchTest {
         playerMatchList.add(playerRED);
         playerMatchList.add(playerBLUE);
         matchDTO.setPlayerData(playerMatchList);
+        matchDTO.setBallHeatmapImage(new BufferedImage(200,200,BufferedImage.TYPE_INT_RGB));
 
         // set the remaining match variables
         matchDTO.setTeamSize(1);
@@ -235,6 +234,7 @@ public class MatchTest {
         playerMatchList.add(playerRED);
         playerMatchList.add(playerBLUE);
         matchDTO.setPlayerData(playerMatchList);
+        matchDTO.setBallHeatmapImage(new BufferedImage(200,200,BufferedImage.TYPE_INT_RGB));
 
         // set the remaining match variables
         matchDTO.setTeamSize(1);
@@ -324,7 +324,6 @@ public class MatchTest {
         playerDTO.setName(name);
         playerDTO.setId(id);
 
-
         player.setMatchDTO(match);
         player.setPlayerDTO(playerDTO);
         player.setTeam(team);
@@ -333,5 +332,6 @@ public class MatchTest {
         player.setAssists(assists);
         player.setShots(shots);
         player.setSaves(saves);
+        player.setHeatmapImage(new BufferedImage(200,200,BufferedImage.TYPE_INT_RGB));
     }
 }
