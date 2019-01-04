@@ -55,7 +55,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParse, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParser = gameInformationParser;
