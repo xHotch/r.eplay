@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
+   <children>
+      <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
+      <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
+      <Button layoutX="462.0" layoutY="20.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Load Animation" />
+      <Circle fx:id="shape_ball" fill="#a8b4bf" layoutX="512.0" layoutY="356.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+      <Rectangle fx:id="shape_car_red_1" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
+      <Rectangle fx:id="shape_car_red_2" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
+      <Rectangle fx:id="shape_car_blue_1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" width="56.0" />
+      <Rectangle fx:id="shape_car_red_3" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
+      <Rectangle fx:id="shape_car_blue_2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
+      <Rectangle fx:id="shape_car_blue_3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
+
+   </children>
+</AnchorPane>

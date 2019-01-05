@@ -27,6 +27,8 @@ public class MatchDetailController {
 
     @FXML private Tab playerPositionTab;
 
+    @FXML private Tab matchAnimationTab;
+
     // Inject tab content.
     @FXML private Tab boostStatisticsTab;
 

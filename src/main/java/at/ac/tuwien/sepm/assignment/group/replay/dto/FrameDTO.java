@@ -13,8 +13,17 @@ public class FrameDTO {
       this.carRigidBodyInformations=new HashMap<>();
   }
 
+  //actorid to RBI
   private HashMap<Integer, RigidBodyInformation> carRigidBodyInformations;
   private RigidBodyInformation ballRigidBodyInformation;
+
+    public double getFrameTime() {
+        return frameTime;
+    }
+
+    public void setFrameTime(double frameTime) {
+        this.frameTime = frameTime;
+    }
 
     public HashMap<Integer, RigidBodyInformation> getCarRigidBodyInformations() {
         return carRigidBodyInformations;

@@ -49,11 +49,13 @@ public class MatchController {
     private BallStatisticsController ballStatisticsController;
     private MatchPlayerStatisticsController matchPlayerStatisticsController;
     private BoostStatisticsController boostStatisticsController;
+    private MatchAnimationController matchAnimationController;
     private ExecutorService executorService;
     private ReplayService replayService;
     private JsonParseService jsonParseService;
     private MatchService matchService;
     private PlayerService playerService;
+
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -70,7 +72,7 @@ public class MatchController {
     @FXML
     private Button uploadReplayButton;
 
-    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, BoostStatisticsController boostStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController) {
+    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, BoostStatisticsController boostStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController, MatchAnimationController matchAnimationController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
@@ -82,6 +84,7 @@ public class MatchController {
         this.ballStatisticsController = ballStatisticsController;
         this.boostStatisticsController = boostStatisticsController;
         this.matchPlayerStatisticsController = matchPlayerStatisticsController;
+        this.matchAnimationController = matchAnimationController;
     }
 
     /**
@@ -128,6 +131,7 @@ public class MatchController {
             ballStatisticsController.loadBallStatistics(selectedMatch);
             matchPlayerStatisticsController.loadMatchPlayerStatistics(selectedMatch);
             boostStatisticsController.loadBoostStatistics(selectedMatch);
+            matchAnimationController.setMatchDTO(selectedMatch);
             // show application
             matchdetailsStage.show();
             matchdetailsStage.toFront();

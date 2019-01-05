@@ -125,7 +125,9 @@ public class CarInformationParser {
         LOG.trace("Called - parseRigidBodyInformation");
 
         try {
-            frameDTO.getCarRigidBodyInformations().put(actorId,rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused));
+
+            int playerActorId = playerCarMap.get(actorId);
+            frameDTO.getCarRigidBodyInformations().put(playerActorId,rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused));
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about player found");
         }

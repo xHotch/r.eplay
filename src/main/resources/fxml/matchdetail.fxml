@@ -17,5 +17,8 @@
       <Tab fx:id="boostStatisticsTab" text="Boost Statistik">
           <fx:include fx:id="boostStatisticsTabPage" source="/fxml/boostStatisticsTabPage.fxml"/>
       </Tab>
+      <Tab fx:id="matchAnimationTab" text="Match Animation">
+          <fx:include fx:id="matchAnimationTabPage" source="/fxml/matchAnimationTabPage.fxml"/>
+      </Tab>
   </tabs>
 </TabPane>

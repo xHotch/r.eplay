@@ -14,6 +14,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.io.FilenameUtils;
+import org.h2.mvstore.DataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, ReplayService replayService, MatchService matchService) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParser = gameInformationParser;
@@ -154,7 +155,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         //get json from .replay
         File jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
+
+
         VideoDTO videoDTO = parseVideo(jsonFile);
+        videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
+
+
         matchService.deleteFile(jsonFile);
 
         return videoDTO;
@@ -330,6 +336,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         case "TAGame.Car_TA":
                             carInformationParser.parseVideoFrame(actorId, currentFrame, currentActorUpdateNr, frameDTO, gamePaused);
                             i++;
+                            break;
+                        case "TAGame.PRI_TA":
+                            playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
+
                             break;
                         default:
                             break;

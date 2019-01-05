@@ -59,5 +59,11 @@ public class PlayerInformationParser {
         }
     }
 
+    public Map<Long, Integer> getPlatformIdToActorId() {
+        return platformIdToActorId;
+    }
 
+    public void setPlatformIdToActorId(Map<Long, Integer> platformIdToActorId) {
+        this.platformIdToActorId = platformIdToActorId;
+    }
 }
