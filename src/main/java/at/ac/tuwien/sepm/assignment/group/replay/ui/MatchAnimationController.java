@@ -10,6 +10,9 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.*;
 import javafx.util.Duration;
@@ -60,6 +63,13 @@ public class MatchAnimationController {
     @FXML
     private Rectangle shape_car_red_3;
 
+    @FXML
+    private Slider timelineSlider;
+    @FXML
+    private ImageView playPauseImageView;
+
+    private Image pauseImage;
+    private Image playImage;
 
     @FXML
     private AnchorPane ap_MatchAnimation;
@@ -67,28 +77,30 @@ public class MatchAnimationController {
     @FXML
     private Canvas canvas_Animation;
 
+    private Boolean play = false;
+    private Boolean stopped = false;
 
-    public MatchDTO getMatchDTO() {
-        return matchDTO;
-    }
-
-    public void setMatchDTO(MatchDTO matchDTO) {
-        this.matchDTO = matchDTO;
-    }
+    private final Timeline timeline = new Timeline();
 
     public MatchAnimationController(JsonParseService jsonParseService) {
         this.jsonParseService = jsonParseService;
+    }
+
+    @FXML
+    private void initialize() {
+        pauseImage = new Image("images/pause.gif");
+        playImage = new Image("images/play.gif");
     }
 
     public void onLoadAnimationButtonClicked(ActionEvent actionEvent){
 
         setupAnimation();
 
-
-        final Timeline timeline = new Timeline();
         timeline.setAutoReverse(true);
+        timeline.getKeyFrames().clear();
 
-
+        double minFrameTime = Double.MIN_VALUE;
+        double maxFrameTime = 0;
         for (FrameDTO frameDTO : videoDTO.getFrames()){
 
             //List of Keyvalues
@@ -101,13 +113,61 @@ public class MatchAnimationController {
             for (Rectangle car : carShapes.keySet()){
                 values.addAll(mapCarToKayValue(car));
             }
-            KeyFrame kf = new KeyFrame(Duration.seconds(frameDTO.getFrameTime()), "swag",null, values);
+            double frameTime = frameDTO.getFrameTime();
+            KeyFrame kf = new KeyFrame(Duration.seconds(frameTime), "swag", null, values);
             timeline.getKeyFrames().add(kf);
+            if (minFrameTime > frameTime) minFrameTime = frameTime;
+            if (maxFrameTime < frameTime) maxFrameTime = frameTime;
         }
-
-        timeline.play();
+        timelineSlider.setMin(minFrameTime);
+        timelineSlider.setMax(maxFrameTime);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(minFrameTime), new KeyValue(timelineSlider.valueProperty(), minFrameTime)));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(maxFrameTime), new KeyValue(timelineSlider.valueProperty(), maxFrameTime)));
+        timeline.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+            if (!timelineSlider.isValueChanging()) timelineSlider.setValue(newTime.toSeconds());
+        });
+        playAnimation();
     }
 
+    @FXML
+    private void onStopButtonClicked() {
+        LOG.info("Stop button Clicked");
+        stopped = true;
+        timeline.stop();
+        playPauseImageView.setImage(playImage);
+        play = false;
+    }
+
+    @FXML
+    private void onPlayPauseButtonClicked() {
+        LOG.info("Play/Pause Button Clicked");
+        if (play) {
+            pauseAnimation();
+        } else {
+            playAnimation();
+        }
+    }
+
+    private void playAnimation() {
+        play = true;
+        if(stopped) {
+            stopped = false;
+            timeline.playFromStart();
+        }
+        else timeline.play();
+        playPauseImageView.setImage(pauseImage);
+    }
+
+    private void pauseAnimation() {
+        play = false;
+        timeline.pause();
+        playPauseImageView.setImage(playImage);
+    }
+
+    private void onSliderChanged() {
+        LOG.info("Slider Dragged");
+        timeline.jumpTo(Duration.seconds(timelineSlider.getValue()));
+    }
 
     /**
      * Maps the Car's Rigidbodyinformation of the current frame onto the given Shape
@@ -205,6 +265,14 @@ public class MatchAnimationController {
                 countBlue ++;
             }
         }
+    }
+
+    public MatchDTO getMatchDTO() {
+        return matchDTO;
+    }
+
+    public void setMatchDTO(MatchDTO matchDTO) {
+        this.matchDTO = matchDTO;
     }
 
 }
