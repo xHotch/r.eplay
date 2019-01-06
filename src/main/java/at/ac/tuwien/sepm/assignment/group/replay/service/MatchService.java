@@ -3,12 +3,10 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -46,6 +44,16 @@ public interface MatchService {
      */
     void deleteFile(File file) throws FileServiceException;
 
-
+    /**
+     * Reads filtered matches
+     * @param name part of the name of a player or null if it should be ignored
+     * @param begin start point for search or null if it should be ignored
+     * @param end end point for search or null if it should be ignored
+     * @param teamSize 1, 2, 3 or 0 if it should be ignored
+     * @return list with the found matches
+     * @throws MatchServiceException if an error occurs during persistence
+     * @throws FilterValidationException if the parameters are invalid
+     */
+    List<MatchDTO> searchMatches(String name, LocalDateTime begin, LocalDateTime end, int teamSize) throws MatchServiceException, FilterValidationException;
 
 }

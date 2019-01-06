@@ -15,6 +15,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceE
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FilterValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
@@ -317,6 +318,17 @@ public class MatchTest {
                 "No Name\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
                 "Uneven teamsize\n"));
         }
+    }
+
+    @Test(expected = FilterValidationException.class)
+    public void validateSearchParamNegativeTeamSizeTest() throws FilterValidationException, MatchServiceException {
+        matchService.searchMatches(null, null, null, -1);
+    }
+
+    @Test(expected = FilterValidationException.class)
+    public void validateSearchParamBeginAfterEndTest() throws FilterValidationException, MatchServiceException {
+        LocalDateTime dateTime = LocalDateTime.now();
+        matchService.searchMatches(null, dateTime, dateTime.minusDays(1), 0);
     }
 
     @Test

@@ -10,12 +10,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -92,7 +90,17 @@ public class SimpleMatchService implements MatchService {
         }
     }
 
-
+    @Override
+    public List<MatchDTO> searchMatches(String name, LocalDateTime begin, LocalDateTime end, int teamSize) throws MatchServiceException, FilterValidationException {
+        LOG.trace("Called - searchMatches");
+        searchParamValidator(begin, end, teamSize);
+        try {
+            return matchDAO.searchMatches(name, begin, end, teamSize);
+        } catch (MatchPersistenceException e){
+            String message = "Could not get matches from DAO";
+            throw new MatchServiceException(message,e);
+        }
+    }
 
 
     private void matchDTOValidator(MatchDTO matchDTO) throws MatchValidationException {
@@ -131,5 +139,24 @@ public class SimpleMatchService implements MatchService {
         if (matchPlayerDTO.getSaves() < 0) errMsg += "Saves negativ\n";
         if (matchPlayerDTO.getScore() < 0) errMsg += "Score negativ\n";
         return errMsg;
+    }
+
+    private void searchParamValidator(LocalDateTime begin, LocalDateTime end, int teamSize) throws FilterValidationException {
+        LOG.trace("Called - searchParamValidator");
+        String errMsg = "";
+        if ((begin == null && end != null) || (end == null && begin != null)) {
+            errMsg += "begin and end must be set both or none of them\n";
+        }
+        if (begin != null && end != null) {
+            if (begin.isAfter(end)) {
+                errMsg += "begin must be before end\n";
+            }
+        }
+        if (teamSize < 0 || teamSize > 3) {
+            errMsg += "teamSize must be between 0 and 3\n";
+        }
+        if (!errMsg.equals("")) {
+            throw new FilterValidationException(errMsg);
+        }
     }
 }
