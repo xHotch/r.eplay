@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class JDBCMatchDAO implements MatchDAO {
     private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?," +
         " team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, " +
         "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
+
+    private static final String SEARCH_MATCHES = "Select distinct m.* from match_ m join matchPlayer mp on m.id = mp.matchid where" +
+        "(lower(mp.name) like lower(?) or ?) and (teamSize = ? or ?) and (dateTime <= ? or ?) and (dateTime >= ? or ?)";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
@@ -205,5 +210,70 @@ public class JDBCMatchDAO implements MatchDAO {
         } catch (SQLException e) {
             throw new MatchPersistenceException("Could not delete match", e);
         }
+    }
+
+    @Override
+    public List<MatchDTO> searchMatches(String name, LocalDateTime begin, LocalDateTime end, int teamSize) throws MatchPersistenceException {
+        LOG.trace("Called - searchMatches");
+        List<MatchDTO> result = new LinkedList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(SEARCH_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
+            if (name == null) {
+                ps.setString(1, "");
+                ps.setBoolean(2, true);
+            } else {
+                ps.setString(1, "%" + name + "%");
+                ps.setBoolean(2, false);
+            }
+            ps.setInt(3, teamSize);
+            if (teamSize > 0 && teamSize <= 3) {
+                ps.setBoolean(4, false);
+            } else {
+                ps.setBoolean(4, true);
+            }
+            if (end == null) {
+                ps.setTimestamp(5, null);
+                ps.setBoolean(6, true);
+            } else {
+                ps.setTimestamp(5, Timestamp.valueOf(end));
+                ps.setBoolean(6, false);
+            }
+
+            if (begin == null) {
+                ps.setTimestamp(7, null);
+                ps.setBoolean(8, true);
+            } else {
+                ps.setTimestamp(7, Timestamp.valueOf(begin));
+                ps.setBoolean(8, false);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while(rs.next()) {
+
+                    MatchDTO match = new MatchDTO();
+                    match.setId(rs.getInt("id"));
+                    match.setDateTime(rs.getTimestamp("dateTime").toLocalDateTime());
+                    match.setTeamSize(rs.getInt("teamSize"));
+                    match.setReadId(rs.getString("readId"));
+                    match.setPossessionBlue(rs.getInt("possessionBlue"));
+                    match.setPossessionRed(rs.getInt("possessionRed"));
+                    match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
+                    match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
+                    match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
+                    //match.setReplayFile(new File(rs.getString("fileName")));
+                    match.setBallHeatmapFilename(rs.getString("ballHeatmapFilename"));
+
+                    // retrieve the players from the match
+                    List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
+                    match.setPlayerData(matchPlayers);
+                    folderDAO.getHeatmaps(match);
+                    result.add(match);
+                    LOG.debug("Added match to the result list!");
+                }
+            }
+        } catch (SQLException e) {
+            String msg = "Could not read match";
+            throw new MatchPersistenceException(msg, e);
+        }
+        return result;
     }
 }

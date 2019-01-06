@@ -319,6 +319,88 @@ public class MatchTest {
         }
     }
 
+    @Test
+    public void searchMatchTest() throws SQLException, MatchPersistenceException, MatchAlreadyExistsException {
+        // set up a match entity and define the object variables
+        matchDTO = new MatchDTO();
+
+        // set the time
+        matchDTO.setDateTime(LocalDate.now().atStartOfDay());
+
+        // set fileName
+        matchDTO.setReplayFile(new File("TestFile"));
+
+        // add 2 players to the match list ... simulating a 1v1 match
+        List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
+
+        // create 2 players
+        playerRED = new MatchPlayerDTO();
+        playerBLUE = new MatchPlayerDTO();
+
+        // create 2 players
+        PlayerDTO playerB = new PlayerDTO();
+        PlayerDTO playerR = new PlayerDTO();
+
+        // helper method to fill the player fields
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED,3, 10, 2,3, 5);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
+
+
+        PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
+        ps.setLong(1,playerB.getId());
+        ps.setString(2,playerB.getName());
+        ps.setInt(3,345456);
+        ps.setBoolean(4,true);
+
+        ps.executeUpdate();
+        ps.setLong(1,playerR.getId());
+        ps.setString(2,playerR.getName());
+        ps.setInt(3,345333);
+        ps.setBoolean(4,true);
+
+        ps.executeUpdate();
+
+        if (!ps.isClosed()) ps.close();
+
+        playerMatchList.add(playerRED);
+        playerMatchList.add(playerBLUE);
+        matchDTO.setPlayerData(playerMatchList);
+        matchDTO.setBallHeatmapImage(new BufferedImage(200,200,BufferedImage.TYPE_INT_RGB));
+
+        // set the remaining match variables
+        matchDTO.setTeamSize(1);
+
+        matchDTO.setReadId("Test");
+
+        // will be used as container for the results from the db.
+        retrievedMatches = new LinkedList<>();
+
+        // create the match in the database
+        matchDAO.createMatch(matchDTO);
+
+        retrievedMatches = matchDAO.searchMatches(null, null, null, 0);
+        assertThat(retrievedMatches.size(), is(1));
+
+        retrievedMatches = matchDAO.searchMatches("Player re", null, null, 0);
+        assertThat(retrievedMatches.size(), is(1));
+
+        retrievedMatches = matchDAO.searchMatches("xxx", null, null, 0);
+        assertThat(retrievedMatches.size(), is(0));
+
+        retrievedMatches = matchDAO.searchMatches(null, null, null, 1);
+        assertThat(retrievedMatches.size(), is(1));
+
+        retrievedMatches = matchDAO.searchMatches(null, null, null, 2);
+        assertThat(retrievedMatches.size(), is(0));
+
+        retrievedMatches = matchDAO.searchMatches(null, matchDTO.getDateTime().minusDays(1), matchDTO.getDateTime().plusDays(1), 0);
+        assertThat(retrievedMatches.size(), is(1));
+
+        retrievedMatches = matchDAO.searchMatches(null, matchDTO.getDateTime().plusDays(1), matchDTO.getDateTime().plusDays(2), 0);
+        assertThat(retrievedMatches.size(), is(0));
+    }
+
+
     // helper class to populate the player's variables
     public void setPlayerVariables(MatchPlayerDTO player, MatchDTO match, PlayerDTO playerDTO, String name, int id, TeamSide team, int score, int goals, int assists, int shots, int saves){
         playerDTO.setName(name);
