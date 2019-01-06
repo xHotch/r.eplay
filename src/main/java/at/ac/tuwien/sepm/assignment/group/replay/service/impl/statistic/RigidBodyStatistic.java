@@ -116,7 +116,7 @@ public class RigidBodyStatistic {
 
         HeatChart heatChart = new HeatChart(heatmapData);
         heatChart.setColourScale(0.5);
-        heatChart.setLowValueColour(Color.WHITE);
+        heatChart.setLogValueColour(Color.WHITE);
         heatChart.setHighValueColour(Color.RED);
         return (BufferedImage) heatChart.getChartImage();
     }

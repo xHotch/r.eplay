@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BoostStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
 import com.jayway.jsonpath.Configuration;
@@ -51,6 +52,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
+    private BoostStatistic boostStatistic;
     private ReplayService replayService;
     private MatchService matchService;
 
@@ -368,6 +370,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - calculate");
         playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations()); //TODO link actorID to matchplayer
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
+        boostStatistic.calculate(matchDTO.getPlayerData(), ballInformationParser.getRigidBodyInformations(), boostInformationParser.getBoostPadMap());
     }
 
     /**

@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Daniel Klampfl
@@ -25,6 +27,7 @@ public class MatchPlayerDTO {
     private double groundTime;
     private BufferedImage heatmapImage;
     private String heatmapFilename;
+    private Map<Integer, List<BoostPadDTO>> boostPadMap;
 
     private int actorId;
 
@@ -178,4 +181,11 @@ public class MatchPlayerDTO {
         this.actorId = actorId;
     }
 
+    public Map<Integer, List<BoostPadDTO>> getBoostPadMap() {
+        return boostPadMap;
+    }
+
+    public void setBoostPadMap(Map<Integer, List<BoostPadDTO>> boostPadMap) {
+        this.boostPadMap = boostPadMap;
+    }
 }

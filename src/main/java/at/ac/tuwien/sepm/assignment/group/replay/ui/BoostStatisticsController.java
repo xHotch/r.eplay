@@ -1,14 +1,13 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.BoostInformation.BoostPadInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.BoostInformationParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -95,21 +93,21 @@ public class BoostStatisticsController {
     void loadBoostPadValues(MatchPlayerDTO player) {
         // key = car ID, value = player ID
         Map<Integer, Integer> carBoostPadMap = boostInformationParser.getCarBoostPadMap();
-        Map<Integer, List<BoostPadInformation>> boostPadInformation = boostInformationParser.getBoostPadMap();
+        Map<Integer, List<BoostPadDTO>> boostPadInformation = boostInformationParser.getBoostPadMap();
 
         //set up boost counts map everytime a player gets selected
         setupBoostCountsMap();
 
         int playerID = 0;
 
-        for (Map.Entry<Integer, List<BoostPadInformation>> boostPadInfo:boostPadInformation.entrySet()) {
+        for (Map.Entry<Integer, List<BoostPadDTO>> boostPadInfo:boostPadInformation.entrySet()) {
             if (carBoostPadMap.containsKey(boostPadInfo.getKey())) {
                 int boostPadtoPlayerID = carBoostPadMap.get(boostPadInfo.getKey());
                 LOG.debug("Car ID {}, Player ID {}", boostPadInfo.getKey(), boostPadtoPlayerID);
                 LOG.debug("Current Player {} ID {}", player.getName(), playerID);
-                List<BoostPadInformation> boostPadList = boostPadInfo.getValue();
+                List<BoostPadDTO> boostPadList = boostPadInfo.getValue();
                 if (playerID == boostPadtoPlayerID) {
-                    for (BoostPadInformation info : boostPadList) {
+                    for (BoostPadDTO info : boostPadList) {
                         int boostpadID = info.getBoostPadId();
 
                         int increment = 0;
