@@ -31,12 +31,12 @@ public class JDBCMatchDAO implements MatchDAO {
         " team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, " +
         "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
 
-    private static final String INSERT_BOOSTPADINFO = "INSERT INTO matchPlayerBoostPads SET playerid = ?, matchid = ?,\n" +
-        "boostpad67 = ?, boostpad12 = ?, boostpad43 = ?, boostpad13 = ?, boostpad66 = ?, boostpad18 = ?,\n" +
-        "  boostpad11 = ?, boostpad17 = ?, boostpad5 = ?, boostpad14 = ?, boostpad4 = ?, boostpad10 = ?,\n" +
-        "  boostpad7 = ?, boostpad41 = ?, boostpad3 = ?, boostpad64 = ?, boostpad40 = ?, boostpad42 = ?,\n" +
-        "  boostpad63 = ?, boostpad23 = ?, boostpad19 = ?, boostpad20 = ?, boostpad31 = ?, boostpad28 = ?,\n" +
-        "  boostpad21 = ?, boostpad36 = ?, boostpad68 = ?, boostpad32 = ?, boostpad38 = ?, boostpad34 = ?,\n" +
+    private static final String INSERT_BOOSTPAD_INFO = "INSERT INTO matchPlayerBoostPads SET playerid = ?, matchid = ?," +
+        "boostpad67 = ?, boostpad12 = ?, boostpad43 = ?, boostpad13 = ?, boostpad66 = ?, boostpad18 = ?," +
+        "  boostpad11 = ?, boostpad17 = ?, boostpad5 = ?, boostpad14 = ?, boostpad4 = ?, boostpad10 = ?," +
+        "  boostpad7 = ?, boostpad41 = ?, boostpad3 = ?, boostpad64 = ?, boostpad40 = ?, boostpad42 = ?," +
+        "  boostpad63 = ?, boostpad23 = ?, boostpad19 = ?, boostpad20 = ?, boostpad31 = ?, boostpad28 = ?," +
+        "  boostpad21 = ?, boostpad36 = ?, boostpad68 = ?, boostpad32 = ?, boostpad38 = ?, boostpad34 = ?," +
         "  boostpad35 = ?, boostpad33 = ?, boostpad65 = ?, boostpad39 = ?";
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
@@ -135,7 +135,7 @@ public class JDBCMatchDAO implements MatchDAO {
      * @param boostPadDTOMap the boost pad information map belonging to the match player dto.
      */
     private void createBoostPadList(MatchPlayerDTO matchPlayerDTO, Map<Integer, List<BoostPadDTO>> boostPadDTOMap) throws MatchPersistenceException{
-        try(PreparedStatement ps = connection.prepareStatement(INSERT_BOOSTPADINFO)) {
+        try(PreparedStatement ps = connection.prepareStatement(INSERT_BOOSTPAD_INFO)) {
 
             ps.setLong(1, matchPlayerDTO.getPlayerId());
             ps.setInt(2, matchPlayerDTO.getMatchId());
@@ -177,7 +177,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            String msg = "Could not create boost pad information";
+            String msg = "Could not record boost pad information";
             throw new MatchPersistenceException(msg, e);
         }
     }
