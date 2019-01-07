@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidationException;
@@ -22,9 +24,11 @@ public class SimplePlayerService implements PlayerService {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private PlayerDAO playerDAO;
+    private MatchDAO matchDAO;
 
-    public SimplePlayerService(PlayerDAO playerDAO) {
+    public SimplePlayerService(PlayerDAO playerDAO, MatchDAO matchDAO) {
         this.playerDAO = playerDAO;
+        this.matchDAO = matchDAO;
     }
 
     @Override
@@ -78,6 +82,52 @@ public class SimplePlayerService implements PlayerService {
         } catch (PlayerPersistenceException e) {
             String msg = "Failed to add player";
             throw new PlayerServiceException(msg, e);        }
+    }
+
+    @Override
+    public AvgStatsDTO getAvgStats(PlayerDTO playerDTO, MatchType matchType) throws PlayerServiceException {
+        LOG.trace("Called - getAvgStats");
+        try {
+            AvgStatsDTO avgStatsDTO = playerDAO.getAvgStats(playerDTO, matchType);
+            List<MatchDTO> matches = matchDAO.readMatchesFromPlayer(playerDTO);
+            int wins = 0;
+            int losses = 0;
+            for (MatchDTO matchDTO : matches) {
+                if (won(matchDTO, playerDTO)) {
+                    wins++;
+                } else {
+                    losses++;
+                }
+            }
+            avgStatsDTO.setWins(wins);
+            avgStatsDTO.setLosses(losses);
+            return avgStatsDTO;
+        } catch (PlayerPersistenceException | MatchPersistenceException e) {
+            throw new PlayerServiceException("failed to get stats", e);
+        }
+    }
+
+    private boolean won(MatchDTO matchDTO, PlayerDTO playerDTO) {
+        int teamBlueGoals = 0;
+        int teamRedGoals = 0;
+        TeamSide myTeam = null;
+        for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
+            if (matchPlayerDTO.getPlayerDTO().getId() == playerDTO.getId()) {
+                myTeam = matchPlayerDTO.getTeam();
+            }
+            if (matchPlayerDTO.getTeam() == TeamSide.BLUE) {
+                teamBlueGoals += matchPlayerDTO.getGoals();
+            } else {
+                teamRedGoals += matchPlayerDTO.getGoals();
+            }
+        }
+        if (myTeam == TeamSide.BLUE) {
+
+            return teamBlueGoals > teamRedGoals;
+
+        } else {
+            return teamBlueGoals < teamRedGoals;
+        }
     }
 
     private void playerDTOValidator(PlayerDTO playerDTO) throws PlayerValidationException {
