@@ -18,6 +18,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformati
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BoostStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
@@ -61,6 +62,7 @@ public class JsonParseServiceTest {
 
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
+    private BoostStatistic boostStatistic;
     private RigidBodyStatistic rigidBodyStatistic;
     private FolderDAO mockFolderDAO;
     private PlayerDAO playerDAO;
@@ -98,8 +100,9 @@ public class JsonParseServiceTest {
         rigidBodyStatistic = new RigidBodyStatistic();
         ballStatistic = new BallStatistic(rigidBodyStatistic);
         playerStatistic = new PlayerStatistic(rigidBodyStatistic);
+        boostStatistic = new BoostStatistic();
 
-        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,replayService, matchService);
+        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,boostStatistic,replayService, matchService);
 
     }
 

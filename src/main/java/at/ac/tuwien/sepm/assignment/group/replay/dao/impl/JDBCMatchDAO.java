@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class JDBCMatchDAO implements MatchDAO {
         " team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, " +
         "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
 
-    private static final String INSERT_BOOSTPAD_INFO = "INSERT INTO matchPlayerBoostPads SET playerid = ?, matchid = ?," +
+    private static final String INSERT_BOOSTPAD_INFO = "INSERT INTO matchPlayerBoostPads SET matchPlayerid = ?, matchid = ?," +
         "boostpad67 = ?, boostpad12 = ?, boostpad43 = ?, boostpad13 = ?, boostpad66 = ?, boostpad18 = ?," +
         "  boostpad11 = ?, boostpad17 = ?, boostpad5 = ?, boostpad14 = ?, boostpad4 = ?, boostpad10 = ?," +
         "  boostpad7 = ?, boostpad41 = ?, boostpad3 = ?, boostpad64 = ?, boostpad40 = ?, boostpad42 = ?," +
@@ -41,6 +42,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final String READ_ALL_MATCHES = "SELECT * FROM match_";
     private static final String READ_PLAYERS_FROM_MATCHES = "SELECT * FROM matchPlayer WHERE matchid = ?";
+    private static final String READ_BOOSTPADLIST_FROM_MATCHPLAYER = "SELECT * FROM MATCHPLAYERBOOSTPADS WHERE matchplayerid = ? AND matchid = ?";
 
     private static final String READ_MATCH_BY_READID = "Select id from match_ where readId = ?";
 
@@ -139,40 +141,40 @@ public class JDBCMatchDAO implements MatchDAO {
 
             ps.setLong(1, matchPlayerDTO.getPlayerId());
             ps.setInt(2, matchPlayerDTO.getMatchId());
-            ps.setInt(3, boostPadDTOMap.get(0).size());
-            ps.setInt(4, boostPadDTOMap.get(1).size());
-            ps.setInt(5, boostPadDTOMap.get(2).size());
-            ps.setInt(6, boostPadDTOMap.get(3).size());
-            ps.setInt(7, boostPadDTOMap.get(4).size());
-            ps.setInt(8, boostPadDTOMap.get(5).size());
-            ps.setInt(9, boostPadDTOMap.get(6).size());
-            ps.setInt(10, boostPadDTOMap.get(7).size());
-            ps.setInt(11, boostPadDTOMap.get(8).size());
-            ps.setInt(12, boostPadDTOMap.get(9).size());
-            ps.setInt(13, boostPadDTOMap.get(10).size());
-            ps.setInt(14, boostPadDTOMap.get(11).size());
-            ps.setInt(15, boostPadDTOMap.get(12).size());
-            ps.setInt(16, boostPadDTOMap.get(13).size());
-            ps.setInt(17, boostPadDTOMap.get(14).size());
-            ps.setInt(18, boostPadDTOMap.get(15).size());
-            ps.setInt(19, boostPadDTOMap.get(16).size());
-            ps.setInt(20, boostPadDTOMap.get(17).size());
-            ps.setInt(21, boostPadDTOMap.get(18).size());
-            ps.setInt(22, boostPadDTOMap.get(19).size());
-            ps.setInt(23, boostPadDTOMap.get(20).size());
-            ps.setInt(24, boostPadDTOMap.get(21).size());
-            ps.setInt(25, boostPadDTOMap.get(22).size());
-            ps.setInt(26, boostPadDTOMap.get(23).size());
-            ps.setInt(27, boostPadDTOMap.get(24).size());
-            ps.setInt(28, boostPadDTOMap.get(25).size());
-            ps.setInt(29, boostPadDTOMap.get(26).size());
-            ps.setInt(30, boostPadDTOMap.get(27).size());
-            ps.setInt(31, boostPadDTOMap.get(28).size());
-            ps.setInt(32, boostPadDTOMap.get(29).size());
-            ps.setInt(33, boostPadDTOMap.get(30).size());
-            ps.setInt(34, boostPadDTOMap.get(31).size());
-            ps.setInt(35, boostPadDTOMap.get(32).size());
-            ps.setInt(36, boostPadDTOMap.get(33).size());
+            ps.setInt(3, boostPadDTOMap.get(67).size());
+            ps.setInt(4, boostPadDTOMap.get(12).size());
+            ps.setInt(5, boostPadDTOMap.get(43).size());
+            ps.setInt(6, boostPadDTOMap.get(13).size());
+            ps.setInt(7, boostPadDTOMap.get(66).size());
+            ps.setInt(8, boostPadDTOMap.get(18).size());
+            ps.setInt(9, boostPadDTOMap.get(11).size());
+            ps.setInt(10, boostPadDTOMap.get(17).size());
+            ps.setInt(11, boostPadDTOMap.get(5).size());
+            ps.setInt(12, boostPadDTOMap.get(14).size());
+            ps.setInt(13, boostPadDTOMap.get(4).size());
+            ps.setInt(14, boostPadDTOMap.get(10).size());
+            ps.setInt(15, boostPadDTOMap.get(7).size());
+            ps.setInt(16, boostPadDTOMap.get(41).size());
+            ps.setInt(17, boostPadDTOMap.get(3).size());
+            ps.setInt(18, boostPadDTOMap.get(64).size());
+            ps.setInt(19, boostPadDTOMap.get(40).size());
+            ps.setInt(20, boostPadDTOMap.get(42).size());
+            ps.setInt(21, boostPadDTOMap.get(63).size());
+            ps.setInt(22, boostPadDTOMap.get(23).size());
+            ps.setInt(23, boostPadDTOMap.get(19).size());
+            ps.setInt(24, boostPadDTOMap.get(20).size());
+            ps.setInt(25, boostPadDTOMap.get(31).size());
+            ps.setInt(26, boostPadDTOMap.get(28).size());
+            ps.setInt(27, boostPadDTOMap.get(21).size());
+            ps.setInt(28, boostPadDTOMap.get(36).size());
+            ps.setInt(29, boostPadDTOMap.get(68).size());
+            ps.setInt(30, boostPadDTOMap.get(32).size());
+            ps.setInt(31, boostPadDTOMap.get(38).size());
+            ps.setInt(32, boostPadDTOMap.get(34).size());
+            ps.setInt(33, boostPadDTOMap.get(35).size());
+            ps.setInt(34, boostPadDTOMap.get(33).size());
+            ps.setInt(35, boostPadDTOMap.get(65).size());
+            ps.setInt(36, boostPadDTOMap.get(39).size());
 
             ps.executeUpdate();
 
@@ -259,7 +261,77 @@ public class JDBCMatchDAO implements MatchDAO {
             String msg = "Could not read match players";
             throw new MatchPersistenceException(msg, e);
         }
+
+        for (MatchPlayerDTO matchPlayer:result) {
+            Map<Integer, List<Integer>> dbBoostPadMap = new HashMap<>();
+            //set boostpad map
+            int playerID = (int)matchPlayer.getPlayerId();
+            dbBoostPadMap.put(playerID, readBoostPadList(playerID, match.getId()));
+            matchPlayer.setDBBoostPadMap(dbBoostPadMap);
+        }
         return result;
+    }
+
+    /**
+     * reads the boost pad records from the db
+     * @param id player id from the corresponding match
+     * @param matchId match id
+     */
+    private List<Integer> readBoostPadList(int id, int matchId) throws MatchPersistenceException{
+        LOG.trace("Called - readBoostPadMap");
+        List<Integer> boostPadList = new LinkedList<>();
+        try (PreparedStatement ps2 = connection.prepareStatement(READ_BOOSTPADLIST_FROM_MATCHPLAYER, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps2.setInt(1, id);
+            ps2.setInt(2, matchId);
+
+            try (ResultSet rs2 = ps2.executeQuery()) {
+
+                while (rs2.next()) {
+
+                    boostPadList.add(rs2.getInt("boostpad67"));
+                    boostPadList.add(rs2.getInt("boostpad12"));
+                    boostPadList.add(rs2.getInt("boostpad43"));
+                    boostPadList.add(rs2.getInt("boostpad13"));
+                    boostPadList.add(rs2.getInt("boostpad66"));
+                    boostPadList.add(rs2.getInt("boostpad18"));
+                    boostPadList.add(rs2.getInt("boostpad11"));
+                    boostPadList.add(rs2.getInt("boostpad17"));
+                    boostPadList.add(rs2.getInt("boostpad5"));
+                    boostPadList.add(rs2.getInt("boostpad14"));
+                    boostPadList.add(rs2.getInt("boostpad4"));
+                    boostPadList.add(rs2.getInt("boostpad10"));
+                    boostPadList.add(rs2.getInt("boostpad7"));
+                    boostPadList.add(rs2.getInt("boostpad41"));
+                    boostPadList.add(rs2.getInt("boostpad3"));
+                    boostPadList.add(rs2.getInt("boostpad64"));
+                    boostPadList.add(rs2.getInt("boostpad40"));
+                    boostPadList.add(rs2.getInt("boostpad42"));
+                    boostPadList.add(rs2.getInt("boostpad63"));
+                    boostPadList.add(rs2.getInt("boostpad23"));
+                    boostPadList.add(rs2.getInt("boostpad19"));
+                    boostPadList.add(rs2.getInt("boostpad20"));
+                    boostPadList.add(rs2.getInt("boostpad31"));
+                    boostPadList.add(rs2.getInt("boostpad28"));
+                    boostPadList.add(rs2.getInt("boostpad21"));
+                    boostPadList.add(rs2.getInt("boostpad36"));
+                    boostPadList.add(rs2.getInt("boostpad68"));
+                    boostPadList.add(rs2.getInt("boostpad32"));
+                    boostPadList.add(rs2.getInt("boostpad38"));
+                    boostPadList.add(rs2.getInt("boostpad34"));
+                    boostPadList.add(rs2.getInt("boostpad35"));
+                    boostPadList.add(rs2.getInt("boostpad33"));
+                    boostPadList.add(rs2.getInt("boostpad65"));
+                    boostPadList.add(rs2.getInt("boostpad39"));
+
+                }
+            }
+
+        } catch (SQLException e) {
+            String msg = "Could not read boost pads";
+            throw new MatchPersistenceException(msg, e);
+        }
+        return boostPadList;
     }
 
     @Override

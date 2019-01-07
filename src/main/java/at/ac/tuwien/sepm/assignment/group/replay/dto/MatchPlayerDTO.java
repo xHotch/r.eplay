@@ -28,6 +28,7 @@ public class MatchPlayerDTO {
     private BufferedImage heatmapImage;
     private String heatmapFilename;
     private Map<Integer, List<BoostPadDTO>> boostPadMap;
+    private Map<Integer, List<Integer>> dbBoostPadMap;
 
     private int actorId;
 
@@ -187,5 +188,13 @@ public class MatchPlayerDTO {
 
     public void setBoostPadMap(Map<Integer, List<BoostPadDTO>> boostPadMap) {
         this.boostPadMap = boostPadMap;
+    }
+
+    public Map<Integer, List<Integer>> getDBBoostPadMap() {
+        return dbBoostPadMap;
+    }
+
+    public void setDBBoostPadMap(Map<Integer, List<Integer>> boostPadMap) {
+        this.dbBoostPadMap = boostPadMap;
     }
 }

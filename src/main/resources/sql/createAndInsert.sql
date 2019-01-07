@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS matchPlayer;
+DROP TABLE IF EXISTS matchPlayerBoostPads;
 DROP TABLE IF EXISTS teamPlayer;
 DROP TABLE IF EXISTS player;
 DROP TABLE IF EXISTS match_;
@@ -60,10 +61,10 @@ CREATE TABLE IF NOT EXISTS matchPlayerBoostPads
   boostpad63 BIGINT, boostpad23 BIGINT, boostpad19 BIGINT, boostpad20 BIGINT, boostpad31 BIGINT, boostpad28 BIGINT,
   boostpad21 BIGINT, boostpad36 BIGINT, boostpad68 BIGINT, boostpad32 BIGINT, boostpad38 BIGINT, boostpad34 BIGINT,
   boostpad35 BIGINT, boostpad33 BIGINT, boostpad65 BIGINT, boostpad39 BIGINT,
-  FOREIGN KEY (playerid) REFERENCES matchPlayer(playerid),
+  FOREIGN KEY (matchPlayerid) REFERENCES matchPlayer(playerid),
   FOREIGN KEY (matchid) REFERENCES matchPlayer(matchid) on delete cascade,
-  PRIMARY KEY (playerid, matchid)
-)
+  PRIMARY KEY (matchPlayerid, matchid)
+);
 
 CREATE TABLE IF NOT EXISTS team
 (

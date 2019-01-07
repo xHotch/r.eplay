@@ -114,7 +114,7 @@ public class BoostInformationParser {
             carComponentToCarId.putIfAbsent(carComponentId, carActorId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No Information about boost found - wrong replication info found");
         }
     }
@@ -131,7 +131,7 @@ public class BoostInformationParser {
             carBoostMap.putIfAbsent(carActorId, playerId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No Information about boost found - wrong replicated info found");
         }
     }
@@ -148,7 +148,7 @@ public class BoostInformationParser {
             carBoostPadMap.putIfAbsent(carActorId, playerId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost pad found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No Information about boost pad found - wrong replicated info found");
         }
     }
@@ -172,7 +172,7 @@ public class BoostInformationParser {
 
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No information about boost found - wrong replicated info found");
         }
 
@@ -201,12 +201,15 @@ public class BoostInformationParser {
             BoostPadDTO boostPad = new BoostPadDTO(frameTime, frameDelta, currentFrame, gamePaused, id);
 
             int actId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
-            boostPadMap.putIfAbsent(actId, new HashMap<>());
-            fillBoostPadIds(actId);
-            boostPadMap.get(actId).get(id).add(boostPad);
+            int actualPlayerID = carBoostPadMap.get(actId);
+            if(actId != -1) {
+                boostPadMap.putIfAbsent(actualPlayerID, new HashMap<>());
+                fillBoostPadIds(actualPlayerID);
+                boostPadMap.get(actualPlayerID).get(id).add(boostPad);
+            }
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO not handle null pointer exception
             LOG.debug("No such path found");
         }
     }
@@ -251,29 +254,6 @@ public class BoostInformationParser {
     public void printDebugInformation() {
 
         LOG.debug("\n");
-        for (Map.Entry<Integer, Integer> carComponents:carComponentToCarId.entrySet()
-        ) {
-            LOG.debug("Car Boost component ID: {}, Car ID {}", carComponents.getKey(), carComponents.getValue());
-        }
-
-        for (Map.Entry<Integer, Integer> carIDs:carBoostMap.entrySet()
-        ) {
-            LOG.debug("(Boost amount) Car ID: {}, Player ID {}", carIDs.getKey(), carIDs.getValue());
-        }
-
-        for (Map.Entry<Integer, Integer> carIDs:carBoostPadMap.entrySet()
-        ) {
-            LOG.debug("(Boost pads) Car ID: {}, Player ID {}", carIDs.getKey(), carIDs.getValue());
-        }
-
-        /*
-        for (Map.Entry<Integer, List<BoostPadDTO>> boost:boostPadMap.entrySet()
-        ) {
-            for (BoostPadDTO info:boost.getValue()
-            ) {
-                LOG.debug("Car ID: {}, Frame time: {}, Boost pad ID: {}", boost.getKey(), info.getFrameTime(), info.getBoostPadId());
-            }
-        }*/
     }
 
     public Map<Integer, Integer> getCarBoostMap() {

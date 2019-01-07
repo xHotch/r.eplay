@@ -91,238 +91,46 @@ public class BoostStatisticsController {
     }
 
     void loadBoostPadValues(MatchPlayerDTO player) {
-        // key = car ID, value = player ID
-        Map<Integer, Integer> carBoostPadMap = boostInformationParser.getCarBoostPadMap();
-        Map<Integer, List<BoostPadDTO>> boostPadInformation = boostInformationParser.getBoostPadMap();
 
+        List<Integer> boostPadList = player.getDBBoostPadMap().get((int)player.getPlayerId());
         //set up boost counts map everytime a player gets selected
         setupBoostCountsMap();
 
-        int playerID = 0;
+        pad67.setText(boostPadList.get(0) + "");
+        pad12.setText(boostPadList.get(1) + "");
+        pad43.setText(boostPadList.get(2) + "");
+        pad13.setText(boostPadList.get(3) + "");
+        pad66.setText(boostPadList.get(4) + "");
+        pad18.setText(boostPadList.get(5) + "");
+        pad11.setText(boostPadList.get(6) + "");
+        pad17.setText(boostPadList.get(7) + "");
+        pad5.setText(boostPadList.get(8) + "");
+        pad14.setText(boostPadList.get(9) + "");
+        pad4.setText(boostPadList.get(10) + "");
+        pad10.setText(boostPadList.get(11) + "");
+        pad7.setText(boostPadList.get(12) + "");
+        pad41.setText(boostPadList.get(13) + "");
+        pad3.setText(boostPadList.get(14) + "");
+        pad64.setText(boostPadList.get(15) + "");
+        pad40.setText(boostPadList.get(16) + "");
+        pad42.setText(boostPadList.get(17) + "");
+        pad63.setText(boostPadList.get(18) + "");
+        pad23.setText(boostPadList.get(19) + "");
+        pad19.setText(boostPadList.get(20) + "");
+        pad20.setText(boostPadList.get(21) + "");
+        pad31.setText(boostPadList.get(22) + "");
+        pad28.setText(boostPadList.get(23) + "");
+        pad21.setText(boostPadList.get(24) + "");
+        pad36.setText(boostPadList.get(25) + "");
+        pad68.setText(boostPadList.get(26) + "");
+        pad32.setText(boostPadList.get(27) + "");
+        pad38.setText(boostPadList.get(28) + "");
+        pad34.setText(boostPadList.get(29) + "");
+        pad35.setText(boostPadList.get(30) + "");
+        pad33.setText(boostPadList.get(31) + "");
+        pad65.setText(boostPadList.get(32) + "");
+        pad39.setText(boostPadList.get(33) + "");
 
-        for (Map.Entry<Integer, List<BoostPadDTO>> boostPadInfo:boostPadInformation.entrySet()) {
-            if (carBoostPadMap.containsKey(boostPadInfo.getKey())) {
-                int boostPadtoPlayerID = carBoostPadMap.get(boostPadInfo.getKey());
-                LOG.debug("Car ID {}, Player ID {}", boostPadInfo.getKey(), boostPadtoPlayerID);
-                LOG.debug("Current Player {} ID {}", player.getName(), playerID);
-                List<BoostPadDTO> boostPadList = boostPadInfo.getValue();
-                if (playerID == boostPadtoPlayerID) {
-                    for (BoostPadDTO info : boostPadList) {
-                        int boostpadID = info.getBoostPadId();
-
-                        int increment = 0;
-                        switch (boostpadID) {
-                            case 67:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad67.setText(increment + "");
-                                break;
-
-                            case 12:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad12.setText(increment + "");
-                                break;
-
-                            case 43:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad43.setText(increment + "");
-                                break;
-
-                            case 13:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad13.setText(increment + "");
-                                break;
-
-                            case 66:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad66.setText(increment + "");
-                                break;
-
-                            case 18:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad18.setText(increment + "");
-                                break;
-
-                            case 11:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad11.setText(increment + "");
-                                break;
-
-                            case 17:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad17.setText(increment + "");
-                                break;
-
-                            case 5:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad5.setText(increment + "");
-                                break;
-
-                            case 14:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad14.setText(increment + "");
-                                break;
-
-                            case 4:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad4.setText(increment + "");
-                                break;
-
-                            case 10:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad10.setText(increment + "");
-                                break;
-
-                            case 7:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad7.setText(increment + "");
-                                break;
-
-                            case 41:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad41.setText(increment + "");
-                                break;
-
-                            case 3:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad3.setText(increment + "");
-                                break;
-
-                            case 64:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad64.setText(increment + "");
-                                break;
-
-                            case 40:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad40.setText(increment + "");
-                                break;
-
-                            case 42:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad42.setText(increment + "");
-                                break;
-
-                            case 63:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad63.setText(increment + "");
-                                break;
-
-                            case 23:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad23.setText(increment + "");
-                                break;
-
-                            case 19:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad19.setText(increment + "");
-                                break;
-
-                            case 20:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad20.setText(increment + "");
-                                break;
-
-                            case 31:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad31.setText(increment + "");
-                                break;
-
-                            case 28:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad28.setText(increment + "");
-                                break;
-
-                            case 21:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad21.setText(increment + "");
-                                break;
-
-                            case 36:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad36.setText(increment + "");
-                                break;
-
-                            case 68:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad68.setText(increment + "");
-                                break;
-
-                            case 32:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad32.setText(increment + "");
-                                break;
-
-                            case 38:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad38.setText(increment + "");
-                                break;
-
-                            case 34:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad34.setText(increment + "");
-                                break;
-
-                            case 35:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad35.setText(increment + "");
-                                break;
-
-                            case 33:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad33.setText(increment + "");
-                                break;
-
-                            case 65:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad65.setText(increment + "");
-                                break;
-
-                            case 39:
-                                increment = boostCounts.get(boostpadID) + 1;
-                                boostCounts.put(boostpadID, increment);
-                                this.pad39.setText(increment + "");
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**

@@ -58,7 +58,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, ReplayService replayService, MatchService matchService) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, BoostStatistic boostStatistic, ReplayService replayService, MatchService matchService) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParser = gameInformationParser;
@@ -67,6 +67,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
         this.ballStatistic = ballStatistic;
+        this.boostStatistic = boostStatistic;
         this.replayService = replayService;
         this.matchService = matchService;
     }
@@ -94,6 +95,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 carInformationParser.setup();
                 ballInformationParser.setCtx(ctx);
                 ballInformationParser.setup();
+                boostInformationParser.setCtx(ctx);
+                boostInformationParser.setup();
 
                 jFile = jsonFile;
             } catch (IOException e) {
