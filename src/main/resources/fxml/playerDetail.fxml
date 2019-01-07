@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.PlayerDetailController">
+   <children>
+      <Label layoutX="28.0" layoutY="14.0" text="Spieler: " />
+      <Label fx:id="playerLabel" layoutX="85.0" layoutY="14.0" text="Label" />
+      <ChoiceBox fx:id="typChoiceBox" layoutX="353.0" layoutY="10.0" prefWidth="150.0" />
+      <Label layoutX="273.0" layoutY="14.0" text="Matchtyp:" />
+      <Label layoutX="71.0" layoutY="78.0" text="Wins:" />
+      <Label fx:id="winsLabel" layoutX="113.0" layoutY="78.0" text="Label" />
+      <Label layoutX="183.0" layoutY="78.0" text="Losses:" />
+      <Label fx:id="lossesLabel" layoutX="235.0" layoutY="78.0" text="Label" />
+      <TableView fx:id="avgTableView" layoutX="71.0" layoutY="135.0" prefHeight="68.0" prefWidth="661.0">
+        <columns>
+          <TableColumn fx:id="goalsTableColumn" prefWidth="75.0" text="avg goals" />
+          <TableColumn fx:id="assistsTableColumn" prefWidth="75.0" text="avg assists" />
+            <TableColumn fx:id="savesTableColumn" prefWidth="75.0" text="avg saves" />
+            <TableColumn fx:id="shotsTableColumn" prefWidth="75.0" text="avg shots" />
+            <TableColumn fx:id="scoreTableColumn" prefWidth="75.0" text="avg score" />
+            <TableColumn fx:id="speedTableColumn" prefWidth="75.0" text="avg speed" />
+            <TableColumn fx:id="boostpadTableColumn" prefWidth="138.0" text="avg boostpad collected" />
+            <TableColumn fx:id="boostTableColumn" prefWidth="70.0" text="avg bpm" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

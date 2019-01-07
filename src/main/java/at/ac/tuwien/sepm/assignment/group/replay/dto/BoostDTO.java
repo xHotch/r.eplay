@@ -1,22 +1,20 @@
-package at.ac.tuwien.sepm.assignment.group.replay.service.impl.BoostInformation;
+package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
-// reference to https://github.com/RLBot/RLBot/wiki/Useful-Game-Values
-public class BoostPadInformation {
+public class BoostDTO {
 
     private double frameTime;
     private double frameDelta;
     private int frame;
-    private int boostPadId;
+    private int boost;
 
     private boolean gamePaused;
 
-    public BoostPadInformation(double frameTime, double frameDelta, int frame, boolean gamePaused, int boostPadId) {
+    public BoostDTO(double frameTime, double frameDelta, int frame, boolean gamePaused, int boost) {
         this.frameTime = frameTime;
         this.frameDelta = frameDelta;
         this.frame = frame;
         this.gamePaused = gamePaused;
-        this.boostPadId = boostPadId;
-
+        this.boost = boost;
     }
 
     public double getFrameTime() {
@@ -43,12 +41,12 @@ public class BoostPadInformation {
         this.gamePaused = gamePaused;
     }
 
-    public int getBoostPadId() {
-        return boostPadId;
+    public int getBoostAmount() {
+        return boost;
     }
 
-    public void setBoostPadId(int boostPad) {
-        this.boostPadId = boostPadId;
+    public void setBoostAmount(int boostAmount) {
+        this.boost = boostAmount;
     }
 
     public int getFrame() {
@@ -59,4 +57,3 @@ public class BoostPadInformation {
         this.frame = frame;
     }
 }
-

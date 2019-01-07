@@ -49,16 +49,18 @@ public class PlayerController {
     private SpringFXMLLoader springFXMLLoader;
     private ExecutorService executorService;
     private PlayerService playerService;
+    private PlayerDetailController playerDetailController;
 
     @FXML
     private TableView<PlayerDTO> tableViewPlayers;
     @FXML
     private TableColumn<PlayerDTO, String> tableColumnPlayerName;
 
-    public PlayerController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService) {
+    public PlayerController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService, PlayerDetailController playerDetailController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.playerService = playerService;
+        this.playerDetailController = playerDetailController;
     }
 
     /**
@@ -70,6 +72,36 @@ public class PlayerController {
 
         setupPlayerTable();
         updatePlayerTable();
+
+    }
+
+    public void onPlayerDetailsButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Player Details button clicked");
+
+        Stage playerDetailStage = new Stage();
+        // setup application
+        playerDetailStage.setTitle("Player Details");
+        playerDetailStage.setWidth(1024);
+        playerDetailStage.setHeight(768);
+        playerDetailStage.centerOnScreen();
+        playerDetailStage.setOnCloseRequest(event -> {
+            LOG.debug("Player Details window closed");
+        });
+
+
+        try {
+            playerDetailStage.setScene(new Scene(springFXMLLoader.load("/fxml/playerDetail.fxml", Parent.class)));
+        } catch (IOException e) {
+            LOG.error("Loading Player Detail fxml failed", e);
+        }
+
+        if (tableViewPlayers.getSelectionModel().getSelectedItems().size() == 1) {
+            playerDetailController.loadPlayer(tableViewPlayers.getSelectionModel().getSelectedItem());
+            playerDetailStage.toFront();
+            playerDetailStage.showAndWait();
+        } else {
+            AlertHelper.showErrorMessage("you must select exactly one player");
+        }
 
     }
 

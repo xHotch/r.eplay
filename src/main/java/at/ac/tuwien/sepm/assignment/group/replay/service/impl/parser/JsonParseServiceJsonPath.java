@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BoostStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
 import com.jayway.jsonpath.Configuration;
@@ -51,12 +52,13 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private BoostInformationParser boostInformationParser;
     private PlayerStatistic playerStatistic;
     private BallStatistic ballStatistic;
+    private BoostStatistic boostStatistic;
     private ReplayService replayService;
     private MatchService matchService;
 
 
 
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, ReplayService replayService, MatchService matchService) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, BoostStatistic boostStatistic, ReplayService replayService, MatchService matchService) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParser = gameInformationParser;
@@ -65,6 +67,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         this.boostInformationParser = boostInformationParser;
         this.playerStatistic = playerStatistic;
         this.ballStatistic = ballStatistic;
+        this.boostStatistic = boostStatistic;
         this.replayService = replayService;
         this.matchService = matchService;
     }
@@ -92,6 +95,8 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 carInformationParser.setup();
                 ballInformationParser.setCtx(ctx);
                 ballInformationParser.setup();
+                boostInformationParser.setCtx(ctx);
+                boostInformationParser.setup();
 
                 jFile = jsonFile;
             } catch (IOException e) {
@@ -368,6 +373,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - calculate");
         playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations()); //TODO link actorID to matchplayer
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
+        boostStatistic.calculate(matchDTO.getPlayerData(), ballInformationParser.getRigidBodyInformations(), boostInformationParser.getBoostPadMap());
     }
 
     /**

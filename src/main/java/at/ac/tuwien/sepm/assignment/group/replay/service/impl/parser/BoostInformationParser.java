@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.BoostInformation.BoostInformation;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.BoostInformation.BoostPadInformation;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostDTO;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import org.slf4j.Logger;
@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BoostInformationParser {
@@ -45,9 +42,9 @@ public class BoostInformationParser {
     private Map<Integer, Integer> carBoostPadMap = new HashMap<>();
 
     //Map that maps ActorID from a Car to a list of BoostAmountInformation. Key = playerId, Value = Boost amount information
-    private Map<Integer, List<BoostInformation>> boostAmountMap = new HashMap<>();
-    //Map that maps ActorID from a Car to a list of BoostPadInformation. Key = playerId, Value = Boost pad information
-    private Map<Integer, List<BoostPadInformation>> boostPadMap = new HashMap<>();
+    private Map<Integer, List<BoostDTO>> boostAmountMap = new HashMap<>();
+    //Map that maps ActorID from a Car to a list of BoostPadDTO. Key = playerId, Value = Boost pad information
+    private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap = new HashMap<>();
 
     void setup(){
         carComponentToCarId = new HashMap<>();
@@ -117,7 +114,7 @@ public class BoostInformationParser {
             carComponentToCarId.putIfAbsent(carComponentId, carActorId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No Information about boost found - wrong replication info found");
         }
     }
@@ -134,7 +131,7 @@ public class BoostInformationParser {
             carBoostMap.putIfAbsent(carActorId, playerId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No Information about boost found - wrong replicated info found");
         }
     }
@@ -151,7 +148,7 @@ public class BoostInformationParser {
             carBoostPadMap.putIfAbsent(carActorId, playerId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost pad found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No Information about boost pad found - wrong replicated info found");
         }
     }
@@ -159,9 +156,8 @@ public class BoostInformationParser {
     /**
      * Parses the amount of boost for a player to a specific frame
      *
-     * @throws FileServiceException if the file couldn't be parsed
      */
-    private void parseBoostAmountInformation() throws FileServiceException {
+    private void parseBoostAmountInformation() {
         LOG.trace("Called - parseBoostAmountInformation");
 
         try {
@@ -170,13 +166,13 @@ public class BoostInformationParser {
             //map to 0 - 100, in the json it is from 0 - 255
             currentBoost = (int)(currentBoost / 255.0 * 100.0);
             //create new boost object
-            BoostInformation boost = new BoostInformation(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
+            BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
             boostAmountMap.putIfAbsent(actorId, new ArrayList<>());
             boostAmountMap.get(actorId).add(boost);
 
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO remove null exception
             LOG.debug("No information about boost found - wrong replicated info found");
         }
 
@@ -185,16 +181,15 @@ public class BoostInformationParser {
     /**
      * Parses the boost pad informations
      *
-     * @throws FileServiceException if the file couldn't be parsed
      */
-    private void parseBoostPadInformation() throws FileServiceException {
+    private void parseBoostPadInformation() {
         LOG.trace("Called - parseBoostPadInformation");
 
         //create new boost pad object, little boost pad = 12, big boost pad = 100 boost.
         try {
             //get the over map constant id from the boost pad from the type name.
             String typeName = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].TypeName");
-            String substring = typeName.substring(typeName.length()-2, typeName.length());
+            String substring = typeName.substring(typeName.length()-2);
 
             int id = -1;
             if(!substring.isEmpty() && substring.contains("_")) {
@@ -203,43 +198,62 @@ public class BoostInformationParser {
                 id = Integer.parseInt(substring);
             }
 
-            BoostPadInformation boostPad = new BoostPadInformation(frameTime, frameDelta, currentFrame, gamePaused, id);
+            BoostPadDTO boostPad = new BoostPadDTO(frameTime, frameDelta, currentFrame, gamePaused, id);
 
             int actId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
-            boostPadMap.putIfAbsent(actId, new ArrayList<>());
-            boostPadMap.get(actId).add(boostPad);
+            int actualPlayerID = carBoostPadMap.get(actId);
+            if(actId != -1) {
+                boostPadMap.putIfAbsent(actualPlayerID, new HashMap<>());
+                fillBoostPadIds(actualPlayerID);
+                boostPadMap.get(actualPlayerID).get(id).add(boostPad);
+            }
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO not handle null pointer exception
             LOG.debug("No such path found");
         }
+    }
+
+    private void fillBoostPadIds(int actId) {
+        boostPadMap.get(actId).putIfAbsent(67, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(12, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(43, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(13, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(66, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(18, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(11, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(17, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(5, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(14, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(4, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(10, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(7, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(41, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(3, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(64, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(40, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(42, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(63, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(23, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(19, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(20, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(31, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(28, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(21, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(36, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(68, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(32, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(38, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(34, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(35, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(33, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(65, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(39, new LinkedList<>());
     }
 
     public void printDebugInformation() {
 
         LOG.debug("\n");
-        for (Map.Entry<Integer, Integer> carComponents:carComponentToCarId.entrySet()
-        ) {
-            LOG.debug("Car Boost component ID: {}, Car ID {}", carComponents.getKey(), carComponents.getValue());
-        }
-
-        for (Map.Entry<Integer, Integer> carIDs:carBoostMap.entrySet()
-        ) {
-            LOG.debug("(Boost amount) Car ID: {}, Player ID {}", carIDs.getKey(), carIDs.getValue());
-        }
-
-        for (Map.Entry<Integer, Integer> carIDs:carBoostPadMap.entrySet()
-        ) {
-            LOG.debug("(Boost pads) Car ID: {}, Player ID {}", carIDs.getKey(), carIDs.getValue());
-        }
-
-        for (Map.Entry<Integer, List<BoostPadInformation>> boost:boostPadMap.entrySet()
-        ) {
-            for (BoostPadInformation info:boost.getValue()
-            ) {
-                LOG.debug("Car ID: {}, Frame time: {}, Boost pad ID: {}", boost.getKey(), info.getFrameTime(), info.getBoostPadId());
-            }
-        }
     }
 
     public Map<Integer, Integer> getCarBoostMap() {
@@ -251,11 +265,11 @@ public class BoostInformationParser {
         return carBoostPadMap;
     }
 
-    public Map<Integer, List<BoostInformation>> getBoostAmountMap() {
+    public Map<Integer, List<BoostDTO>> getBoostAmountMap() {
         return boostAmountMap;
     }
 
-    public Map<Integer, List<BoostPadInformation>> getBoostPadMap() {
+    public Map<Integer, Map<Integer, List<BoostPadDTO>>> getBoostPadMap() {
         // contains the carID and boost pad ID that was picked up
         return boostPadMap;
     }

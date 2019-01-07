@@ -72,7 +72,7 @@ public class PlayerTest {
         // will be used as container for the results from the db.
         retrievedPlayers = new LinkedList<>();
 
-        playerService = new SimplePlayerService(playerDAO);
+        playerService = new SimplePlayerService(playerDAO, matchDAO);
     }
 
     @After
