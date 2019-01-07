@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.AvgStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
@@ -51,4 +53,13 @@ public interface PlayerService {
      *                                while updating the player database entry
      */
     void showPlayer(PlayerDTO player) throws PlayerServiceException;
+
+    /**
+     * Gets the average statistics from a player for a specific MatchType
+     * @param playerDTO requested player for the statistics
+     * @param matchType requested matchType
+     * @return the average statistic
+     * @throws PlayerServiceException if error occurs during persistence
+     */
+    AvgStatsDTO getAvgStats(PlayerDTO playerDTO, MatchType matchType) throws PlayerServiceException;
 }

@@ -56,6 +56,7 @@ public class MatchController {
     private MatchService matchService;
     private PlayerService playerService;
 
+    private boolean filter = false;
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -71,6 +72,21 @@ public class MatchController {
     private ProgressIndicator loadReplayProgressIndicator;
     @FXML
     private Button uploadReplayButton;
+    @FXML
+    private ChoiceBox<Integer> choiceBoxMatchtyp;
+    @FXML
+    private TextField nameTextField;
+    @FXML
+    private DatePicker fromDatePicker;
+    @FXML
+    private DatePicker toDatePicker;
+    @FXML
+    private CheckBox nameCheckBox;
+    @FXML
+    private CheckBox timeCheckBox;
+    @FXML
+    private CheckBox typCheckBox;
+
 
     public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, BoostStatisticsController boostStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController, MatchAnimationController matchAnimationController) {
         this.springFXMLLoader = springFXMLLoader;
@@ -93,9 +109,30 @@ public class MatchController {
      */
     @FXML
     void initialize() {
+        choiceBoxMatchtyp.getItems().addAll(1,2,3);
         setupMatchTable();
         updateMatchTable();
     }
+
+    public void onSearchButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Search button clicked");
+        filter = true;
+        updateMatchTable();
+    }
+
+    public void onRevertSearchButtonClicked(ActionEvent actionEvent) {
+        LOG.info("Revert Search button clicked");
+        filter = false;
+        nameTextField.setText("");
+        fromDatePicker.setValue(null);
+        toDatePicker.setValue(null);
+        choiceBoxMatchtyp.setValue(null);
+        typCheckBox.setSelected(false);
+        timeCheckBox.setSelected(false);
+        nameCheckBox.setSelected(false);
+        updateMatchTable();
+    }
+
 
     /**
      * Opens a new Match Detail window.
@@ -250,13 +287,45 @@ public class MatchController {
      */
     private void updateMatchTable() {
         try {
-            ObservableList<MatchDTO> observableMatches = FXCollections.observableArrayList(matchService.getMatches());
+            ObservableList<MatchDTO> observableMatches;
+            if (!filter) {
+                observableMatches = FXCollections.observableArrayList(matchService.getMatches());
+            } else {
+                String name = null;
+                LocalDateTime begin = null;
+                LocalDateTime end = null;
+                int teamSize = 0;
+                if (nameCheckBox.isSelected()) {
+                    name = nameTextField.getText();
+                    if (name.equals("")) {
+                        name = null;
+                    }
+                }
+                if (timeCheckBox.isSelected()) {
+                    if (fromDatePicker.getValue() == null || toDatePicker.getValue() == null) {
+                        throw new FilterValidationException("pls select both Dates");
+                    }
+                    begin = fromDatePicker.getValue().atStartOfDay();
+                    end = toDatePicker.getValue().atStartOfDay().plusDays(1).minusSeconds(1);
+                }
+                if (typCheckBox.isSelected()) {
+                    if (choiceBoxMatchtyp.getValue() == null) {
+                        throw new FilterValidationException("Choose a Matchtyp");
+                    }
+                    teamSize = choiceBoxMatchtyp.getValue();
+                }
+                observableMatches = FXCollections.observableArrayList(matchService.searchMatches(name, begin, end, teamSize));
+            }
+
             SortedList<MatchDTO> sortedMatches = new SortedList<>(observableMatches);
             sortedMatches.comparatorProperty().bind(tableViewMatches.comparatorProperty());
             tableViewMatches.getSortOrder().add(tableColumnMatchDate);
             tableViewMatches.setItems(sortedMatches);
         } catch (MatchServiceException e) {
             LOG.error("Caught MatchServiceException {} ", e.getMessage());
+            AlertHelper.showErrorMessage(e.getMessage());
+        } catch (FilterValidationException e) {
+            LOG.error("Caught FilterValidationException {} ", e.getMessage());
             AlertHelper.showErrorMessage(e.getMessage());
         }
     }

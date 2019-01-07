@@ -146,7 +146,9 @@ public class TeamController {
     private void showTeamDetails(TeamDTO selectedTeam) {
         LOG.info("Show Team Details Button clicked");
         LOG.trace("called - onShowTeamDetailsButtonClicked");
-        updateTeamDetails(selectedTeam);
+        if (selectedTeam != null) {
+            updateTeamDetails(selectedTeam);
+        }
     }
 
     /**

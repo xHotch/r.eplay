@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.tc33.jheatchart.HeatChart;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
@@ -118,7 +118,50 @@ public class RigidBodyStatistic {
         heatChart.setColourScale(0.5);
         heatChart.setLowValueColour(Color.WHITE);
         heatChart.setHighValueColour(Color.RED);
-        return (BufferedImage) heatChart.getChartImage();
+
+        BufferedImage heatmap = ((BufferedImage) heatChart.getChartImage());
+        BufferedImage cropped = ((BufferedImage) heatChart.getChartImage()).getSubimage(50, 40 , heatmap.getWidth() -60 ,heatmap.getHeight()-140);
+        Image transpImg = transformWhiteToTransparency(cropped);
+        return imageToBufferedImage(transpImg, heatmap.getWidth()-60, heatmap.getHeight()-180);
+    }
+
+
+    private Image transformWhiteToTransparency(BufferedImage image)
+    {
+        // Primitive test, just an example
+        final int r1 = 255;
+        final int g1 = 255;
+        final int b1 = 255;
+        ImageFilter filter = new RGBImageFilter()
+        {
+            public final int filterRGB(int x, int y, int rgb)
+            {
+                int r = (rgb & 0xFF0000) >> 16;
+                int g = (rgb & 0xFF00) >> 8;
+                int b = rgb & 0xFF;
+                if (r >= r1 &&
+                    g >= g1 &&
+                    b >= b1)
+                {
+                    // Set fully transparent but keep color
+                    return rgb & 0xFFFFFF;
+                }
+                return rgb;
+            }
+        };
+
+        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
+    }
+
+    private BufferedImage imageToBufferedImage(Image image, int width, int height)
+    {
+        BufferedImage dest = new BufferedImage(
+            width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = dest.createGraphics();
+        g2.drawImage(image, 0, 0, null);
+        g2.dispose();
+        return dest;
     }
 
     double getAverageSpeed() {
