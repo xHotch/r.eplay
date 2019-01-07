@@ -32,8 +32,8 @@ public class JDBCPlayerDAO implements PlayerDAO {
 
     private static final String READ_PLAYER_BY_PLATFORMID = "Select id from player where plattformid = ?";
 
-    private static final String GET_AVG_STATS = "Select avg(mp.score), avg(mp.goals), " +
-        "avg(mp.assists), avg(mp.saves), avg(mp.shots), avg(mp.averageSpeed) " +
+    private static final String GET_AVG_STATS = "Select avg(Cast(mp.score as float)), avg(Cast(mp.goals as float)), " +
+        "avg(Cast(mp.assists as float)), avg(cast(mp.saves as float)), avg(cast(mp.shots as float)), avg(mp.averageSpeed) " +
         "from matchPlayer mp join match_ m on mp.matchid = m.id where mp.playerid = ? and m.teamSize = ?";
 
     private final Connection connection;

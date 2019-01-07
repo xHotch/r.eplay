@@ -301,7 +301,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     // retrieve the players from the match
                     List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
                     match.setPlayerData(matchPlayers);
-                    folderDAO.getHeatmaps(match);
+                    //folderDAO.getHeatmaps(match);
                     result.add(match);
                     LOG.debug("Added match to the result list!");
                 }

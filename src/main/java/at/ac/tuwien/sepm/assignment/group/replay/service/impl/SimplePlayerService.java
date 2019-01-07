@@ -92,11 +92,19 @@ public class SimplePlayerService implements PlayerService {
             List<MatchDTO> matches = matchDAO.readMatchesFromPlayer(playerDTO);
             int wins = 0;
             int losses = 0;
+            int teamSize = 3;
+            if (matchType == MatchType.RANKED1V1) {
+                teamSize = 1;
+            } else if(matchType == MatchType.RANKED2V2) {
+                teamSize = 2;
+            }
             for (MatchDTO matchDTO : matches) {
-                if (won(matchDTO, playerDTO)) {
-                    wins++;
-                } else {
-                    losses++;
+                if (matchDTO.getTeamSize() == teamSize) {
+                    if (won(matchDTO, playerDTO)) {
+                        wins++;
+                    } else {
+                        losses++;
+                    }
                 }
             }
             avgStatsDTO.setWins(wins);

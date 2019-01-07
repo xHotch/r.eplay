@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
+import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +15,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -68,9 +71,21 @@ public class PlayerDetailController {
     @FXML
     private TableColumn<AvgStatsDTO, Double> boostTableColumn;
 
+    public PlayerDetailController(PlayerService playerService) {
+        this.playerService = playerService;
+    }
+
     @FXML
     void initialize() {
         typChoiceBox.getItems().addAll(MatchType.RANKED1V1, MatchType.RANKED2V2, MatchType.RANKED3V3);
+        assistsTableColumn.setCellValueFactory(new PropertyValueFactory<>("assists"));
+        boostpadTableColumn.setCellValueFactory(new PropertyValueFactory<>("boostpads"));
+        boostTableColumn.setCellValueFactory(new PropertyValueFactory<>("boost"));
+        goalsTableColumn.setCellValueFactory(new PropertyValueFactory<>("goals"));
+        savesTableColumn.setCellValueFactory(new PropertyValueFactory<>("saves"));
+        scoreTableColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+        shotsTableColumn.setCellValueFactory(new PropertyValueFactory<>("shots"));
+        speedTableColumn.setCellValueFactory(new PropertyValueFactory<>("speed"));
     }
 
     void loadPlayer(PlayerDTO playerDTO) {
@@ -87,13 +102,19 @@ public class PlayerDetailController {
     }
 
     private void showCurrentTypStatistics(MatchType newType) {
-        /*AvgStatsDTO avgStatsDTO = playerService.getAvgStatistics(playerDTO, newType);
-        List<AvgStatsDTO> list = new ArrayList<>();
-        list.add(avgStatsDTO);
-        ObservableList<AvgStatsDTO> items = FXCollections.observableArrayList(list);
-        avgTableView.setItems(items);
-        winsLabel.setText(playerService.getWins(playerDTO, newType));
-        lossesLabel.setText(playerService.getLosses(playerDTO, newType));*/
+        try {
+            AvgStatsDTO avgStatsDTO = playerService.getAvgStats(playerDTO, newType);
+            List<AvgStatsDTO> list = new ArrayList<>();
+            list.add(avgStatsDTO);
+            ObservableList<AvgStatsDTO> items = FXCollections.observableArrayList(list);
+            avgTableView.setItems(items);
+            winsLabel.setText("" + avgStatsDTO.getWins());
+            lossesLabel.setText("" + avgStatsDTO.getLosses());
+        } catch (PlayerServiceException e) {
+            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
+            AlertHelper.showErrorMessage(e.getMessage());
+        }
+
     }
 
 }
