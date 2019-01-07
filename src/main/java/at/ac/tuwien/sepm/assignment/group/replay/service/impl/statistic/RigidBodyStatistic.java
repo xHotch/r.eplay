@@ -118,7 +118,9 @@ public class RigidBodyStatistic {
         heatChart.setColourScale(0.5);
         heatChart.setLowValueColour(Color.WHITE);
         heatChart.setHighValueColour(Color.RED);
-        return (BufferedImage) heatChart.getChartImage();
+
+        BufferedImage heatmap = ((BufferedImage) heatChart.getChartImage());
+        return ((BufferedImage) heatChart.getChartImage()).getSubimage(50, 40 , heatmap.getWidth() -60 ,heatmap.getHeight()-140);
     }
 
     double getAverageSpeed() {

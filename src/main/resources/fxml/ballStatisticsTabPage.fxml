@@ -2,6 +2,7 @@
 
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -16,5 +17,10 @@
       <PieChart fx:id="pieChartTeamSide" layoutX="57.0" layoutY="80.0" legendVisible="false" prefHeight="270.0" prefWidth="450.0" title="Zeit des Balles pro Seite" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="65.0" />
       <PieChart fx:id="pieChartPossession" layoutX="518.0" layoutY="65.0" legendVisible="false" prefHeight="270.0" prefWidth="450.0" title="Ballbesitz" AnchorPane.leftAnchor="518.0" AnchorPane.topAnchor="65.0" />
       <ImageView fx:id="heatmapView" fitHeight="246.0" fitWidth="349.0" layoutX="200.0" layoutY="410.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="410.0" />
+      <ImageView fx:id="fieldView" fitHeight="260.0" fitWidth="378.0" layoutX="99.0" layoutY="403.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/rocketLeageField.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
