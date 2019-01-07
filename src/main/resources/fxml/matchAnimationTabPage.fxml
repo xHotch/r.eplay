@@ -5,7 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 
@@ -26,6 +30,29 @@
       <Rectangle fx:id="shape_car_red_3" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
       <Rectangle fx:id="shape_car_blue_2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
       <Rectangle fx:id="shape_car_blue_3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
+      <Slider fx:id="timelineSlider" layoutX="134.0" layoutY="666.0" prefHeight="14.0" prefWidth="800.0" />
+      <FlowPane layoutX="30.0" layoutY="654.0" prefHeight="37.0" prefWidth="100.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onStopButtonClicked">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/stop.gif" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#onPlayPauseButtonClicked">
+               <graphic>
+                  <ImageView fx:id="playPauseImageView" fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/play.gif" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </FlowPane>
 
    </children>
 </AnchorPane>
