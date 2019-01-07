@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.AvgStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
@@ -29,6 +31,10 @@ public class JDBCPlayerDAO implements PlayerDAO {
     private static final String SET_SHOW_PLAYER = "UPDATE player SET shown = ? WHERE id = ?";
 
     private static final String READ_PLAYER_BY_PLATFORMID = "Select id from player where plattformid = ?";
+
+    private static final String GET_AVG_STATS = "Select avg(mp.score), avg(mp.goals), " +
+        "avg(mp.assists), avg(mp.saves), avg(mp.shots), avg(mp.averageSpeed) " +
+        "from matchPlayer mp join match_ m on mp.matchid = m.id where mp.playerid = ? and m.teamSize = ?";
 
     private final Connection connection;
 
@@ -154,5 +160,36 @@ public class JDBCPlayerDAO implements PlayerDAO {
             throw new PlayerPersistenceException(msg, e);
         }
 
+    }
+
+    @Override
+    public AvgStatsDTO getAvgStats(PlayerDTO playerDTO, MatchType matchType) throws PlayerPersistenceException {
+        LOG.trace("Called - getAvgStats");
+        AvgStatsDTO avgStatsDTO = new AvgStatsDTO();
+
+        try (PreparedStatement ps = connection.prepareStatement(GET_AVG_STATS, Statement.RETURN_GENERATED_KEYS)){
+            ps.setLong(1, playerDTO.getId());
+            if (matchType == MatchType.RANKED1V1) {
+                ps.setInt(2, 1);
+            } else if (matchType == MatchType.RANKED2V2) {
+                ps.setInt(2, 2);
+            } else {
+                ps.setInt(2, 3);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                avgStatsDTO.setScore(rs.getDouble(1));
+                avgStatsDTO.setGoals(rs.getDouble(2));
+                avgStatsDTO.setAssists(rs.getDouble(3));
+                avgStatsDTO.setSaves(rs.getDouble(4));
+                avgStatsDTO.setShots(rs.getDouble(5));
+                avgStatsDTO.setSpeed(rs.getDouble(6));
+            }
+        } catch (SQLException e) {
+            String msg = "Could not get avg statistics for player";
+            throw new PlayerPersistenceException(msg, e);
+        }
+
+        return avgStatsDTO;
     }
 }
