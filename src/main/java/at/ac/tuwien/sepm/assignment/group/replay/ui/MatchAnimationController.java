@@ -47,6 +47,7 @@ public class MatchAnimationController {
     private final int fieldLength = 10240;
 
     private final float scaleFactor = 0.075f;
+    private static double MIN_SLIDER_CHANGE = 0.5;
 
     @FXML
     private Circle shape_ball;
@@ -90,6 +91,28 @@ public class MatchAnimationController {
     private void initialize() {
         pauseImage = new Image("images/pause.gif");
         playImage = new Image("images/play.gif");
+        //Listener to change animation point if slider value change is > MIN_SLIDER_CHANGE (mouse click)
+        timelineSlider.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (!timelineSlider.isValueChanging()) {
+                double currentTime = timeline.getCurrentTime().toSeconds();
+                double sliderTime = newValue.doubleValue();
+                if (Math.abs(currentTime - sliderTime) > MIN_SLIDER_CHANGE) {
+                    LOG.debug("Value Change");
+                    timeline.jumpTo(Duration.seconds(newValue.doubleValue()));
+                }
+            }
+        });
+        //Jump to animation frame time from slider position after mouse drag
+        timelineSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            if(!isNowChanging) {
+                timeline.jumpTo(Duration.seconds(timelineSlider.getValue()));
+            }
+        });
+        //Change Slider Position to match animation
+        timeline.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+            if (!timelineSlider.isValueChanging() ) timelineSlider.setValue(newTime.toSeconds());
+        });
+
     }
 
     public void onLoadAnimationButtonClicked(ActionEvent actionEvent){
@@ -99,6 +122,7 @@ public class MatchAnimationController {
         timeline.setAutoReverse(true);
         timeline.getKeyFrames().clear();
 
+        //animation data
         double minFrameTime = Double.MIN_VALUE;
         double maxFrameTime = 0;
         for (FrameDTO frameDTO : videoDTO.getFrames()){
@@ -119,13 +143,11 @@ public class MatchAnimationController {
             if (minFrameTime > frameTime) minFrameTime = frameTime;
             if (maxFrameTime < frameTime) maxFrameTime = frameTime;
         }
+        //slider settings
         timelineSlider.setMin(minFrameTime);
         timelineSlider.setMax(maxFrameTime);
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(minFrameTime), new KeyValue(timelineSlider.valueProperty(), minFrameTime)));
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(maxFrameTime), new KeyValue(timelineSlider.valueProperty(), maxFrameTime)));
-        timeline.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
-            if (!timelineSlider.isValueChanging()) timelineSlider.setValue(newTime.toSeconds());
-        });
+
+        stopped = true;
         playAnimation();
     }
 
