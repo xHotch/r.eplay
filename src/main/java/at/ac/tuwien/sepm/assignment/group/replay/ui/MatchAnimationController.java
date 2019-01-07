@@ -84,7 +84,6 @@ public class MatchAnimationController {
 
         setupAnimation();
 
-
         final Timeline timeline = new Timeline();
         timeline.setAutoReverse(true);
 

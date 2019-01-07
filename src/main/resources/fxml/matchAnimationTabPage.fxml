@@ -3,6 +3,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
@@ -12,6 +14,11 @@
       <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
       <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
       <Button layoutX="462.0" layoutY="20.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Load Animation" />
+      <ImageView fx:id="image_field" depthTest="ENABLE" fitHeight="635.0" fitWidth="915.0" layoutX="52.0" layoutY="39.0" preserveRatio="true">
+         <image>
+            <Image url="@../images/rocketLeageField.png" />
+         </image>
+      </ImageView>
       <Circle fx:id="shape_ball" fill="#a8b4bf" layoutX="512.0" layoutY="356.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
       <Rectangle fx:id="shape_car_red_1" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
       <Rectangle fx:id="shape_car_red_2" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="37.0" layoutX="484.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="56.0" />
