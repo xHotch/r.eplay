@@ -10,6 +10,9 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.*;
 import javafx.util.Duration;
@@ -44,6 +47,7 @@ public class MatchAnimationController {
     private final int fieldLength = 10240;
 
     private final float scaleFactor = 0.075f;
+    private static double MIN_SLIDER_CHANGE = 0.5;
 
     @FXML
     private Circle shape_ball;
@@ -60,6 +64,13 @@ public class MatchAnimationController {
     @FXML
     private Rectangle shape_car_red_3;
 
+    @FXML
+    private Slider timelineSlider;
+    @FXML
+    private ImageView playPauseImageView;
+
+    private Image pauseImage;
+    private Image playImage;
 
     @FXML
     private AnchorPane ap_MatchAnimation;
@@ -67,28 +78,52 @@ public class MatchAnimationController {
     @FXML
     private Canvas canvas_Animation;
 
+    private Boolean play = false;
+    private Boolean stopped = false;
 
-    public MatchDTO getMatchDTO() {
-        return matchDTO;
-    }
-
-    public void setMatchDTO(MatchDTO matchDTO) {
-        this.matchDTO = matchDTO;
-    }
+    private final Timeline timeline = new Timeline();
 
     public MatchAnimationController(JsonParseService jsonParseService) {
         this.jsonParseService = jsonParseService;
+    }
+
+    @FXML
+    private void initialize() {
+        pauseImage = new Image("images/pause.gif");
+        playImage = new Image("images/play.gif");
+        //Listener to change animation point if slider value change is > MIN_SLIDER_CHANGE (mouse click)
+        timelineSlider.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (!timelineSlider.isValueChanging()) {
+                double currentTime = timeline.getCurrentTime().toSeconds();
+                double sliderTime = newValue.doubleValue();
+                if (Math.abs(currentTime - sliderTime) > MIN_SLIDER_CHANGE) {
+                    timeline.jumpTo(Duration.seconds(newValue.doubleValue()));
+                }
+            }
+        });
+        //Jump to animation frame time from slider position after mouse drag
+        timelineSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            if(!isNowChanging) {
+                timeline.jumpTo(Duration.seconds(timelineSlider.getValue()));
+            }
+        });
+        //Change Slider Position to match animation
+        timeline.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+            if (!timelineSlider.isValueChanging() ) timelineSlider.setValue(newTime.toSeconds());
+        });
+
     }
 
     public void onLoadAnimationButtonClicked(ActionEvent actionEvent){
 
         setupAnimation();
 
-
-        final Timeline timeline = new Timeline();
         timeline.setAutoReverse(true);
+        timeline.getKeyFrames().clear();
 
-
+        //animation data
+        double minFrameTime = Double.MIN_VALUE;
+        double maxFrameTime = 0;
         for (FrameDTO frameDTO : videoDTO.getFrames()){
 
             //List of Keyvalues
@@ -101,13 +136,54 @@ public class MatchAnimationController {
             for (Rectangle car : carShapes.keySet()){
                 values.addAll(mapCarToKayValue(car));
             }
-            KeyFrame kf = new KeyFrame(Duration.seconds(frameDTO.getFrameTime()), "swag",null, values);
+            double frameTime = frameDTO.getFrameTime();
+            KeyFrame kf = new KeyFrame(Duration.seconds(frameTime), "swag", null, values);
             timeline.getKeyFrames().add(kf);
+            if (minFrameTime > frameTime) minFrameTime = frameTime;
+            if (maxFrameTime < frameTime) maxFrameTime = frameTime;
         }
+        //slider settings
+        timelineSlider.setMin(minFrameTime);
+        timelineSlider.setMax(maxFrameTime);
 
-        timeline.play();
+        stopped = true;
+        playAnimation();
     }
 
+    @FXML
+    private void onStopButtonClicked() {
+        LOG.info("Stop button Clicked");
+        stopped = true;
+        timeline.stop();
+        playPauseImageView.setImage(playImage);
+        play = false;
+    }
+
+    @FXML
+    private void onPlayPauseButtonClicked() {
+        LOG.info("Play/Pause Button Clicked");
+        if (play) {
+            pauseAnimation();
+        } else {
+            playAnimation();
+        }
+    }
+
+    private void playAnimation() {
+        play = true;
+        if(stopped) {
+            stopped = false;
+            timeline.playFromStart();
+        }
+        else timeline.play();
+        playPauseImageView.setImage(pauseImage);
+    }
+
+    private void pauseAnimation() {
+        play = false;
+        timeline.pause();
+        playPauseImageView.setImage(playImage);
+    }
 
     /**
      * Maps the Car's Rigidbodyinformation of the current frame onto the given Shape
@@ -205,6 +281,14 @@ public class MatchAnimationController {
                 countBlue ++;
             }
         }
+    }
+
+    public MatchDTO getMatchDTO() {
+        return matchDTO;
+    }
+
+    public void setMatchDTO(MatchDTO matchDTO) {
+        this.matchDTO = matchDTO;
     }
 
 }
