@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformati
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
@@ -115,7 +114,7 @@ public class MatchAnimationController {
     }
 
     @FXML
-    private void onLoadAnimationButtonClicked(ActionEvent actionEvent){
+    private void onLoadAnimationButtonClicked(){
 
         setupAnimation();
 
