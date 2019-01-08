@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
+<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
    <children>
       <Label layoutX="20.0" layoutY="12.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0" />
       <ChoiceBox fx:id="cbMatchPlayer" layoutX="80.0" layoutY="8.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="8.0" />
@@ -51,6 +51,12 @@
             </Button>
          </children>
       </FlowPane>
+      <ImageView fx:id="player1boost" fitHeight="20.0" fitWidth="882.0" layoutX="30.0" layoutY="282.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="player2boost" fitHeight="20.0" fitWidth="882.0" layoutX="30.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="player3boost" fitHeight="20.0" fitWidth="882.0" layoutX="30.0" layoutY="329.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="player4boost" fitHeight="20.0" fitWidth="882.0" layoutX="40.0" layoutY="358.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="player5boost" fitHeight="20.0" fitWidth="882.0" layoutX="40.0" layoutY="388.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="player6boost" fitHeight="20.0" fitWidth="882.0" layoutX="46.0" layoutY="423.0" pickOnBounds="true" preserveRatio="true" />
 
    </children>
 </AnchorPane>

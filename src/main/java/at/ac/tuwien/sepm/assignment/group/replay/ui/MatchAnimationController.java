@@ -4,9 +4,11 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.BoostInformationParser;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -15,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.*;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.apache.commons.math3.complex.Quaternion;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -22,8 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
+import java.util.List;
 
 import static java.lang.StrictMath.acos;
 
@@ -38,6 +47,7 @@ public class MatchAnimationController {
     private MatchDTO matchDTO;
     private JsonParseService jsonParseService;
     private VideoDTO videoDTO;
+    private BoostInformationParser boostInformationParser;
 
     private HashMap<Rectangle, Integer> carShapes = new HashMap<>();
     private HashMap<Integer, RigidBodyInformation> rigidBodyInformationHashMap;
@@ -81,10 +91,29 @@ public class MatchAnimationController {
     private Boolean play = false;
     private Boolean stopped = false;
 
+    @FXML
+    ImageView player1boost;
+
+    @FXML
+    ImageView player2boost;
+
+    @FXML
+    ImageView player3boost;
+
+    @FXML
+    ImageView player4boost;
+
+    @FXML
+    ImageView player5boost;
+
+    @FXML
+    ImageView player6boost;
+
     private final Timeline timeline = new Timeline();
 
-    public MatchAnimationController(JsonParseService jsonParseService) {
+    public MatchAnimationController(JsonParseService jsonParseService, BoostInformationParser boostInformationParser) {
         this.jsonParseService = jsonParseService;
+        this.boostInformationParser = boostInformationParser;
     }
 
     @FXML
@@ -143,6 +172,9 @@ public class MatchAnimationController {
             if (minFrameTime > frameTime) minFrameTime = frameTime;
             if (maxFrameTime < frameTime) maxFrameTime = frameTime;
         }
+
+        generateBoostTimeline(maxFrameTime);
+
         //slider settings
         timelineSlider.setMin(minFrameTime);
         timelineSlider.setMax(maxFrameTime);
@@ -282,6 +314,95 @@ public class MatchAnimationController {
                 countBlue ++;
             }
         }
+    }
+
+    private BufferedImage generateBoostTimeline(double imagelength){
+
+        BufferedImage boostPlayer = new BufferedImage((int)imagelength,1,BufferedImage.TYPE_INT_RGB);
+
+        Color white = new Color(255, 255, 255); // Color White
+        int rgbWhite = white.getRGB();
+
+        for(int i = 0; i < boostPlayer.getWidth(); i++){
+            boostPlayer.setRGB(i, 0, rgbWhite);
+        }
+
+        Map<Integer, List<BoostDTO>> boostAmount = boostInformationParser.getBoostAmountMap();
+        Map<Integer, Integer> carBoostMap = boostInformationParser.getCarBoostMap();
+
+        //for (FrameDTO frameDTO : videoDTO.getFrames()){
+
+        //}
+
+        Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
+
+        for(Map.Entry<Integer, List<BoostDTO>> boostPadInfo:boostAmount.entrySet()){
+
+        }
+
+        Color myColor = new Color(255, 0, 0); // Color Red
+        int rgb = myColor.getRGB();
+
+        int playercount = 1;
+
+        for (MatchPlayerDTO player : matchDTO.getPlayerData()){
+            Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
+            //long pid = player.getPlayerDTO().getPlatformID();
+            //Integer id = player.getActorId();
+            //int i = 1;
+
+            List<Integer> carIDforActor = new LinkedList<Integer>();
+
+            for (Map.Entry<Integer, Integer> entry : carBoostMap.entrySet()) {
+                if (entry.getValue().equals(actorId)){
+                    carIDforActor.add(entry.getKey());
+                }
+            }
+
+            for (Integer carID : carIDforActor){
+                if(boostAmount.containsKey(carID)){
+                    List<BoostDTO> boost = boostAmount.get(carID);
+
+                    for (BoostDTO entry : boost){
+                        boostPlayer.setRGB((int)Math.floor(entry.getFrameTime()), 0, rgb);
+                    }
+                }
+            }
+
+//            File outputfile = new File("image.bmp");
+//            try {
+//                ImageIO.write(boostPlayer, "bmp", outputfile);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+            if(playercount == 1) {
+                player1boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                //player1boost.setRotate(270);
+                //player1boost.setScaleX(1.5);
+                player1boost.setScaleY(8);
+            } else if(playercount == 2) {
+                player2boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                player2boost.setScaleY(8);
+            } else if(playercount == 3) {
+                player3boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                player3boost.setScaleY(8);
+            } else if(playercount == 4) {
+                player4boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                player4boost.setScaleY(8);
+            } else if(playercount == 5) {
+                player5boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                player5boost.setScaleY(8);
+            } else if(playercount == 6) {
+                player6boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                player6boost.setScaleY(8);
+            }
+
+            playercount++;
+
+        }
+
+        return boostPlayer;
     }
 
     public MatchDTO getMatchDTO() {
