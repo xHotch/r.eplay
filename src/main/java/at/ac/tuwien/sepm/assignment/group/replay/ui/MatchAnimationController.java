@@ -207,12 +207,12 @@ public class MatchAnimationController {
                 keyValues.add(length);
             }
 
-            if (rigidBodyInformationHashMap.get(actorId).getRotation() != null) {
+            /*if (rigidBodyInformationHashMap.get(actorId).getRotation() != null) {
                 rotation=rigidBodyInformationHashMap.get(actorId).getRotation();
                 double ang = 2*acos(rotation.getQ0());
                 KeyValue rotationValue = new KeyValue(carShape.rotateProperty(), ang*180/Math.PI );
                 keyValues.add(rotationValue);
-            }
+            }*/
 
         }
         return keyValues;
