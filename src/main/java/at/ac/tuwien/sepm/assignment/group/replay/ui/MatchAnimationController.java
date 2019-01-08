@@ -144,7 +144,7 @@ public class MatchAnimationController {
     }
 
     @FXML
-    private void onLoadAnimationButtonClicked(ActionEvent actionEvent){
+    private void onLoadAnimationButtonClicked(){
 
         setupAnimation();
 
