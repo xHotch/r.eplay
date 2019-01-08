@@ -82,7 +82,7 @@ public class MatchStatsOverviewController {
      * Calls methods to setup and update table;
      */
     @FXML
-    void initialize() {
+    private void initialize() {
 
         setUpPlayerTable();
     }
@@ -137,7 +137,8 @@ public class MatchStatsOverviewController {
         tableTeamRed.setItems(playerListRed);
     }
 
-    public void onSavePlayerButtonClicked() {
+    @FXML
+    private void onSavePlayerButtonClicked() {
         ObservableList<MatchPlayerDTO> playersTeamBlue = tableTeamBlue.getSelectionModel().getSelectedItems();
         ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 

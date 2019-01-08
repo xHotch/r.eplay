@@ -13,21 +13,21 @@
 
 <AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
    <children>
-      <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
-      <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
-      <Button layoutX="462.0" layoutY="20.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Load Animation" />
+      <Label layoutX="20.0" layoutY="12.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0" />
+      <ChoiceBox fx:id="cbMatchPlayer" layoutX="80.0" layoutY="8.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="8.0" />
+      <Button layoutX="462.0" layoutY="8.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Load Animation" />
       <ImageView fx:id="image_field" depthTest="ENABLE" fitHeight="635.0" fitWidth="915.0" layoutX="52.0" layoutY="39.0" preserveRatio="true">
          <image>
             <Image url="@../images/rocketLeageField.png" />
          </image>
       </ImageView>
       <Circle fx:id="shape_ball" fill="#a8b4bf" layoutX="512.0" layoutY="356.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-      <Rectangle fx:id="shape_car_red_1" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="20.0" visible="false" />
-      <Rectangle fx:id="shape_car_red_2" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="20.0" visible="false" />
-      <Rectangle fx:id="shape_car_blue_1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="20.0" visible="false" />
-      <Rectangle fx:id="shape_car_red_3" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="20.0" visible="false" />
-      <Rectangle fx:id="shape_car_blue_2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="20.0" visible="false" />
-      <Rectangle fx:id="shape_car_blue_3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="20.0" visible="false" />
+      <Rectangle fx:id="shape_car_red_1" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shape_car_red_2" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shape_car_blue_1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shape_car_red_3" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shape_car_blue_2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shape_car_blue_3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
       <Slider fx:id="timelineSlider" layoutX="134.0" layoutY="666.0" prefHeight="14.0" prefWidth="800.0" />
       <FlowPane layoutX="30.0" layoutY="654.0" prefHeight="37.0" prefWidth="100.0">
          <children>

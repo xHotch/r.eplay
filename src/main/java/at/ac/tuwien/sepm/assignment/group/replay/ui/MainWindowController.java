@@ -47,7 +47,7 @@ public class MainWindowController {
      * Calls methods to setup and update table;
      */
     @FXML
-    void initialize() {
+    private void initialize() {
 
     }
 

@@ -65,7 +65,7 @@ public class TeamController {
      * Calls methods to setup and update table;
      */
     @FXML
-    void initialize() {
+    private void initialize() {
         tableColumnTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tableViewTeams.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> showTeamDetails(newValue));
@@ -74,7 +74,8 @@ public class TeamController {
         updateTeamTable();
     }
 
-    public void onNewTeamButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onNewTeamButtonClicked() {
         Stage newTeamStage = new Stage();
         // setup application
         newTeamStage.setTitle("New Team");
@@ -114,10 +115,9 @@ public class TeamController {
 
     /**
      * Deletes a selected Team
-     *
-     * @param actionEvent Actionevent from the button
      */
-    public void onDeleteTeamButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onDeleteTeamButtonClicked() {
         LOG.info("Delete Team Button clicked");
         LOG.trace("called - onDeleteTeamButtonClicked");
         if (tableViewTeams.getSelectionModel().getSelectedItem() != null) {

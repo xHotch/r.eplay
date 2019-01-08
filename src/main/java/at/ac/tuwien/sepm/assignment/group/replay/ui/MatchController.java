@@ -108,19 +108,21 @@ public class MatchController {
      * Calls methods to setup and update table;
      */
     @FXML
-    void initialize() {
+    private void initialize() {
         choiceBoxMatchtyp.getItems().addAll(1,2,3);
         setupMatchTable();
         updateMatchTable();
     }
 
-    public void onSearchButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onSearchButtonClicked() {
         LOG.info("Search button clicked");
         filter = true;
         updateMatchTable();
     }
 
-    public void onRevertSearchButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onRevertSearchButtonClicked() {
         LOG.info("Revert Search button clicked");
         filter = false;
         nameTextField.setText("");
@@ -136,10 +138,9 @@ public class MatchController {
 
     /**
      * Opens a new Match Detail window.
-     *
-     * @param actionEvent Actionevent from the button
      */
-    public void onMatchdetailsButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onMatchdetailsButtonClicked() {
 
         LOG.info("Match Details button clicked");
         LOG.debug("Opening Match Details window");
@@ -179,7 +180,8 @@ public class MatchController {
 
     }
 
-    public void onMatchDeleteButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onMatchDeleteButtonClicked(ActionEvent actionEvent) {
         LOG.info("Match delete button clicked");
         LOG.trace("called - onMatchDeleteButtonClicked");
         if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
@@ -201,10 +203,9 @@ public class MatchController {
      * Lets the user chose .replay files
      * <p>
      * The chosen file gets sent to service layer, to parse it
-     *
-     * @param actionEvent Actionevent from the button
      */
-    public void onUploadReplayButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onUploadReplayButtonClicked() {
         LOG.info("Upload Replay Button clicked");
         LOG.trace("Called - onUploadMatchButtonClicked");
 
@@ -334,7 +335,7 @@ public class MatchController {
      * Helper Method to setup up the Match Table Columns
      */
     private void setupMatchTable() {
-        tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+        tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<>("formattedDateTime"));
         tableColumnPlayersRed.setCellValueFactory(new PropertyValueFactory<>("teamRedPlayers"));
         tableColumnPlayersBlue.setCellValueFactory(new PropertyValueFactory<>("teamBluePlayers"));
 

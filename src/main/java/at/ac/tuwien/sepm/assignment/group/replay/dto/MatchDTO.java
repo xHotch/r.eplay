@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.ui.MainWindowController;
 import java.io.File;
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -44,6 +45,12 @@ public class MatchDTO {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
+
+    public String getFormattedDateTime(){
+        String res = "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(("dd-MM-yyyy   HH:mm"));
+        res = this.dateTime.format(formatter);
+        return res;}
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
@@ -147,9 +154,14 @@ public class MatchDTO {
 
         StringBuilder players = new StringBuilder();
 
+        boolean setComma = false;
         for (MatchPlayerDTO player : playerData){
             if (player.getTeam() == team) {
-                players.append(player.getName() + ", ");
+                if (setComma){
+                players.append(", " + player.getName());
+                }
+                else {players.append(player.getName());
+                setComma = true;}
             }
         }
 

@@ -68,14 +68,15 @@ public class PlayerController {
      * Calls methods to setup and update table;
      */
     @FXML
-    void initialize() {
+    private void initialize() {
 
         setupPlayerTable();
         updatePlayerTable();
 
     }
 
-    public void onPlayerDetailsButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onPlayerDetailsButtonClicked() {
         LOG.info("Player Details button clicked");
 
         Stage playerDetailStage = new Stage();
@@ -107,10 +108,9 @@ public class PlayerController {
 
     /**
      * Deletes selected players in the list.
-     *
-     * @param actionEvent Action event from the button
      */
-    public void onDeletePlayerButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onDeletePlayerButtonClicked() {
         LOG.info("Delete player button clicked");
         LOG.trace("Called - onDeletePlayerButtonClicked");
 

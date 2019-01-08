@@ -76,7 +76,7 @@ public class PlayerDetailController {
     }
 
     @FXML
-    void initialize() {
+    private void initialize() {
         typChoiceBox.getItems().addAll(MatchType.RANKED1V1, MatchType.RANKED2V2, MatchType.RANKED3V3);
         assistsTableColumn.setCellValueFactory(new PropertyValueFactory<>("assists"));
         boostpadTableColumn.setCellValueFactory(new PropertyValueFactory<>("boostpads"));

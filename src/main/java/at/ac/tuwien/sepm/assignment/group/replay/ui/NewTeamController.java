@@ -46,7 +46,7 @@ public class NewTeamController {
 
 
     @FXML
-    public void onSaveTeamButtonClicked(ActionEvent event) {
+    private void onSaveTeamButtonClicked(ActionEvent event) {
         LOG.trace("called - onSaveTeamButtonClicked");
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(textFieldName.getText());
@@ -82,7 +82,7 @@ public class NewTeamController {
      * Calls methods to setup and update table;
      */
     @FXML
-    void initialize() {
+    private void initialize() {
         tableColumnPlayerName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableViewPlayers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableColumnPlayerName.setStyle("-fx-alignment: CENTER;");
