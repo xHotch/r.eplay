@@ -13,7 +13,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -181,7 +180,7 @@ public class MatchController {
     }
 
     @FXML
-    private void onMatchDeleteButtonClicked(ActionEvent actionEvent) {
+    private void onMatchDeleteButtonClicked() {
         LOG.info("Match delete button clicked");
         LOG.trace("called - onMatchDeleteButtonClicked");
         if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
