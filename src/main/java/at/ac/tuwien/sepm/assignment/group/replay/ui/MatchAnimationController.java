@@ -4,9 +4,11 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
+import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 import static java.lang.StrictMath.acos;
 
@@ -37,6 +40,7 @@ public class MatchAnimationController {
     private MatchDTO matchDTO;
     private JsonParseService jsonParseService;
     private VideoDTO videoDTO;
+    private ExecutorService executorService;
 
     private HashMap<Rectangle, Integer> carShapes = new HashMap<>();
     private HashMap<Integer, RigidBodyInformation> rigidBodyInformationHashMap;
@@ -82,8 +86,9 @@ public class MatchAnimationController {
 
     private final Timeline timeline = new Timeline();
 
-    public MatchAnimationController(JsonParseService jsonParseService) {
+    public MatchAnimationController(JsonParseService jsonParseService, ExecutorService executorService) {
         this.jsonParseService = jsonParseService;
+        this.executorService = executorService;
     }
 
     @FXML
@@ -115,39 +120,49 @@ public class MatchAnimationController {
 
     @FXML
     private void onLoadAnimationButtonClicked(){
+        executorService.submit(() -> {
 
-        setupAnimation();
-
-        timeline.setAutoReverse(true);
-        timeline.getKeyFrames().clear();
-
-        //animation data
-        double minFrameTime = Double.MIN_VALUE;
-        double maxFrameTime = 0;
-        for (FrameDTO frameDTO : videoDTO.getFrames()){
-
-            //List of Keyvalues
-            List<KeyValue> values = new LinkedList<>();
-
-            ballInformation = frameDTO.getBallRigidBodyInformation();
-            values.addAll(mapBallToKayValue(shape_ball));
-
-            rigidBodyInformationHashMap = frameDTO.getCarRigidBodyInformations();
-            for (Rectangle car : carShapes.keySet()){
-                values.addAll(mapCarToKayValue(car));
+            try {
+                setupAnimation();
+            } catch (FileServiceException e){
+                LOG.error("Caught FileServiceException trying to setup Animation", e);
+                AlertHelper.showErrorMessage("Animation konnte nicht geladen werden");
+                return;
             }
-            double frameTime = frameDTO.getFrameTime();
-            KeyFrame kf = new KeyFrame(Duration.seconds(frameTime), "swag", null, values);
-            timeline.getKeyFrames().add(kf);
-            if (minFrameTime > frameTime) minFrameTime = frameTime;
-            if (maxFrameTime < frameTime) maxFrameTime = frameTime;
-        }
-        //slider settings
-        timelineSlider.setMin(minFrameTime);
-        timelineSlider.setMax(maxFrameTime);
 
-        stopped = true;
-        playAnimation();
+            timeline.setAutoReverse(true);
+            timeline.getKeyFrames().clear();
+
+            //animation data
+            double minFrameTime = Double.MIN_VALUE;
+            double maxFrameTime = 0;
+            for (FrameDTO frameDTO : videoDTO.getFrames()){
+
+                //List of Keyvalues
+                List<KeyValue> values = new LinkedList<>();
+
+                ballInformation = frameDTO.getBallRigidBodyInformation();
+                values.addAll(mapBallToKayValue(shape_ball));
+
+                rigidBodyInformationHashMap = frameDTO.getCarRigidBodyInformations();
+                for (Rectangle car : carShapes.keySet()){
+                    values.addAll(mapCarToKayValue(car));
+                }
+                double frameTime = frameDTO.getFrameTime();
+                KeyFrame kf = new KeyFrame(Duration.seconds(frameTime), "swag", null, values);
+                timeline.getKeyFrames().add(kf);
+                if (minFrameTime > frameTime) minFrameTime = frameTime;
+                if (maxFrameTime < frameTime) maxFrameTime = frameTime;
+            }
+            //slider settings
+            timelineSlider.setMin(minFrameTime);
+            timelineSlider.setMax(maxFrameTime);
+
+            stopped = true;
+                Platform.runLater(() -> {
+                    playAnimation();
+                });
+            });
     }
 
     @FXML
@@ -179,7 +194,7 @@ public class MatchAnimationController {
         playPauseImageView.setImage(pauseImage);
     }
 
-    private void pauseAnimation() {
+    void pauseAnimation() {
         play = false;
         timeline.pause();
         playPauseImageView.setImage(playImage);
@@ -242,12 +257,10 @@ public class MatchAnimationController {
      * Sets up the Animation. Spawns a Car for each player
      * Parses VideoDTO from the replay file
      */
-    private void setupAnimation(){
-        try {
-            videoDTO = jsonParseService.getVideo(matchDTO);
-        } catch (FileServiceException e){
-            //todo
-        }
+    private void setupAnimation() throws FileServiceException{
+
+        videoDTO = jsonParseService.getVideo(matchDTO);
+
 
         Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
 

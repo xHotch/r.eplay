@@ -72,7 +72,6 @@ public class ReplayServiceRLRP implements ReplayService {
             }
 
         } catch (Exception e) {
-            LOG.error("Cought Exception while parsing .replay file : {}", e.getMessage());
             throw new FileServiceException(e.getMessage(), e);
         }
 
