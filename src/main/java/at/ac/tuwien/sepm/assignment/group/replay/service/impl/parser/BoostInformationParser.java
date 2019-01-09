@@ -167,9 +167,11 @@ public class BoostInformationParser {
             currentBoost = (int)(currentBoost / 255.0 * 100.0);
             //create new boost object
             BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
-            boostAmountMap.putIfAbsent(actorId, new ArrayList<>());
-            boostAmountMap.get(actorId).add(boost);
+            int actualCarID = carComponentToCarId.get(actorId);
+            int actualPlayerID = carBoostMap.get(actualCarID);
 
+            boostAmountMap.putIfAbsent(actualPlayerID, new ArrayList<>());
+            boostAmountMap.get(actualPlayerID).add(boost);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
         } catch (NullPointerException e) { //TODO remove null exception

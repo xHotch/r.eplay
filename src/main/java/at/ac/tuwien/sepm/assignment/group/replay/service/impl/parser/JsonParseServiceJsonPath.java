@@ -308,6 +308,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
                 double frameTime = ctx.read(frame + ".Time", Double.class);
+                double frameDelta = ctx.read(frame + ".Delta", Double.class);
 
 
 
@@ -345,6 +346,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         case "TAGame.PRI_TA":
                             playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
 
+                            break;
+                        case "TAGame.CarComponent_Boost_TA":
+                            boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            break;
+                        case "TAGame.VehiclePickup_Boost_TA":
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
                             break;
                         default:
                             break;
