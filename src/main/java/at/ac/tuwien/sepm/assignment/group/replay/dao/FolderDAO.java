@@ -77,14 +77,16 @@ public interface FolderDAO {
     /**
      * Saves the Heatmaps from the MatchDTO in the heatmaps directory
      * @param matchDTO heatmaps to save for a Match
+     * @throws FilePersistenceException if the heatmap image could not be written
      */
-    void saveHeatmaps(MatchDTO matchDTO);
+    void saveHeatmaps(MatchDTO matchDTO) throws FilePersistenceException;
 
     /**
      * Gets the Heatmap Images from the heatmaps directory and saves it to the MatchDTO
      * @param matchDTO the match to get the heatmap
+     * @throws FilePersistenceException if the heatmap image could not be read
      */
-    void getHeatmaps(MatchDTO matchDTO);
+    void getHeatmaps(MatchDTO matchDTO) throws FilePersistenceException;
 
     /**
      * Returns a File with the given FileName from the File Folder
