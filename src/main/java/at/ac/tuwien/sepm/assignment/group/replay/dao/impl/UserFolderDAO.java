@@ -157,8 +157,9 @@ public class UserFolderDAO implements FolderDAO {
         matchDTO.setBallHeatmapFilename(fileName);
         try {
             ImageIO.write(matchDTO.getBallHeatmapImage(), "png", new File(heatmapDirectory, fileName));
+            int i = 1;
             for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
-                fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
+                fileName = fileID + "_player" + i++ + ".png";
                 matchPlayerDTO.setHeatmapFilename(fileName);
                 ImageIO.write(matchPlayerDTO.getHeatmapImage(), "png", new File(heatmapDirectory, fileName));
             }
