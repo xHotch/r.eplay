@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
@@ -69,9 +70,10 @@ public class JDBCMatchDAO implements MatchDAO {
     @Override
     public void createMatch(MatchDTO matchDTO) throws MatchPersistenceException, MatchAlreadyExistsException {
         LOG.trace("Called - createMatch");
-        folderDAO.saveHeatmaps(matchDTO);
         try (PreparedStatement ps = connection.prepareStatement(INSERT_MATCH, Statement.RETURN_GENERATED_KEYS);
             PreparedStatement ps2 = connection.prepareStatement(READ_MATCH_BY_READID)) {
+
+            folderDAO.saveHeatmaps(matchDTO);
 
             ps2.setString(1, matchDTO.getReadId());
             try (ResultSet rs2 = ps2.executeQuery()) {
@@ -94,7 +96,7 @@ public class JDBCMatchDAO implements MatchDAO {
                 rs.next();
                 matchDTO.setId(rs.getInt("id"));
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not create match";
             throw new MatchPersistenceException(msg, e);
         }
@@ -221,7 +223,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     LOG.debug("Added match to the result list!");
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
         }
@@ -410,7 +412,7 @@ public class JDBCMatchDAO implements MatchDAO {
                     LOG.debug("Added match to the result list!");
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
         }

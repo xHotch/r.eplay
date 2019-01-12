@@ -159,16 +159,17 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     public VideoDTO getVideo(MatchDTO matchDTO) throws FileServiceException{
 
         //get json from .replay
-        File jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
-
-
-        VideoDTO videoDTO = parseVideo(jsonFile);
-        videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
-
-
-        matchService.deleteFile(jsonFile);
-
-        return videoDTO;
+        File jsonFile = null;
+        try {
+            jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
+            VideoDTO videoDTO = parseVideo(jsonFile);
+            videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
+            return videoDTO;
+        } finally {
+            if (jsonFile!=null) {
+                matchService.deleteFile(jsonFile);
+            }
+        }
     }
 
     /**

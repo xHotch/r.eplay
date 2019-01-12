@@ -157,7 +157,6 @@ public class RigidBodyParser {
 
         }
 
-        //todo test quaternion order
         //return new Quaternion(x,y,z,w);
         return new Quaternion(w, x, y, z);
     }
