@@ -426,34 +426,46 @@ public class MatchAnimationController {
 
             //Insert Bufferedimage into imageview item
             if(isTeamBluePlayer1) {
-                player1boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                player1boost.setScaleY(player1boost.getFitHeight());
-                player1boost_label.setText(player.getName());
+                Platform.runLater(() -> {
+                    player1boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                    player1boost.setScaleY(player1boost.getFitHeight());
+                    player1boost_label.setText(player.getName());
+                });
                 isTeamBluePlayer1 = false;
             } else if(isTeamBluePlayer2) {
-                player2boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                player2boost.setScaleY(player2boost.getFitHeight());
-                player2boost_label.setText(player.getName());
+                Platform.runLater(() -> {
+                    player2boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                    player2boost.setScaleY(player2boost.getFitHeight());
+                    player2boost_label.setText(player.getName());
+                });
                 isTeamBluePlayer2 = false;
             } else if(isTeamBluePlayer3) {
-                player3boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                player3boost.setScaleY(player3boost.getFitHeight());
-                player3boost_label.setText(player.getName());
+                Platform.runLater(() -> {
+                    player3boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                    player3boost.setScaleY(player3boost.getFitHeight());
+                    player3boost_label.setText(player.getName());
+                });
                 isTeamBluePlayer3 = false;
             } else if(isTeamRedPlayer1) {
-                player4boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                player4boost.setScaleY(player4boost.getFitHeight());
-                player4boost_label.setText(player.getName());
+                Platform.runLater(() -> {
+                    player4boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                    player4boost.setScaleY(player4boost.getFitHeight());
+                    player4boost_label.setText(player.getName());
+                });
                 isTeamRedPlayer1 = false;
             } else if(isTeamRedPlayer2) {
-                player5boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                player5boost.setScaleY(player5boost.getFitHeight());
-                player5boost_label.setText(player.getName());
+                Platform.runLater(() -> {
+                    player5boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                    player5boost.setScaleY(player5boost.getFitHeight());
+                    player5boost_label.setText(player.getName());
+                });
                 isTeamRedPlayer2 = false;
             } else if(isTeamRedPlayer3) {
-                player6boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                player6boost.setScaleY(player6boost.getFitHeight());
-                player6boost_label.setText(player.getName());
+                Platform.runLater(() -> {
+                    player6boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
+                    player6boost.setScaleY(player6boost.getFitHeight());
+                    player6boost_label.setText(player.getName());
+                });
                 isTeamRedPlayer3 = false;
             }
 

@@ -148,7 +148,7 @@ public class MatchController {
         // setup application
         matchdetailsStage.setTitle("Matchdetails");
         matchdetailsStage.setWidth(1024);
-        matchdetailsStage.setHeight(768);
+        matchdetailsStage.setHeight(1024);
         matchdetailsStage.centerOnScreen();
         matchdetailsStage.setOnCloseRequest(event -> {
             LOG.debug("Match Details window closed");

@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
    <children>
@@ -51,20 +52,26 @@
             </Button>
          </children>
       </FlowPane>
-      <Label layoutX="26.0" layoutY="320.0" text="Team Blau" AnchorPane.bottomAnchor="238.0" />
-      <Label fx:id="player1boost_label" layoutX="26.0" layoutY="512.0" AnchorPane.bottomAnchor="208.0" />
-      <ImageView fx:id="player1boost" fitHeight="10.0" fitWidth="800.0" layoutX="134.0" layoutY="455.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="210.0" AnchorPane.rightAnchor="90.0" />
-      <Label fx:id="player2boost_label" layoutX="26.0" layoutY="552.0" AnchorPane.bottomAnchor="178.0" />
-      <ImageView fx:id="player2boost" fitHeight="10.0" fitWidth="800.0" layoutX="30.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="180.0" AnchorPane.rightAnchor="90.0" />
-      <Label fx:id="player3boost_label" layoutX="26.0" layoutY="582.0" AnchorPane.bottomAnchor="148.0" />
-      <ImageView fx:id="player3boost" fitHeight="10.0" fitWidth="800.0" layoutX="30.0" layoutY="329.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="90.0" />
-      <Label layoutX="26.0" layoutY="355.0" text="Team Rot" AnchorPane.bottomAnchor="118.0" />
-      <Label fx:id="player4boost_label" layoutX="26.0" layoutY="612.0" AnchorPane.bottomAnchor="88.0" />
-      <ImageView fx:id="player4boost" fitHeight="10.0" fitWidth="800.0" layoutX="40.0" layoutY="358.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="90.0" AnchorPane.rightAnchor="90.0" />
-      <Label fx:id="player5boost_label" layoutX="26.0" layoutY="642.0" AnchorPane.bottomAnchor="58.0" />
-      <ImageView fx:id="player5boost" fitHeight="10.0" fitWidth="800.0" layoutX="40.0" layoutY="388.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="90.0" />
-      <Label fx:id="player6boost_label" layoutX="26.0" layoutY="692.0" AnchorPane.bottomAnchor="28.0" />
-      <ImageView fx:id="player6boost" fitHeight="10.0" fitWidth="800.0" layoutX="134.0" layoutY="644.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="90.0" />
+      <Label layoutX="26.0" layoutY="320.0" text="Team Blau" AnchorPane.bottomAnchor="220.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label fx:id="player1boost_label" layoutX="26.0" layoutY="512.0" AnchorPane.bottomAnchor="192.0" />
+      <ImageView fx:id="player1boost" fitHeight="10.0" fitWidth="792.0" layoutX="134.0" layoutY="455.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="198.0" AnchorPane.leftAnchor="138.0" />
+      <Label fx:id="player2boost_label" layoutX="26.0" layoutY="552.0" AnchorPane.bottomAnchor="164.0" />
+      <ImageView fx:id="player2boost" fitHeight="10.0" fitWidth="792.0" layoutX="30.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="170.0" AnchorPane.leftAnchor="138.0" />
+      <Label fx:id="player3boost_label" layoutX="26.0" layoutY="582.0" AnchorPane.bottomAnchor="136.0" />
+      <ImageView fx:id="player3boost" fitHeight="10.0" fitWidth="792.0" layoutX="30.0" layoutY="329.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="142.0" AnchorPane.leftAnchor="138.0" />
+      <Label layoutX="26.0" layoutY="355.0" text="Team Rot" AnchorPane.bottomAnchor="108.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label fx:id="player4boost_label" layoutX="26.0" layoutY="612.0" AnchorPane.bottomAnchor="80.0" />
+      <ImageView fx:id="player4boost" fitHeight="10.0" fitWidth="792.0" layoutX="40.0" layoutY="358.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="86.0" AnchorPane.leftAnchor="138.0" />
+      <Label fx:id="player5boost_label" layoutX="26.0" layoutY="642.0" AnchorPane.bottomAnchor="52.0" />
+      <ImageView fx:id="player5boost" fitHeight="10.0" fitWidth="792.0" layoutX="40.0" layoutY="388.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="138.0" />
+      <Label fx:id="player6boost_label" layoutX="26.0" layoutY="692.0" AnchorPane.bottomAnchor="24.0" />
+      <ImageView fx:id="player6boost" fitHeight="10.0" fitWidth="792.0" layoutX="134.0" layoutY="644.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="138.0" />
 
    </children>
 </AnchorPane>
