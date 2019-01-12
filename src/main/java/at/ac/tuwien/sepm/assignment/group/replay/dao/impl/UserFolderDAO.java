@@ -130,9 +130,7 @@ public class UserFolderDAO implements FolderDAO {
 
     public File getFile(String fileName) {
         LOG.trace("Called - getFile");
-        File file = new File(fileDirectory, fileName);
-
-        return file;
+        return new File(fileDirectory, fileName);
     }
 
 
@@ -150,25 +148,26 @@ public class UserFolderDAO implements FolderDAO {
     }
 
     @Override
-    public void saveHeatmaps(MatchDTO matchDTO) {
+    public void saveHeatmaps(MatchDTO matchDTO) throws FilePersistenceException {
         LOG.trace("Called - saveHeatmaps");
         String fileID = matchDTO.getReadId();
         String fileName = fileID + "_ball.png";
         matchDTO.setBallHeatmapFilename(fileName);
         try {
             ImageIO.write(matchDTO.getBallHeatmapImage(), "png", new File(heatmapDirectory, fileName));
+            int i = 1;
             for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
-                fileName = fileID + "_" + matchPlayerDTO.getName() + ".png";
+                fileName = fileID + "_player" + i++ + ".png";
                 matchPlayerDTO.setHeatmapFilename(fileName);
                 ImageIO.write(matchPlayerDTO.getHeatmapImage(), "png", new File(heatmapDirectory, fileName));
             }
         } catch (IOException e) {
-            LOG.error("Failed to write Image",e);
+            throw new FilePersistenceException("Failed to write Image",e);
         }
     }
 
     @Override
-    public void getHeatmaps(MatchDTO matchDTO) {
+    public void getHeatmaps(MatchDTO matchDTO) throws FilePersistenceException {
         LOG.trace("Called - getHeatmaps");
         String fileName = matchDTO.getBallHeatmapFilename();
         try {
@@ -178,7 +177,7 @@ public class UserFolderDAO implements FolderDAO {
                 matchPlayerDTO.setHeatmapImage(ImageIO.read(new File(heatmapDirectory, fileName)));
             }
         } catch (IOException e) {
-            LOG.error("Failed to write Image",e);
+            throw new FilePersistenceException("Failed to write Image",e);
         }
     }
 
