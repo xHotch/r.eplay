@@ -118,6 +118,9 @@ public class MatchAnimationController {
 
     }
 
+    /**
+     * Method that sets up the Animation in a separate thread and starts the animation Playback afterwards
+     */
     @FXML
     private void onLoadAnimationButtonClicked(){
         executorService.submit(() -> {
@@ -207,7 +210,6 @@ public class MatchAnimationController {
      * @param carShape the shape
      * @return The List of Keyvalues, containing a Value for the X and Y Position and Keyvalue containing the Rotation
      */
-    //todo fix rotation
     private List<KeyValue> mapCarToKayValue(Rectangle carShape){
         LinkedList<KeyValue> keyValues = new LinkedList<>();
         Vector3D position;
