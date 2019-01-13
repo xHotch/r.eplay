@@ -14,7 +14,7 @@
             <TableColumn fx:id="tableColumnPlayerName" prefWidth="524.0" text="Name" />
         </columns>
     </TableView>
-    <Button layoutX="597.0" layoutY="286.0" mnemonicParsing="false" onAction="#onSaveTeamButtonClicked" text="Team Speichern" AnchorPane.bottomAnchor="457.0" AnchorPane.leftAnchor="597.0" />
+    <Button fx:id="saveTeamButton" layoutX="597.0" layoutY="286.0" mnemonicParsing="false" onAction="#onSaveTeamButtonClicked" text="Team Speichern" AnchorPane.bottomAnchor="457.0" AnchorPane.leftAnchor="597.0" />
    <Label layoutX="597.0" layoutY="57.0" text="Teamname:" />
    <TextField fx:id="textFieldName" layoutX="597.0" layoutY="85.0" />
    <Label layoutX="597.0" layoutY="146.0" text="Teamgröße:" />
