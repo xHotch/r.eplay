@@ -4,8 +4,10 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.TeamDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +15,10 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class JDBCTeamDAO implements TeamDAO {
@@ -29,6 +33,7 @@ public class JDBCTeamDAO implements TeamDAO {
     private static final String READ_ALL_TEAMS = "SELECT * FROM team";
     private static final String READ_PLAYERS_FROM_TEAM = "SELECT * from teamPlayer where teamId = ?";
 
+    private static final String READ_STATS_FROM_TEAM = "Select sum(SCORE) AS score, sum(GOALS) as goals, sum(SHOTS) as shots," + "sum(ASSISTS) as assists, sum(SAVES) as saves, avg(AVERAGESPEED) as averagespeed, team, MATCHID " + "from MATCHPLAYER where MATCHID = any( " + "SELECT mp.MATCHID " + "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " + "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) " + " ) group by TEAM,MATCHID";
 
     private final Connection connection;
 
@@ -117,6 +122,37 @@ public class JDBCTeamDAO implements TeamDAO {
             }
         } catch (SQLException e) {
             throw new TeamPersistenceException("could not read teams", e);
+        }
+        return result;
+    }
+
+    public Map<Integer, List<MatchStatsDTO>> readTeamStats(TeamDTO teamDTO) throws TeamPersistenceException {
+        LOG.trace("Called - readTeamStats");
+        Map<Integer, List<MatchStatsDTO>> result = new HashMap<>();
+        List<MatchStatsDTO> statsList;
+        try (PreparedStatement ps = connection.prepareStatement(READ_STATS_FROM_TEAM)) {
+            ps.setLong(1, teamDTO.getId());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("matchid");
+                    if (result.containsKey(id)) statsList = result.get(id);
+                    else {
+                        statsList = new LinkedList<>();
+                        result.put(id, statsList);
+                    }
+                    MatchStatsDTO matchStatsDTO = new MatchStatsDTO();
+                    matchStatsDTO.setScore(rs.getInt("score"));
+                    matchStatsDTO.setGoals(rs.getInt("goals"));
+                    matchStatsDTO.setShots(rs.getInt("shots"));
+                    matchStatsDTO.setAssists(rs.getInt("assists"));
+                    matchStatsDTO.setSaves(rs.getInt("saves"));
+                    matchStatsDTO.setAverageSpeed(rs.getDouble("averageSpeed"));
+                    matchStatsDTO.setTeam(TeamSide.getById(rs.getInt("team")).get());
+                    statsList.add(matchStatsDTO);
+                }
+            }
+        } catch (SQLException e) {
+            throw new TeamPersistenceException("could not read team stats", e);
         }
         return result;
     }
