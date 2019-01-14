@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamCompareController">
+   <children>
+      <Label layoutX="21.0" layoutY="73.0" text="Team 1" AnchorPane.leftAnchor="21.0" AnchorPane.topAnchor="73.0">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="355.0" text="Team 2" AnchorPane.bottomAnchor="319.0" AnchorPane.leftAnchor="21.0">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <BarChart fx:id="team1BarChart" layoutX="123.0" layoutY="73.0" prefHeight="277.0" prefWidth="863.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <ChoiceBox fx:id="matchValueChoiceBox" layoutX="16.0" layoutY="34.0" prefWidth="150.0" />
+      <BarChart fx:id="team2BarChart" layoutX="123.0" layoutY="355.0" prefHeight="277.0" prefWidth="863.0">
+         <xAxis>
+            <CategoryAxis side="BOTTOM" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis side="LEFT" />
+         </yAxis>
+      </BarChart>
+   </children>
+</AnchorPane>

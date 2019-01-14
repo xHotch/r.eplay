@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -36,6 +37,7 @@ public class TeamController {
     private ExecutorService executorService;
     private TeamService teamService;
     private PlayerService playerService;
+    private TeamCompareController teamCompareController;
 
     @FXML
     private TableView<TeamDTO> tableViewTeams;
@@ -52,11 +54,12 @@ public class TeamController {
     @FXML
     private Text txtPlayer3;
 
-    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService) {
+    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService, TeamCompareController teamCompareController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.teamService = teamService;
         this.playerService = playerService;
+        this.teamCompareController = teamCompareController;
     }
 
     /**
@@ -93,6 +96,36 @@ public class TeamController {
         }
         newTeamStage.toFront();
         newTeamStage.showAndWait();
+    }
+
+    @FXML
+    private void onTeamCompareButtonClicked() {
+        Stage teamCompareStage = new Stage();
+        // setup application
+        teamCompareStage.setTitle("Compare Teams");
+        teamCompareStage.setWidth(1024);
+        teamCompareStage.setHeight(768);
+        teamCompareStage.centerOnScreen();
+        teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
+        try {
+            teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
+        } catch (IOException e) {
+            LOG.error("Loading Compare Team fxml failed", e);
+        }
+        if (!tableViewTeams.getSelectionModel().getSelectedItems().isEmpty() && tableViewTeams.getSelectionModel().getSelectedItems().size() == 2) {
+            List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
+            try {
+                teamCompareController.setTeamCompareData(teamService.readTeamStats(selectedTeams.get(0)), teamService.readTeamStats(selectedTeams.get(1)));
+            } catch (TeamServiceException e) {
+                LOG.error("Failed to read team stats", e);
+                AlertHelper.showErrorMessage("Failed to read team stats");
+            }
+        } else {
+            AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Bitte nur 2 Teams selektieren");
+        }
+
+        teamCompareStage.toFront();
+        teamCompareStage.show();
     }
 
     /**
