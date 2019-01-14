@@ -15,9 +15,12 @@ import java.lang.invoke.MethodHandles;
  */
 @Component
 public class MatchDetailController {
-
+    public MatchDetailController(MatchAnimationController matchAnimationController) {
+        this.matchAnimationController = matchAnimationController;
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private MatchAnimationController matchAnimationController;
 
     // Inject tab content.
     @FXML private Tab matchStatsOverviewTab;
@@ -31,5 +34,13 @@ public class MatchDetailController {
 
     // Inject tab content.
     @FXML private Tab boostStatisticsTab;
+
+    @FXML
+    private void initialize(){
+        matchAnimationTab.setOnSelectionChanged (e -> {
+            if (!matchAnimationTab.isSelected())matchAnimationController.pauseAnimation();
+        }
+        );
+    }
 
 }

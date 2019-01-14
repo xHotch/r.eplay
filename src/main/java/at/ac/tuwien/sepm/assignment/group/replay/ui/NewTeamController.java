@@ -8,12 +8,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerService
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamValidationException;
 import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
-import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -22,15 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 @Component
 public class NewTeamController {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private SpringFXMLLoader springFXMLLoader;
-    private ExecutorService executorService;
     private PlayerService playerService;
     private TeamService teamService;
     private TeamController teamController;
@@ -43,10 +36,12 @@ public class NewTeamController {
     private TextField textFieldName;
     @FXML
     private ComboBox<Integer> comboBoxTeamSize;
+    @FXML
+    private Button saveTeamButton;
 
 
     @FXML
-    private void onSaveTeamButtonClicked(ActionEvent event) {
+    private void onSaveTeamButtonClicked() {
         LOG.trace("called - onSaveTeamButtonClicked");
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(textFieldName.getText());
@@ -57,21 +52,17 @@ public class NewTeamController {
             LOG.debug("after create Team");
             teamController.updateTeamTable();
             LOG.debug("after update TeamTable");
-            ((Stage)(((Node)event.getSource()).getScene().getWindow())).close();
+            ((Stage) saveTeamButton.getScene().getWindow()).close();
         } catch (TeamValidationException e) {
             AlertHelper.showErrorMessage(e.getMessage());
         } catch (TeamServiceException e) {
             LOG.error(e.getMessage(), e);
             AlertHelper.showErrorMessage(e.getMessage());
         }
-
-
     }
 
 
-    public NewTeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService, TeamService teamService, TeamController teamController) {
-        this.springFXMLLoader = springFXMLLoader;
-        this.executorService = executorService;
+    public NewTeamController(PlayerService playerService, TeamService teamService, TeamController teamController) {
         this.playerService = playerService;
         this.teamService = teamService;
         this.teamController = teamController;

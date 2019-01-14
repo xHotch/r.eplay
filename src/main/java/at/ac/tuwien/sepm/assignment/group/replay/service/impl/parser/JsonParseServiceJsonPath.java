@@ -159,16 +159,17 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     public VideoDTO getVideo(MatchDTO matchDTO) throws FileServiceException{
 
         //get json from .replay
-        File jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
-
-
-        VideoDTO videoDTO = parseVideo(jsonFile);
-        videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
-
-
-        matchService.deleteFile(jsonFile);
-
-        return videoDTO;
+        File jsonFile = null;
+        try {
+            jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
+            VideoDTO videoDTO = parseVideo(jsonFile);
+            videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
+            return videoDTO;
+        } finally {
+            if (jsonFile!=null) {
+                matchService.deleteFile(jsonFile);
+            }
+        }
     }
 
     /**
@@ -308,6 +309,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
 
                 double frameTime = ctx.read(frame + ".Time", Double.class);
+                double frameDelta = ctx.read(frame + ".Delta", Double.class);
 
 
 
@@ -345,6 +347,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         case "TAGame.PRI_TA":
                             playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
 
+                            break;
+                        case "TAGame.CarComponent_Boost_TA":
+                            boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            break;
+                        case "TAGame.VehiclePickup_Boost_TA":
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
                             break;
                         default:
                             break;
