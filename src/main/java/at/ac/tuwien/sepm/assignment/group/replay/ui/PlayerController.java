@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.AvgStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
 import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,29 @@ public class PlayerController {
     @FXML
     private TableColumn<PlayerDTO, String> tableColumnPlayerName;
 
+    @FXML
+    private ChoiceBox<MatchType> typChoiceBox;
+    @FXML
+    private Text txtWins;
+    @FXML
+    private Text txtLosses;
+    @FXML
+    private Text txtGoals;
+    @FXML
+    private Text txtAssists;
+    @FXML
+    private Text txtSaves;
+    @FXML
+    private Text txtShots;
+    @FXML
+    private Text txtScore;
+    @FXML
+    private Text txtSpeed;
+    @FXML
+    private Text txtBoostpad;
+    @FXML
+    private Text txtBoost;
+
     public PlayerController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService, PlayerDetailController playerDetailController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
@@ -60,6 +87,9 @@ public class PlayerController {
 
         setupPlayerTable();
         updatePlayerTable();
+
+        typChoiceBox.getItems().addAll(MatchType.RANKED1V1, MatchType.RANKED2V2, MatchType.RANKED3V3);
+        typChoiceBox.getSelectionModel().selectFirst();
 
     }
 
@@ -138,6 +168,7 @@ public class PlayerController {
                 AlertHelper.showErrorMessage("List of players to be deleted might be empty.");
             }
             updatePlayerTable();
+            deletePlayerTexts();
         }
     }
 
@@ -162,7 +193,64 @@ public class PlayerController {
     private void setupPlayerTable() {
         tableColumnPlayerName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableViewPlayers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableViewPlayers.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> showPlayerDetails(newValue));
         tableColumnPlayerName.setStyle("-fx-alignment: CENTER;");
+    }
+
+    /**
+     * shows the player details for a selected player on the right side of the table
+     *
+     * @param selectedPlayer player that is currently selected
+     */
+    private void showPlayerDetails(PlayerDTO selectedPlayer) {
+        LOG.info("Show Player Details Button clicked");
+        LOG.trace("called - onShowPlayerDetailsButtonClicked");
+        if (selectedPlayer != null) {
+            updatePlayerDetails(selectedPlayer, typChoiceBox.getSelectionModel().getSelectedItem());
+            ChangeListener<MatchType> changeListener = (observable, oldType, newType) -> {
+                updatePlayerDetails(selectedPlayer, newType);
+            };
+            typChoiceBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
+        }
+    }
+
+    /**
+     * updates player details text depending on the selected player
+     *
+     * @param selectedPlayer player to be updated
+     */
+    private void updatePlayerDetails(PlayerDTO selectedPlayer, MatchType matchType) {
+        deletePlayerTexts();
+
+        try {
+            AvgStatsDTO avgStatsDTO = playerService.getAvgStats(selectedPlayer, matchType);
+            txtWins.setText("" + avgStatsDTO.getWins());
+            txtLosses.setText("" + avgStatsDTO.getLosses());
+            txtGoals.setText("" + String.format("%.2f", avgStatsDTO.getGoals()));
+            txtAssists.setText("" + String.format("%.2f", avgStatsDTO.getAssists()));
+            txtSaves.setText("" + String.format("%.2f", avgStatsDTO.getSaves()));
+            txtShots.setText("" + String.format("%.2f", avgStatsDTO.getShots()));
+            txtScore.setText("" + String.format("%.2f", avgStatsDTO.getScore()));
+            txtSpeed.setText("" + String.format("%.2f", avgStatsDTO.getSpeed()));
+            txtBoostpad.setText("" + String.format("%.2f", avgStatsDTO.getBoostpads()));
+            txtBoost.setText("" + String.format("%.2f", avgStatsDTO.getBoost()));
+        } catch (PlayerServiceException e) {
+            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
+            AlertHelper.showErrorMessage(e.getMessage());
+        }
+    }
+
+    private void deletePlayerTexts() {
+        txtWins.setText("");
+        txtLosses.setText("");
+        txtGoals.setText("");
+        txtAssists.setText("");
+        txtSaves.setText("");
+        txtShots.setText("");
+        txtScore.setText("");
+        txtSpeed.setText("");
+        txtBoostpad.setText("");
+        txtBoost.setText("");
     }
 
 }
