@@ -167,9 +167,11 @@ public class BoostInformationParser {
             currentBoost = (int)(currentBoost / 255.0 * 100.0);
             //create new boost object
             BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
-            boostAmountMap.putIfAbsent(actorId, new ArrayList<>());
-            boostAmountMap.get(actorId).add(boost);
+            int actualCarID = carComponentToCarId.get(actorId);
+            int actualPlayerID = carBoostMap.get(actualCarID);
 
+            boostAmountMap.putIfAbsent(actualPlayerID, new ArrayList<>());
+            boostAmountMap.get(actualPlayerID).add(boost);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
         } catch (NullPointerException e) { //TODO remove null exception
@@ -254,6 +256,13 @@ public class BoostInformationParser {
     public void printDebugInformation() {
 
         LOG.debug("\n");
+        for(Map.Entry<Integer, Integer> car:carBoostMap.entrySet()){
+            LOG.error("CAR ID: {}, PLAYER ID: {}", car.getKey(), car.getValue());
+        }
+        for (Map.Entry<Integer, List<BoostDTO>> boost:boostAmountMap.entrySet()
+             ) {
+            LOG.error("PLAYER ID: {}, boost amounts: {}", boost.getKey(), boost.getValue().size());
+        }
     }
 
     public Map<Integer, Integer> getCarBoostMap() {

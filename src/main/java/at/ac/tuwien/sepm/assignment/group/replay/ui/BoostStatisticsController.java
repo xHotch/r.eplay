@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.BoostInformationParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +72,8 @@ public class BoostStatisticsController {
 
         ObservableList<MatchPlayerDTO> playerListBlue = FXCollections.observableArrayList();
         ObservableList<MatchPlayerDTO> playerListRed = FXCollections.observableArrayList();
+
+        Map<Integer, List<BoostDTO>> boosts = boostInformationParser.getBoostAmountMap();
 
         for (MatchPlayerDTO player:matchPlayers) {
             // team blue
