@@ -7,14 +7,12 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +76,7 @@ public class PlayerDetailController {
     @FXML
     private void initialize() {
         typChoiceBox.getItems().addAll(MatchType.RANKED1V1, MatchType.RANKED2V2, MatchType.RANKED3V3);
+        typChoiceBox.getSelectionModel().selectFirst();
         assistsTableColumn.setCellValueFactory(new PropertyValueFactory<>("assists"));
         boostpadTableColumn.setCellValueFactory(new PropertyValueFactory<>("boostpads"));
         boostTableColumn.setCellValueFactory(new PropertyValueFactory<>("boost"));
@@ -86,6 +85,14 @@ public class PlayerDetailController {
         scoreTableColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
         shotsTableColumn.setCellValueFactory(new PropertyValueFactory<>("shots"));
         speedTableColumn.setCellValueFactory(new PropertyValueFactory<>("speed"));
+        formatCellText(assistsTableColumn);
+        formatCellText(boostpadTableColumn);
+        formatCellText(boostTableColumn);
+        formatCellText(goalsTableColumn);
+        formatCellText(savesTableColumn);
+        formatCellText(scoreTableColumn);
+        formatCellText(shotsTableColumn);
+        formatCellText(speedTableColumn);
     }
 
     void loadPlayer(PlayerDTO playerDTO) {
@@ -95,6 +102,7 @@ public class PlayerDetailController {
         winsLabel.setText("");
         lossesLabel.setText("");
 
+        showCurrentTypStatistics(typChoiceBox.getSelectionModel().getSelectedItem());
         ChangeListener<MatchType> changeListener = (observable, oldType, newType) -> {
             showCurrentTypStatistics(newType);
         };
@@ -115,6 +123,21 @@ public class PlayerDetailController {
             AlertHelper.showErrorMessage(e.getMessage());
         }
 
+    }
+
+    private void formatCellText(TableColumn<AvgStatsDTO, Double> column){
+        column.setCellFactory(tc -> new TableCell<>() {
+
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f", value));
+                }
+            }
+        });
     }
 
 }
