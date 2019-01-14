@@ -69,7 +69,7 @@ public class TeamController {
     @FXML
     private void initialize() {
         tableColumnTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableViewTeams.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> showTeamDetails(newValue));
         tableColumnTeamName.setStyle("-fx-alignment: CENTER;");
 
@@ -100,19 +100,20 @@ public class TeamController {
 
     @FXML
     private void onTeamCompareButtonClicked() {
-        Stage teamCompareStage = new Stage();
-        // setup application
-        teamCompareStage.setTitle("Compare Teams");
-        teamCompareStage.setWidth(1024);
-        teamCompareStage.setHeight(768);
-        teamCompareStage.centerOnScreen();
-        teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
-        try {
-            teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
-        } catch (IOException e) {
-            LOG.error("Loading Compare Team fxml failed", e);
-        }
         if (!tableViewTeams.getSelectionModel().getSelectedItems().isEmpty() && tableViewTeams.getSelectionModel().getSelectedItems().size() == 2) {
+            Stage teamCompareStage = new Stage();
+            // setup application
+            teamCompareStage.setTitle("Compare Teams");
+            teamCompareStage.setWidth(1024);
+            teamCompareStage.setHeight(768);
+            teamCompareStage.centerOnScreen();
+            teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
+            try {
+                teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
+            } catch (IOException e) {
+                LOG.error("Loading Compare Team fxml failed", e);
+            }
+
             List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
             try {
                 teamCompareController.setTeamCompareData(teamService.readTeamStats(selectedTeams.get(0)), teamService.readTeamStats(selectedTeams.get(1)));
@@ -120,12 +121,11 @@ public class TeamController {
                 LOG.error("Failed to read team stats", e);
                 AlertHelper.showErrorMessage("Failed to read team stats");
             }
+            teamCompareStage.toFront();
+            teamCompareStage.show();
         } else {
             AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Bitte nur 2 Teams selektieren");
         }
-
-        teamCompareStage.toFront();
-        teamCompareStage.show();
     }
 
     /**
