@@ -148,7 +148,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         matchDTO = readProperties();
         parseFrames();
         LOG.debug("End Parse");
-        playerInformationParser.setActorId(matchDTO.getPlayerData());
+        //playerInformationParser.setActorId(matchDTO.getPlayerData());
+        List<MatchPlayerDTO> players = playerInformationParser.getMatchPlayer();
+        if (matchDTO.getTeamSize() * 2 != players.size()) {
+            throw new FileServiceException("Wrong number of players in the game");
+        }
+        matchDTO.setPlayerData(players);
         LOG.debug("Start  Calculate");
         calculate(matchDTO);
         LOG.debug("End  Calculate");
@@ -245,6 +250,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         case "TAGame.PRI_TA":
                             playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
 
+                            break;
+
+                        case "TAGame.Team_Soccar_TA":
+                            playerInformationParser.parseTeam(actorId, currentFrame, currentActorUpdateNr);
                             break;
                         case "TAGamee.GRI_TA":
                             //parseMatchInformation
@@ -401,7 +410,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             match.setDateTime(LocalDateTime.parse(dateTime, dtFormatter));
             match.setTeamSize(ctx.read("$.Properties.TeamSize"));
             match.setReadId(ctx.read("$.Properties.Id"));
-            List<MatchPlayerDTO> playerList = new ArrayList<>();
+            /*List<MatchPlayerDTO> playerList = new ArrayList<>();
             for (int i = 0; i < match.getTeamSize() * 2; i++) {
 
 
@@ -427,7 +436,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 playerList.add(matchPlayer);
             }
             match.setPlayerData(playerList);
-
+            */
 
         } catch (Exception e) {
             throw new FileServiceException(e.getMessage(), e);
