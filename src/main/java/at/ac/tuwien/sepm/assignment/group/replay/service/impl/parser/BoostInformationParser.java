@@ -35,22 +35,27 @@ public class BoostInformationParser {
         this.carInformationParser = carInformationParser;
     }
 
-    private Map<Integer, Integer> carComponentToCarId = new HashMap<>();
+    //Retrieved from CarInformationParser
+    Map<Integer, Integer> carPlayerMap;
+
+    private Map<Integer, Integer> carComponentToCarId;
     //Map that maps ActorID from a Player to a car. Key = carId, Value = playerId
-    private Map<Integer, Integer> carBoostMap = new HashMap<>();
+    private Map<Integer, Integer> carBoostMap;
     //Map that maps ActorID from a boost pad to a car/player. Key = carId, Value = playerId
-    private Map<Integer, Integer> carBoostPadMap = new HashMap<>();
+    private Map<Integer, Integer> carBoostPadMap;
 
     //Map that maps ActorID from a Car to a list of BoostAmountInformation. Key = playerId, Value = Boost amount information
-    private Map<Integer, List<BoostDTO>> boostAmountMap = new HashMap<>();
+    private Map<Integer, List<BoostDTO>> boostAmountMap;
     //Map that maps ActorID from a Car to a list of BoostPadDTO. Key = playerId, Value = Boost pad information
-    private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap = new HashMap<>();
+    private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap;
 
     void setup(){
         carComponentToCarId = new HashMap<>();
         carBoostMap = new HashMap<>();
+        carBoostPadMap = new HashMap<>();
         boostAmountMap = new HashMap<>();
         boostPadMap = new HashMap<>();
+        carPlayerMap = carInformationParser.getPlayerCarMap();
     }
 
     /**
@@ -114,8 +119,6 @@ public class BoostInformationParser {
             carComponentToCarId.putIfAbsent(carComponentId, carActorId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No Information about boost found - wrong replication info found");
         }
     }
 
@@ -125,14 +128,14 @@ public class BoostInformationParser {
     private void getPlayerIDfromBoost() {
         LOG.trace("Called - getCarIDfromBoost");
         try {
-            int carActorId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:Vehicle'].ActorId", Integer.class);
-            Map<Integer, Integer> carPlayerMap = carInformationParser.getPlayerCarMap();
-            int playerId = carPlayerMap.get(carActorId);
-            carBoostMap.putIfAbsent(carActorId, playerId);
+            int carComponentId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:Vehicle'].ActorId", Integer.class);
+
+            int carID = carComponentToCarId.get(carComponentId);
+            LOG.error("carID: " + carID + ", " + carPlayerMap);
+            int playerId = carPlayerMap.get(carID);
+            carBoostMap.putIfAbsent(carComponentToCarId.get(carID), playerId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No Information about boost found - wrong replicated info found");
         }
     }
 
@@ -143,13 +146,10 @@ public class BoostInformationParser {
         LOG.trace("Called - getPlayerIDfromBoostPad");
         try {
             int carActorId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
-            Map<Integer, Integer> carPlayerMap = carInformationParser.getPlayerCarMap();
             int playerId = carPlayerMap.get(carActorId);
             carBoostPadMap.putIfAbsent(carActorId, playerId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost pad found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No Information about boost pad found - wrong replicated info found");
         }
     }
 
@@ -174,8 +174,6 @@ public class BoostInformationParser {
             boostAmountMap.get(actualPlayerID).add(boost);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No information about boost found - wrong replicated info found");
         }
 
     }
@@ -211,8 +209,6 @@ public class BoostInformationParser {
             }
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) { //TODO not handle null pointer exception
-            LOG.debug("No such path found");
         }
     }
 
