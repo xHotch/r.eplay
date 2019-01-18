@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
@@ -12,10 +11,8 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
+<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
    <children>
-      <Label layoutX="20.0" layoutY="12.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0" />
-      <ChoiceBox fx:id="cbMatchPlayer" layoutX="80.0" layoutY="8.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="8.0" />
       <Button layoutX="462.0" layoutY="8.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Load Animation" />
       <ImageView fx:id="image_field" depthTest="ENABLE" fitHeight="635.0" fitWidth="912.0" layoutX="52.0" layoutY="39.0" preserveRatio="true">
          <image>
