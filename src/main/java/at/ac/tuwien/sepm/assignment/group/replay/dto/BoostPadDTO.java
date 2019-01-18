@@ -10,13 +10,11 @@ public class BoostPadDTO {
 
     private boolean gamePaused;
 
-    public BoostPadDTO(double frameTime, double frameDelta, int frame, boolean gamePaused, int boostPadId) {
+    public BoostPadDTO(double frameTime, double frameDelta, int frame, boolean gamePaused) {
         this.frameTime = frameTime;
         this.frameDelta = frameDelta;
         this.frame = frame;
         this.gamePaused = gamePaused;
-        this.boostPadId = boostPadId;
-
     }
 
     public double getFrameTime() {

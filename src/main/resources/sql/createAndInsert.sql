@@ -55,12 +55,12 @@ CREATE TABLE IF NOT EXISTS matchPlayerBoostPads
 (
   matchPlayerid BIGINT,
   matchid BIGINT,
-  boostpad67 BIGINT, boostpad12 BIGINT, boostpad43 BIGINT, boostpad13 BIGINT, boostpad66 BIGINT, boostpad18 BIGINT,
-  boostpad11 BIGINT, boostpad17 BIGINT, boostpad5 BIGINT, boostpad14 BIGINT, boostpad4 BIGINT, boostpad10 BIGINT,
-  boostpad7 BIGINT, boostpad41 BIGINT, boostpad3 BIGINT, boostpad64 BIGINT, boostpad40 BIGINT, boostpad42 BIGINT,
-  boostpad63 BIGINT, boostpad23 BIGINT, boostpad19 BIGINT, boostpad20 BIGINT, boostpad31 BIGINT, boostpad28 BIGINT,
-  boostpad21 BIGINT, boostpad36 BIGINT, boostpad68 BIGINT, boostpad32 BIGINT, boostpad38 BIGINT, boostpad34 BIGINT,
-  boostpad35 BIGINT, boostpad33 BIGINT, boostpad65 BIGINT, boostpad39 BIGINT,
+  boostpad0 BIGINT, boostpad1 BIGINT, boostpad2 BIGINT, boostpad3 BIGINT, boostpad4 BIGINT, boostpad5 BIGINT,
+  boostpad6 BIGINT, boostpad7 BIGINT, boostpad8 BIGINT, boostpad9 BIGINT, boostpad10 BIGINT, boostpad11 BIGINT,
+  boostpad12 BIGINT, boostpad13 BIGINT, boostpad14 BIGINT, boostpad15 BIGINT, boostpad16 BIGINT, boostpad17 BIGINT,
+  boostpad18 BIGINT, boostpad19 BIGINT, boostpad20 BIGINT, boostpad21 BIGINT, boostpad22 BIGINT, boostpad23 BIGINT,
+  boostpad24 BIGINT, boostpad25 BIGINT, boostpad26 BIGINT, boostpad27 BIGINT, boostpad28 BIGINT, boostpad29 BIGINT,
+  boostpad30 BIGINT, boostpad31 BIGINT, boostpad32 BIGINT, boostpad33 BIGINT,
   FOREIGN KEY (matchPlayerid) REFERENCES matchPlayer(playerid) on delete cascade,
   FOREIGN KEY (matchid) REFERENCES matchPlayer(matchid) on delete cascade,
   PRIMARY KEY (matchPlayerid, matchid)

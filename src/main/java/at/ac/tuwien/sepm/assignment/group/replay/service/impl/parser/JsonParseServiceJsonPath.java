@@ -10,10 +10,8 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStat
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BoostStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.ReadContext;
+import com.jayway.jsonpath.*;
+import net.minidev.json.JSONArray;
 import org.apache.commons.io.FilenameUtils;
 import org.h2.mvstore.DataUtils;
 import org.slf4j.Logger;
@@ -25,10 +23,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -265,7 +260,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             break;
 
                         case "TAGame.VehiclePickup_Boost_TA":
-                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused, actorUpdateCount);
                             break;
 
                         default:
@@ -361,7 +356,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
                             break;
                         case "TAGame.VehiclePickup_Boost_TA":
-                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused, actorUpdateCount);
                             break;
                         default:
                             break;
