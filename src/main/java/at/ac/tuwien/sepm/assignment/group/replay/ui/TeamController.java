@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -36,6 +37,7 @@ public class TeamController {
     private ExecutorService executorService;
     private TeamService teamService;
     private PlayerService playerService;
+    private TeamCompareController teamCompareController;
 
     @FXML
     private TableView<TeamDTO> tableViewTeams;
@@ -52,11 +54,12 @@ public class TeamController {
     @FXML
     private Text txtPlayer3;
 
-    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService) {
+    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService, TeamCompareController teamCompareController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.teamService = teamService;
         this.playerService = playerService;
+        this.teamCompareController = teamCompareController;
     }
 
     /**
@@ -66,7 +69,7 @@ public class TeamController {
     @FXML
     private void initialize() {
         tableColumnTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        tableViewTeams.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableViewTeams.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> showTeamDetails(newValue));
         tableColumnTeamName.setStyle("-fx-alignment: CENTER;");
 
@@ -93,6 +96,36 @@ public class TeamController {
         }
         newTeamStage.toFront();
         newTeamStage.showAndWait();
+    }
+
+    @FXML
+    private void onTeamCompareButtonClicked() {
+        if (!tableViewTeams.getSelectionModel().getSelectedItems().isEmpty() && tableViewTeams.getSelectionModel().getSelectedItems().size() == 2) {
+            List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
+            try {
+                teamCompareController.setTeamCompareData(teamService.readTeamMatches(selectedTeams.get(0), selectedTeams.get(1)),selectedTeams.get(0),selectedTeams.get(1));
+
+                Stage teamCompareStage = new Stage();
+                // setup application
+                teamCompareStage.setTitle("Compare Teams");
+                teamCompareStage.setWidth(1024);
+                teamCompareStage.setHeight(768);
+                teamCompareStage.centerOnScreen();
+                teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
+                teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
+
+                teamCompareStage.toFront();
+                teamCompareStage.show();
+            } catch (TeamServiceException e) {
+                LOG.error("Failed to read team stats", e);
+                AlertHelper.showErrorMessage("Failed to read team stats");
+            } catch (IOException e) {
+                LOG.error("Loading Compare Team fxml failed", e);
+                AlertHelper.showErrorMessage("Failed to open team compare window");
+            }
+        } else {
+            AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Bitte nur 2 Teams selektieren");
+        }
     }
 
     /**

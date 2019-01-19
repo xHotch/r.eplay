@@ -15,7 +15,7 @@
             </columns>
         </TableView>
         <Button layoutX="20.0" layoutY="672.0" mnemonicParsing="false" onAction="#onNewTeamButtonClicked" text="Neues Team" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
-        <Button layoutX="154.0" layoutY="672.0" mnemonicParsing="false" onAction="#onDeleteTeamButtonClicked" text="Team löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
+        <Button layoutX="292.0" layoutY="684.0" mnemonicParsing="false" onAction="#onDeleteTeamButtonClicked" text="Team löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="292.0" />
       <Text layoutX="650.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teamname">
          <font>
             <Font size="18.0" />
@@ -61,5 +61,6 @@
             <Font size="19.0" />
          </font>
       </Text>
+      <Button layoutX="146.0" layoutY="684.0" mnemonicParsing="false" onAction="#onTeamCompareButtonClicked" text="Teams vergeichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="146.0" />
     </children>
 </AnchorPane>

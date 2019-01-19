@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.TeamDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
@@ -45,6 +46,15 @@ public class SimpleTeamService implements TeamService {
             return teamDAO.readTeams();
         } catch (TeamPersistenceException e) {
             throw new TeamServiceException("failed to read teams", e);
+        }
+    }
+
+    @Override
+    public List<MatchDTO> readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamServiceException {
+        try {
+            return teamDAO.readTeamMatches(teamDTO1,teamDTO2);
+        } catch (TeamPersistenceException e) {
+            throw new TeamServiceException("failed to read team stats");
         }
     }
 

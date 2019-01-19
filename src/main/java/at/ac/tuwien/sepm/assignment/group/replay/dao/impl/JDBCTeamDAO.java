@@ -1,11 +1,13 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.TeamDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +15,10 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class JDBCTeamDAO implements TeamDAO {
@@ -29,14 +33,24 @@ public class JDBCTeamDAO implements TeamDAO {
     private static final String READ_ALL_TEAMS = "SELECT * FROM team";
     private static final String READ_PLAYERS_FROM_TEAM = "SELECT * from teamPlayer where teamId = ?";
 
+    private static final String READ_MATCHES_FROM_TEAMS = "Select *" +
+        "from MATCH_ where ID = any( " +
+        "SELECT mp.MATCHID " +
+        "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " +
+        "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) " +
+        "INTERSECT SELECT mp.MATCHID " +
+        "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " +
+        "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) )";
 
     private final Connection connection;
 
     private PlayerDAO playerDAO;
+    private JDBCMatchDAO matchDAO;
 
-    public JDBCTeamDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO) throws SQLException {
+    public JDBCTeamDAO(JDBCConnectionManager jdbcConnectionManager, PlayerDAO playerDAO, JDBCMatchDAO matchDAO) throws SQLException {
         this.connection = jdbcConnectionManager.getConnection();
         this.playerDAO = playerDAO;
+        this.matchDAO = matchDAO;
     }
 
     @Override
@@ -117,6 +131,19 @@ public class JDBCTeamDAO implements TeamDAO {
             }
         } catch (SQLException e) {
             throw new TeamPersistenceException("could not read teams", e);
+        }
+        return result;
+    }
+
+    public List<MatchDTO> readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamPersistenceException {
+        LOG.trace("Called - readTeamMatches");
+       List<MatchDTO> result = new LinkedList<>();
+        try (PreparedStatement ps = connection.prepareStatement(READ_MATCHES_FROM_TEAMS)) {
+            ps.setLong(1, teamDTO1.getId());
+            ps.setLong(2, teamDTO2.getId());
+            matchDAO.setMatchDTO(result,ps);
+        } catch (SQLException | MatchPersistenceException | FilePersistenceException e) {
+            throw new TeamPersistenceException("could not read team Matches", e);
         }
         return result;
     }

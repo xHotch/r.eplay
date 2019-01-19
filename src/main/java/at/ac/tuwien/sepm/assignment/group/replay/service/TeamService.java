@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamValidationException;
@@ -35,4 +36,14 @@ public interface TeamService {
      * @throws TeamServiceException if there occurs an error during reading
      */
     List<TeamDTO> readTeams() throws TeamServiceException;
+
+    /**
+     * Read all matches where all players from first and second team played against each other.
+     *
+     * @param teamDTO1 the first team
+     * @param teamDTO2 the second team
+     * @return A List of MatchDTOs
+     * @throws TeamServiceException if something failed during persistence of the team
+     */
+    List<MatchDTO> readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamServiceException;
 }
