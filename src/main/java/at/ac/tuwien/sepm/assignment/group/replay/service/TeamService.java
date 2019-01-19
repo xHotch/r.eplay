@@ -1,12 +1,11 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamValidationException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Team Service for validating, creating and reading for a team
@@ -39,11 +38,12 @@ public interface TeamService {
     List<TeamDTO> readTeams() throws TeamServiceException;
 
     /**
-     * Read the stats from all matches where all players from the team played
+     * Read all matches where all players from first and second team played against each other.
      *
-     * @param teamDTO the team to get the stats from
-     * @return A Map with the matchid as the key and a list of MatchStats
+     * @param teamDTO1 the first team
+     * @param teamDTO2 the second team
+     * @return A List of MatchDTOs
      * @throws TeamServiceException if something failed during persistence of the team
      */
-    Map<Integer, List<MatchStatsDTO>> readTeamStats(TeamDTO teamDTO) throws TeamServiceException;
+    List<MatchDTO> readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamServiceException;
 }

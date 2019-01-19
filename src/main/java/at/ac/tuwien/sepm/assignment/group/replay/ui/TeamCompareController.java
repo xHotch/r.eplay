@@ -1,9 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +24,12 @@ public class TeamCompareController {
 
     private TeamService teamService;
 
-    private Map<Integer, List<MatchStatsDTO>> matchPerTeamStats1;
-    private Map<Integer, List<MatchStatsDTO>> matchPerTeamStats2;
+    private List<MatchDTO> matchDTOList;
+    private TeamDTO teamDTO1;
+    private TeamDTO teamDTO2;
 
     @FXML
-    private BarChart<Integer,Double> team1BarChart;
-    @FXML
-    private BarChart<Integer,Double> team2BarChart;
+    private BarChart<String,Double> teamBarChart;
     @FXML
     private ChoiceBox<String> matchValueChoiceBox;
 
@@ -40,16 +40,71 @@ public class TeamCompareController {
     @FXML
     private void initialize()
     {
-
+        matchValueChoiceBox.getItems().addAll("Tore","Assists","Shots","Saves","Score","Average Speed"); //TODO German names
+        matchValueChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
+            (obs, oldValue, newValue) -> showMatchValue(newValue.intValue())
+        );
     }
 
-    void setTeamCompareData(Map<Integer, List<MatchStatsDTO>> matchPerTeamStats1,Map<Integer, List<MatchStatsDTO>> matchPerTeamStats2){
-        this.matchPerTeamStats1 = matchPerTeamStats1;
-        this.matchPerTeamStats2 = matchPerTeamStats2;
+    void setTeamCompareData(List<MatchDTO> matchDTOList, TeamDTO teamDTO1, TeamDTO teamDTO2){
+        this.matchDTOList = matchDTOList;
+        this.teamDTO1 = teamDTO1;
+        this.teamDTO2 = teamDTO2;
     }
 
-    private void loadMatchValue()
-    {
+    private void showMatchValue(int itemIndex) {
+        List<XYChart.Series<String,Double>> players = new XYChart.Series<>();
 
+        for (PlayerDTO playerDTO : teamDTO1.getPlayers()) {
+        }
+        int i = 1;
+        for (MatchDTO matchDTO : matchDTOList) {
+            for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
+                double value;
+                switch (itemIndex) {
+                    case 1:
+                        value = matchPlayerDTO.getGoals();
+                        break;
+                    case 2:
+                        value = matchPlayerDTO.getAssists();
+                        break;
+                    case 3:
+                        value = matchPlayerDTO.getShots();
+                        break;
+                    case 4:
+                        value = matchPlayerDTO.getSaves();
+                        break;
+                    case 5:
+                        value = matchPlayerDTO.getScore();
+                        break;
+                    case 6:
+                        value = matchPlayerDTO.getAverageSpeed();
+                        break;
+                    default:
+                        value = 0;
+                        break;
+                }
+                if(player1.getName().equals(matchPlayerDTO.getName())) player1.getData().add(new XYChart.Data<>("Match" + i, value));
+                if(player2.getName().equals(matchPlayerDTO.getName())) player2.getData().add(new XYChart.Data<>("Match" + i, value));
+                if(player3.getName().equals(matchPlayerDTO.getName())) player3.getData().add(new XYChart.Data<>("Match" + i, value));
+                if(player4.getName().equals(matchPlayerDTO.getName())) player4.getData().add(new XYChart.Data<>("Match" + i, value));
+                if(player5.getName().equals(matchPlayerDTO.getName())) player5.getData().add(new XYChart.Data<>("Match" + i, value));
+                if(player6.getName().equals(matchPlayerDTO.getName())) player6.getData().add(new XYChart.Data<>("Match" + i, value));
+            }
+            i++;
+        }
+
+
+                if (matchStatsDTO.isTeamDTO()) // TODO team name
+                {
+                    red.getData().add(new XYChart.Data<>("Match" + i, value));
+                } else {
+                    blue.getData().add(new XYChart.Data<>("Match" + i, value));
+                }
+            }
+        }
+
+        teamBarChart.getData().add(blue);
+        teamBarChart.getData().add(red);
     }
 }
