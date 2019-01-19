@@ -53,58 +53,5 @@ public class TeamCompareController {
     }
 
     private void showMatchValue(int itemIndex) {
-        List<XYChart.Series<String,Double>> players = new XYChart.Series<>();
-
-        for (PlayerDTO playerDTO : teamDTO1.getPlayers()) {
-        }
-        int i = 1;
-        for (MatchDTO matchDTO : matchDTOList) {
-            for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
-                double value;
-                switch (itemIndex) {
-                    case 1:
-                        value = matchPlayerDTO.getGoals();
-                        break;
-                    case 2:
-                        value = matchPlayerDTO.getAssists();
-                        break;
-                    case 3:
-                        value = matchPlayerDTO.getShots();
-                        break;
-                    case 4:
-                        value = matchPlayerDTO.getSaves();
-                        break;
-                    case 5:
-                        value = matchPlayerDTO.getScore();
-                        break;
-                    case 6:
-                        value = matchPlayerDTO.getAverageSpeed();
-                        break;
-                    default:
-                        value = 0;
-                        break;
-                }
-                if(player1.getName().equals(matchPlayerDTO.getName())) player1.getData().add(new XYChart.Data<>("Match" + i, value));
-                if(player2.getName().equals(matchPlayerDTO.getName())) player2.getData().add(new XYChart.Data<>("Match" + i, value));
-                if(player3.getName().equals(matchPlayerDTO.getName())) player3.getData().add(new XYChart.Data<>("Match" + i, value));
-                if(player4.getName().equals(matchPlayerDTO.getName())) player4.getData().add(new XYChart.Data<>("Match" + i, value));
-                if(player5.getName().equals(matchPlayerDTO.getName())) player5.getData().add(new XYChart.Data<>("Match" + i, value));
-                if(player6.getName().equals(matchPlayerDTO.getName())) player6.getData().add(new XYChart.Data<>("Match" + i, value));
-            }
-            i++;
-        }
-
-
-                if (matchStatsDTO.isTeamDTO()) // TODO team name
-                {
-                    red.getData().add(new XYChart.Data<>("Match" + i, value));
-                } else {
-                    blue.getData().add(new XYChart.Data<>("Match" + i, value));
-                }
-            }
-        }
-
-        teamBarChart.getData().add(blue);
-        teamBarChart.getData().add(red);
     }
 }

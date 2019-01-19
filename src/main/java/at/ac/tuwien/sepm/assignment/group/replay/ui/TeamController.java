@@ -37,7 +37,7 @@ public class TeamController {
     private ExecutorService executorService;
     private TeamService teamService;
     private PlayerService playerService;
-    private TeamCompareController teamCompareController;
+    private TeamMatchesController teamMatchesController;
 
     @FXML
     private TableView<TeamDTO> tableViewTeams;
@@ -54,12 +54,12 @@ public class TeamController {
     @FXML
     private Text txtPlayer3;
 
-    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService, TeamCompareController teamCompareController) {
+    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService, TeamMatchesController teamMatchesController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.teamService = teamService;
         this.playerService = playerService;
-        this.teamCompareController = teamCompareController;
+        this.teamMatchesController = teamMatchesController;
     }
 
     /**
@@ -84,9 +84,7 @@ public class TeamController {
         newTeamStage.setWidth(1024);
         newTeamStage.setHeight(768);
         newTeamStage.centerOnScreen();
-        newTeamStage.setOnCloseRequest(event -> {
-            LOG.debug("New Team window closed");
-        });
+        newTeamStage.setOnCloseRequest(event -> LOG.debug("New Team window closed"));
 
 
         try {
@@ -102,29 +100,28 @@ public class TeamController {
     private void onTeamCompareButtonClicked() {
         if (!tableViewTeams.getSelectionModel().getSelectedItems().isEmpty() && tableViewTeams.getSelectionModel().getSelectedItems().size() == 2) {
             List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
-            try {
-                teamCompareController.setTeamCompareData(teamService.readTeamMatches(selectedTeams.get(0), selectedTeams.get(1)),selectedTeams.get(0),selectedTeams.get(1));
 
-                Stage teamCompareStage = new Stage();
+            if (selectedTeams.get(0).getTeamSize() != selectedTeams.get(1).getTeamSize()) {
+                AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Die ausgewählten Teams müssen gleich groß sein.");
+            } else {
+                Stage newTeamStage = new Stage();
                 // setup application
-                teamCompareStage.setTitle("Compare Teams");
-                teamCompareStage.setWidth(1024);
-                teamCompareStage.setHeight(768);
-                teamCompareStage.centerOnScreen();
-                teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
-                teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
-
-                teamCompareStage.toFront();
-                teamCompareStage.show();
-            } catch (TeamServiceException e) {
-                LOG.error("Failed to read team stats", e);
-                AlertHelper.showErrorMessage("Failed to read team stats");
-            } catch (IOException e) {
-                LOG.error("Loading Compare Team fxml failed", e);
-                AlertHelper.showErrorMessage("Failed to open team compare window");
+                newTeamStage.setTitle("Matches auswählen");
+                newTeamStage.setWidth(1024);
+                newTeamStage.setHeight(768);
+                newTeamStage.centerOnScreen();
+                newTeamStage.setOnCloseRequest(event -> LOG.debug("Select team matches window closed"));
+                try {
+                    newTeamStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamMatchesPage.fxml", Parent.class)));
+                } catch (IOException e) {
+                    LOG.error("Loading teamMatches fxml failed", e);
+                }
+                teamMatchesController.loadMatches(selectedTeams.get(0), selectedTeams.get(1));
+                newTeamStage.toFront();
+                newTeamStage.showAndWait();
             }
         } else {
-            AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Bitte nur 2 Teams selektieren");
+            AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Es müssen genau 2 Teams zum Vergleichen ausgewählt werden.");
         }
     }
 
@@ -146,16 +143,18 @@ public class TeamController {
     }
 
     /**
-     * Deletes a selected Team
+     * Deletes selected teams
      */
     @FXML
-    private void onDeleteTeamButtonClicked() {
+    private void onDeleteTeamsButtonClicked() {
         LOG.info("Delete Team Button clicked");
-        LOG.trace("called - onDeleteTeamButtonClicked");
-        if (tableViewTeams.getSelectionModel().getSelectedItem() != null) {
-            TeamDTO selectedTeam = tableViewTeams.getSelectionModel().getSelectedItem();
+        LOG.trace("called - onDeleteTeamsButtonClicked");
+        if (tableViewTeams.getSelectionModel().getSelectedItems() != null) {
+            List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
             try {
-                teamService.deleteTeam(selectedTeam);
+                for (TeamDTO team : selectedTeams) {
+                    teamService.deleteTeam(team);
+                }
                 updateTeamTable();
                 deleteTeamTexts();
             } catch (TeamValidationException e) {

@@ -47,7 +47,7 @@ public class MatchDTO {
     }
 
     public String getFormattedDateTime(){
-        String res = "";
+        String res;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(("dd-MM-yyyy   HH:mm"));
         res = this.dateTime.format(formatter);
         return res;}
@@ -143,7 +143,24 @@ public class MatchDTO {
         return getTeamPlayers(TeamSide.BLUE);
     }
 
-
+    /**
+     * Method to get String containing the result of the match. E.g. "4 : 5", where the team of the blue side
+     *  scored 4 and the team of the red side scored 5 goals
+     */
+    public String getResult(){
+        int redGoals = 0;
+        int blueGoals = 0;
+        for (MatchPlayerDTO player : playerData) {
+            // team blue
+            if (player.getTeam() == TeamSide.BLUE) {
+                blueGoals += player.getGoals();
+            }
+            if (player.getTeam() == TeamSide.RED) {
+                redGoals += player.getGoals();
+            }
+        }
+        return "" + blueGoals + " : " + redGoals;
+    }
 
     /**
      * Helper method to get String containing the Player names from a team
