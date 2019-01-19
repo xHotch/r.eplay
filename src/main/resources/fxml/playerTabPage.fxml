@@ -90,7 +90,7 @@
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="650.0" layoutY="465.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Punke" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="445.0">
+      <Text layoutX="650.0" layoutY="465.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Punkte" AnchorPane.rightAnchor="298.0" AnchorPane.topAnchor="445.0">
          <font>
             <Font size="18.0" />
          </font>

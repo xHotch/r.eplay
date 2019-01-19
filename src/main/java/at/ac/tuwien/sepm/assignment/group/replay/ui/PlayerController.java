@@ -119,7 +119,7 @@ public class PlayerController {
             playerDetailStage.toFront();
             playerDetailStage.showAndWait();
         } else {
-            AlertHelper.showErrorMessage("you must select exactly one player");
+            AlertHelper.showErrorMessage("Du musst genau einen Spieler auswählen");
         }
 
     }
@@ -136,7 +136,7 @@ public class PlayerController {
         selectedPlayers = tableViewPlayers.getSelectionModel().getSelectedItems();
 
         if (selectedPlayers.isEmpty()) {
-            AlertHelper.showErrorMessage("No player selected");
+            AlertHelper.showErrorMessage("Kein Spieler ausgewählt");
             return;
         }
 
@@ -155,17 +155,17 @@ public class PlayerController {
             counter++;
         }
         //let the user confirm the deletion
-        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Delete Players",null,"Are you sure you want to delete the following players? \n" + playerNames);
+        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Lösche Spieler",null,"Bist du dir sicher, dass du die Folgenden Spieler löschen möchtest? \n" + playerNames);
 
         if (result.get() == ButtonType.OK) {
             try {
                 playerService.deletePlayers(playersToDelete);
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException");
-                AlertHelper.showErrorMessage("Error while deleting player(s).");
+                AlertHelper.showErrorMessage("Fehler beim Löschen der/des Spieler/s.");
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException");
-                AlertHelper.showErrorMessage("List of players to be deleted might be empty.");
+                AlertHelper.showErrorMessage("Liste der zu löschenden Spieler könnte leer sein.");
             }
             updatePlayerTable();
             deletePlayerTexts();
@@ -183,7 +183,7 @@ public class PlayerController {
             tableViewPlayers.setItems(observablePlayers);
         } catch (PlayerServiceException e) {
             LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Laden der Spieler");
         }
     }
 
@@ -236,7 +236,7 @@ public class PlayerController {
             txtBoost.setText("" + String.format("%.2f", avgStatsDTO.getBoost()));
         } catch (PlayerServiceException e) {
             LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Laden der Spieler Details");
         }
     }
 

@@ -54,10 +54,10 @@ public class NewTeamController {
             LOG.debug("after update TeamTable");
             ((Stage) saveTeamButton.getScene().getWindow()).close();
         } catch (TeamValidationException e) {
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Speichern des Teams: Ungültiges Team");
         } catch (TeamServiceException e) {
             LOG.error(e.getMessage(), e);
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Speichern des Teams: Team konnte nicht gespeichert werden");
         }
     }
 
@@ -84,7 +84,7 @@ public class NewTeamController {
             tableViewPlayers.setItems(observablePlayers);
         } catch (PlayerServiceException e) {
             LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Laden der Spieler");
         }
         comboBoxTeamSize.getItems().add(1);
         comboBoxTeamSize.getItems().add(2);
