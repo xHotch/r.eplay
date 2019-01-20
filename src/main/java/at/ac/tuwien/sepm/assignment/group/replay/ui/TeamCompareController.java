@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Daniel Klampfl
@@ -54,6 +55,9 @@ public class TeamCompareController {
     }
 
     void setTeamCompareData(TeamCompareDTO teamCompareDTO, TeamDTO teamDTO1, TeamDTO teamDTO2){
+        teamCompareDTO.setMatchStatsDTOList(teamCompareDTO.getMatchStatsDTOList().entrySet().stream()
+            .filter(e -> teamCompareDTO.getMatchDTOList().stream().anyMatch(m -> m.getId() == e.getKey()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         this.teamCompareDTO = teamCompareDTO;
         this.teamDTO1 = teamDTO1;
         this.teamDTO2 = teamDTO2;
