@@ -419,6 +419,7 @@ public class MatchAnimationController {
 
             if (boostAmount.containsKey(actorId)) {
                 List<BoostDTO> boost = boostAmount.get(actorId);
+                boost.sort(Comparator.comparing(BoostDTO::getFrameTime)); //Sort list by frameTime
 
                 int currentFrameTime = 0;
                 int lastFrameTime = 0;
@@ -427,9 +428,10 @@ public class MatchAnimationController {
                 for (BoostDTO entry : boost) {
                     currentFrameTime = (int) Math.floor(entry.getFrameTime());
 
-                    //Fill from beginning to first boost frameTime without any opacity
+                    //Fill from beginning to first boost frameTime with 33 boost (a player starts with 1/3 boost amount)
                     if (lastFrameTime == 0) {
-                        color = mixColorsWithAlpha(white, currentColor, 255);
+                        int opacity = scaleBoostOpacity(33, 0, 100, 0, 255);
+                        color = mixColorsWithAlpha(white, currentColor, opacity);
                         for (int i = lastFrameTime; i < currentFrameTime; i++) {
                             boostPlayer.setRGB(i, 0, getIntFromColor(color));
                         }
