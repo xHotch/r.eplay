@@ -199,7 +199,7 @@ public class JDBCMatchDAO implements MatchDAO {
         List<MatchDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_ALL_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
 
-            setMatchDTO(result, ps,false);
+            setMatchDTO(result, ps,true);
         } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
@@ -365,7 +365,7 @@ public class JDBCMatchDAO implements MatchDAO {
                 ps.setTimestamp(7, Timestamp.valueOf(begin));
                 ps.setBoolean(8, false);
             }
-            setMatchDTO(result, ps,false);
+            setMatchDTO(result, ps,true);
         } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
