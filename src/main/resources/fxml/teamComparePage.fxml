@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.StackedBarChart?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -21,13 +21,13 @@
          </font>
       </Label>
       <ChoiceBox fx:id="matchValueChoiceBox" layoutX="16.0" layoutY="34.0" prefWidth="150.0" />
-      <StackedBarChart fx:id="teamBarChart" layoutX="54.0" layoutY="313.0" prefHeight="358.0" prefWidth="916.0">
+      <BarChart fx:id="teamBarChart" layoutX="54.0" layoutY="313.0" prefHeight="358.0" prefWidth="916.0">
         <xAxis>
           <CategoryAxis fx:id="teamCategoryAxis" side="BOTTOM" />
         </xAxis>
         <yAxis>
           <NumberAxis fx:id="teamNumberAxis" side="LEFT" />
         </yAxis>
-      </StackedBarChart>
+      </BarChart>
    </children>
 </AnchorPane>

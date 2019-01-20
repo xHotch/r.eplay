@@ -29,7 +29,7 @@ public class TeamCompareController {
     private TeamDTO teamDTO2;
 
     @FXML
-    private StackedBarChart<String,Double> teamBarChart;
+    private BarChart<String,Double> teamBarChart;
     @FXML
     private CategoryAxis teamCategoryAxis;
     @FXML
@@ -49,6 +49,8 @@ public class TeamCompareController {
         matchValueChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
             (obs, oldValue, newValue) -> showMatchValue(newValue.intValue())
         );
+        teamBarChart.setAnimated(false);
+        teamNumberAxis.setAutoRanging(true);
     }
 
     void setTeamCompareData(TeamCompareDTO teamCompareDTO, TeamDTO teamDTO1, TeamDTO teamDTO2){
@@ -63,27 +65,30 @@ public class TeamCompareController {
         XYChart.Series<String,Double> team1 = new XYChart.Series<>();
         XYChart.Series<String,Double> team2 = new XYChart.Series<>();
 
+        team1.setName(teamDTO1.getName());
+        team2.setName(teamDTO2.getName());
+
         int i = 1;
         for (List<MatchStatsDTO> matchStatsDTOList : teamCompareDTO.getMatchStatsDTOList().values()) {
             for (MatchStatsDTO matchStatsDTO : matchStatsDTOList) {
                 double value;
                 switch (itemIndex) {
-                    case 1:
+                    case 0:
                         value = matchStatsDTO.getGoals();
                         break;
-                    case 2:
+                    case 1:
                         value = matchStatsDTO.getAssists();
                         break;
-                    case 3:
+                    case 2:
                         value = matchStatsDTO.getShots();
                         break;
-                    case 4:
+                    case 3:
                         value = matchStatsDTO.getSaves();
                         break;
-                    case 5:
+                    case 4:
                         value = matchStatsDTO.getScore();
                         break;
-                    case 6:
+                    case 5:
                         value = matchStatsDTO.getAverageSpeed();
                         break;
                     default:
@@ -95,9 +100,15 @@ public class TeamCompareController {
             }
             i++;
         }
-
-        teamNumberAxis.setAutoRanging(true);
         teamBarChart.getData().add(team1);
         teamBarChart.getData().add(team2);
+
+        //set color for bars depending on team
+        for (XYChart.Data data : team1.getData()) {
+            data.getNode().setStyle("-fx-bar-fill: #246dfa;");
+        }
+        for (XYChart.Data data : team2.getData()) {
+            data.getNode().setStyle("-fx-bar-fill: #f04555;");
+        }
     }
 }
