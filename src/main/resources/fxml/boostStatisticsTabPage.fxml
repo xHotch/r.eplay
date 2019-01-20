@@ -15,82 +15,82 @@
                 <Image url="@../images/3dmap_booststatistics.png" />
             </image>
         </ImageView>
-        <Text fx:id="pad63" fill="WHITE" layoutX="488.0" layoutY="646.0" stroke="BLACK" strokeType="OUTSIDE" text="63" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875" AnchorPane.bottomAnchor="58.98046875" AnchorPane.leftAnchor="488.0" AnchorPane.rightAnchor="488.86328125" AnchorPane.topAnchor="624.41796875">
+        <Text fx:id="pad15" fill="WHITE" layoutX="488.0" layoutY="646.0" stroke="BLACK" strokeType="OUTSIDE" text="15" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875" AnchorPane.bottomAnchor="58.98046875" AnchorPane.leftAnchor="488.0" AnchorPane.rightAnchor="488.86328125" AnchorPane.topAnchor="624.41796875">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad64" fill="WHITE" layoutX="488.0" layoutY="363.0" stroke="BLACK" strokeType="OUTSIDE" text="64" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad18" fill="WHITE" layoutX="488.0" layoutY="363.0" stroke="BLACK" strokeType="OUTSIDE" text="18" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad66" fill="WHITE" layoutX="345.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="66" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad4" fill="WHITE" layoutX="345.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="4" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad68" fill="WHITE" layoutX="631.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="68" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad30" fill="WHITE" layoutX="631.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="30" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad65" fill="WHITE" layoutX="785.0" layoutY="595.0" stroke="BLACK" strokeType="OUTSIDE" text="65" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad29" fill="WHITE" layoutX="785.0" layoutY="595.0" stroke="BLACK" strokeType="OUTSIDE" text="29" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad67" fill="WHITE" layoutX="190.0" layoutY="595.0" stroke="BLACK" strokeType="OUTSIDE" text="67" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad3" fill="WHITE" layoutX="190.0" layoutY="595.0" stroke="BLACK" strokeType="OUTSIDE" text="3" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad43" fill="WHITE" layoutX="277.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="43" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad0" fill="WHITE" layoutX="277.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="0" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad12" fill="WHITE" layoutX="229.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="12" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad1" fill="WHITE" layoutX="229.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="1" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad13" fill="WHITE" layoutX="314.0" layoutY="420.0" stroke="BLACK" strokeType="OUTSIDE" text="13" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad2" fill="WHITE" layoutX="314.0" layoutY="420.0" stroke="BLACK" strokeType="OUTSIDE" text="2" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad14" fill="WHITE" layoutX="300.0" layoutY="507.0" stroke="BLACK" strokeType="OUTSIDE" text="14" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad5" fill="WHITE" layoutX="300.0" layoutY="507.0" stroke="BLACK" strokeType="OUTSIDE" text="5" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad5" fill="WHITE" layoutX="349.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="5" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad7" fill="WHITE" layoutX="349.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="7" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad17" fill="WHITE" layoutX="356.0" layoutY="438.0" stroke="BLACK" strokeType="OUTSIDE" text="17" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad6" fill="WHITE" layoutX="356.0" layoutY="438.0" stroke="BLACK" strokeType="OUTSIDE" text="6" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad4" fill="WHITE" layoutX="345.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="4" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad10" fill="WHITE" layoutX="345.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="10" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad10" fill="WHITE" layoutX="290.0" layoutY="639.0" stroke="BLACK" strokeType="OUTSIDE" text="10" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad8" fill="WHITE" layoutX="290.0" layoutY="639.0" stroke="BLACK" strokeType="OUTSIDE" text="8" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad7" fill="WHITE" layoutX="417.0" layoutY="552.0" stroke="BLACK" strokeType="OUTSIDE" text="7" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad12" fill="WHITE" layoutX="417.0" layoutY="552.0" stroke="BLACK" strokeType="OUTSIDE" text="12" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad41" fill="WHITE" layoutX="428.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="41" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad13" fill="WHITE" layoutX="428.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="13" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
@@ -100,57 +100,57 @@
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad18" fill="WHITE" layoutX="404.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="18" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad9" fill="WHITE" layoutX="404.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="9" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad3" fill="WHITE" layoutX="440.0" layoutY="408.0" stroke="BLACK" strokeType="OUTSIDE" text="3" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad14" fill="WHITE" layoutX="440.0" layoutY="408.0" stroke="BLACK" strokeType="OUTSIDE" text="14" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad19" fill="WHITE" layoutX="550.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="19" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad20" fill="WHITE" layoutX="550.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="20" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad23" fill="WHITE" layoutX="535.0" layoutY="408.0" stroke="BLACK" strokeType="OUTSIDE" text="23" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad21" fill="WHITE" layoutX="535.0" layoutY="408.0" stroke="BLACK" strokeType="OUTSIDE" text="21" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad20" fill="WHITE" layoutX="568.0" layoutY="552.0" stroke="BLACK" strokeType="OUTSIDE" text="20" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad19" fill="WHITE" layoutX="568.0" layoutY="552.0" stroke="BLACK" strokeType="OUTSIDE" text="19" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad36" fill="WHITE" layoutX="685.0" layoutY="639.0" stroke="BLACK" strokeType="OUTSIDE" text="36" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad24" fill="WHITE" layoutX="685.0" layoutY="639.0" stroke="BLACK" strokeType="OUTSIDE" text="24" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad21" fill="WHITE" layoutX="637.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="21" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad22" fill="WHITE" layoutX="637.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="22" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad28" fill="WHITE" layoutX="581.0" layoutY="423.0" stroke="BLACK" strokeType="OUTSIDE" text="28" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad23" fill="WHITE" layoutX="581.0" layoutY="423.0" stroke="BLACK" strokeType="OUTSIDE" text="23" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad34" fill="WHITE" layoutX="628.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="34" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad26" fill="WHITE" layoutX="628.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="26" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad35" fill="WHITE" layoutX="675.0" layoutY="507.0" stroke="BLACK" strokeType="OUTSIDE" text="35" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad27" fill="WHITE" layoutX="675.0" layoutY="507.0" stroke="BLACK" strokeType="OUTSIDE" text="27" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad38" fill="WHITE" layoutX="637.0" layoutY="439.0" stroke="BLACK" strokeType="OUTSIDE" text="38" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad28" fill="WHITE" layoutX="637.0" layoutY="439.0" stroke="BLACK" strokeType="OUTSIDE" text="28" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
@@ -160,39 +160,39 @@
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad33" fill="WHITE" layoutX="744.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="33" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad31" fill="WHITE" layoutX="744.0" layoutY="537.0" stroke="BLACK" strokeType="OUTSIDE" text="31" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad39" fill="WHITE" layoutX="698.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="39" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad33" fill="WHITE" layoutX="698.0" layoutY="469.0" stroke="BLACK" strokeType="OUTSIDE" text="33" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad42" fill="WHITE" layoutX="488.0" layoutY="515.0" stroke="BLACK" strokeType="OUTSIDE" text="42" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad16" fill="WHITE" layoutX="488.0" layoutY="515.0" stroke="BLACK" strokeType="OUTSIDE" text="16" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad40" fill="WHITE" layoutX="488.0" layoutY="424.0" stroke="BLACK" strokeType="OUTSIDE" text="40" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad17" fill="WHITE" layoutX="488.0" layoutY="424.0" stroke="BLACK" strokeType="OUTSIDE" text="17" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <Text fx:id="pad31" fill="WHITE" layoutX="573.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="31" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
+        <Text fx:id="pad25" fill="WHITE" layoutX="573.0" layoutY="378.0" stroke="BLACK" strokeType="OUTSIDE" text="25" textAlignment="CENTER" underline="true" wrappingWidth="47.13671875">
             <font>
                 <Font size="20.0" />
             </font>
         </Text>
-        <TableView fx:id="tableTeamRed" layoutX="534.0" layoutY="36.0" onMouseClicked="#onRedTableSelection" prefHeight="214.0" prefWidth="467.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="36.0">
+        <TableView fx:id="tableTeamRed" layoutX="534.0" layoutY="36.0" onMouseClicked="#onRedTableSelection" prefHeight="133.0" prefWidth="467.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="36.0">
             <columns>
-                <TableColumn fx:id="playerNameRed" prefWidth="289.0" text="Spieler" />
+                <TableColumn fx:id="playerNameRed" prefWidth="466.0" text="Spieler" />
             </columns>
         </TableView>
-        <TableView fx:id="tableTeamBlue" layoutX="23.0" layoutY="36.0" onMouseClicked="#onBlueTableSelection" prefHeight="214.0" prefWidth="467.0" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="36.0">
+        <TableView fx:id="tableTeamBlue" layoutX="23.0" layoutY="36.0" onMouseClicked="#onBlueTableSelection" prefHeight="133.0" prefWidth="467.0" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="36.0">
             <columns>
-                <TableColumn fx:id="playerNameBlue" prefWidth="289.0" text="Spieler" />
+                <TableColumn fx:id="playerNameBlue" prefWidth="466.0" text="Spieler" />
             </columns>
         </TableView>
     </children>

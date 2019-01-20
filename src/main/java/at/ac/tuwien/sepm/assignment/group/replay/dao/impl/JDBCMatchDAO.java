@@ -36,12 +36,12 @@ public class JDBCMatchDAO implements MatchDAO {
         "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
 
     private static final String INSERT_BOOSTPAD_INFO = "INSERT INTO matchPlayerBoostPads SET matchPlayerid = ?, matchid = ?," +
-        "boostpad67 = ?, boostpad12 = ?, boostpad43 = ?, boostpad13 = ?, boostpad66 = ?, boostpad18 = ?," +
-        "  boostpad11 = ?, boostpad17 = ?, boostpad5 = ?, boostpad14 = ?, boostpad4 = ?, boostpad10 = ?," +
-        "  boostpad7 = ?, boostpad41 = ?, boostpad3 = ?, boostpad64 = ?, boostpad40 = ?, boostpad42 = ?," +
-        "  boostpad63 = ?, boostpad23 = ?, boostpad19 = ?, boostpad20 = ?, boostpad31 = ?, boostpad28 = ?," +
-        "  boostpad21 = ?, boostpad36 = ?, boostpad68 = ?, boostpad32 = ?, boostpad38 = ?, boostpad34 = ?," +
-        "  boostpad35 = ?, boostpad33 = ?, boostpad65 = ?, boostpad39 = ?";
+        "boostpad0 = ?, boostpad1 = ?, boostpad2 = ?, boostpad3 = ?, boostpad4 = ?, boostpad5 = ?," +
+        "  boostpad6 = ?, boostpad7 = ?, boostpad8 = ?, boostpad9 = ?, boostpad10 = ?, boostpad11 = ?," +
+        "  boostpad12 = ?, boostpad13 = ?, boostpad14 = ?, boostpad15 = ?, boostpad16 = ?, boostpad17 = ?," +
+        "  boostpad18 = ?, boostpad19 = ?, boostpad20 = ?, boostpad21 = ?, boostpad22 = ?, boostpad23 = ?," +
+        "  boostpad24 = ?, boostpad25 = ?, boostpad26 = ?, boostpad27 = ?, boostpad28 = ?, boostpad29 = ?," +
+        "  boostpad30 = ?, boostpad31 = ?, boostpad32 = ?, boostpad33 = ?";
 
     private static final String SEARCH_MATCHES = "Select distinct m.* from match_ m join matchPlayer mp on m.id = mp.matchid where" +
         "(lower(mp.name) like lower(?) or ?) and (teamSize = ? or ?) and (dateTime <= ? or ?) and (dateTime >= ? or ?)";
@@ -150,40 +150,40 @@ public class JDBCMatchDAO implements MatchDAO {
 
             ps.setLong(1, matchPlayerDTO.getPlayerId());
             ps.setInt(2, matchPlayerDTO.getMatchId());
-            ps.setInt(3, boostPadDTOMap.get(67).size());
-            ps.setInt(4, boostPadDTOMap.get(12).size());
-            ps.setInt(5, boostPadDTOMap.get(43).size());
-            ps.setInt(6, boostPadDTOMap.get(13).size());
-            ps.setInt(7, boostPadDTOMap.get(66).size());
-            ps.setInt(8, boostPadDTOMap.get(18).size());
-            ps.setInt(9, boostPadDTOMap.get(11).size());
-            ps.setInt(10, boostPadDTOMap.get(17).size());
-            ps.setInt(11, boostPadDTOMap.get(5).size());
-            ps.setInt(12, boostPadDTOMap.get(14).size());
-            ps.setInt(13, boostPadDTOMap.get(4).size());
-            ps.setInt(14, boostPadDTOMap.get(10).size());
-            ps.setInt(15, boostPadDTOMap.get(7).size());
-            ps.setInt(16, boostPadDTOMap.get(41).size());
-            ps.setInt(17, boostPadDTOMap.get(3).size());
-            ps.setInt(18, boostPadDTOMap.get(64).size());
-            ps.setInt(19, boostPadDTOMap.get(40).size());
-            ps.setInt(20, boostPadDTOMap.get(42).size());
-            ps.setInt(21, boostPadDTOMap.get(63).size());
-            ps.setInt(22, boostPadDTOMap.get(23).size());
-            ps.setInt(23, boostPadDTOMap.get(19).size());
-            ps.setInt(24, boostPadDTOMap.get(20).size());
-            ps.setInt(25, boostPadDTOMap.get(31).size());
-            ps.setInt(26, boostPadDTOMap.get(28).size());
-            ps.setInt(27, boostPadDTOMap.get(21).size());
-            ps.setInt(28, boostPadDTOMap.get(36).size());
-            ps.setInt(29, boostPadDTOMap.get(68).size());
-            ps.setInt(30, boostPadDTOMap.get(32).size());
-            ps.setInt(31, boostPadDTOMap.get(38).size());
-            ps.setInt(32, boostPadDTOMap.get(34).size());
-            ps.setInt(33, boostPadDTOMap.get(35).size());
-            ps.setInt(34, boostPadDTOMap.get(33).size());
-            ps.setInt(35, boostPadDTOMap.get(65).size());
-            ps.setInt(36, boostPadDTOMap.get(39).size());
+            ps.setInt(3, boostPadDTOMap.get(0).size());
+            ps.setInt(4, boostPadDTOMap.get(1).size());
+            ps.setInt(5, boostPadDTOMap.get(2).size());
+            ps.setInt(6, boostPadDTOMap.get(3).size());
+            ps.setInt(7, boostPadDTOMap.get(4).size());
+            ps.setInt(8, boostPadDTOMap.get(5).size());
+            ps.setInt(9, boostPadDTOMap.get(6).size());
+            ps.setInt(10, boostPadDTOMap.get(7).size());
+            ps.setInt(11, boostPadDTOMap.get(8).size());
+            ps.setInt(12, boostPadDTOMap.get(9).size());
+            ps.setInt(13, boostPadDTOMap.get(10).size());
+            ps.setInt(14, boostPadDTOMap.get(11).size());
+            ps.setInt(15, boostPadDTOMap.get(12).size());
+            ps.setInt(16, boostPadDTOMap.get(13).size());
+            ps.setInt(17, boostPadDTOMap.get(14).size());
+            ps.setInt(18, boostPadDTOMap.get(15).size());
+            ps.setInt(19, boostPadDTOMap.get(16).size());
+            ps.setInt(20, boostPadDTOMap.get(17).size());
+            ps.setInt(21, boostPadDTOMap.get(18).size());
+            ps.setInt(22, boostPadDTOMap.get(19).size());
+            ps.setInt(23, boostPadDTOMap.get(20).size());
+            ps.setInt(24, boostPadDTOMap.get(21).size());
+            ps.setInt(25, boostPadDTOMap.get(22).size());
+            ps.setInt(26, boostPadDTOMap.get(23).size());
+            ps.setInt(27, boostPadDTOMap.get(24).size());
+            ps.setInt(28, boostPadDTOMap.get(25).size());
+            ps.setInt(29, boostPadDTOMap.get(26).size());
+            ps.setInt(30, boostPadDTOMap.get(27).size());
+            ps.setInt(31, boostPadDTOMap.get(28).size());
+            ps.setInt(32, boostPadDTOMap.get(29).size());
+            ps.setInt(33, boostPadDTOMap.get(30).size());
+            ps.setInt(34, boostPadDTOMap.get(31).size());
+            ps.setInt(35, boostPadDTOMap.get(32).size());
+            ps.setInt(36, boostPadDTOMap.get(33).size());
 
             ps.executeUpdate();
 
@@ -275,40 +275,40 @@ public class JDBCMatchDAO implements MatchDAO {
 
                 while (rs2.next()) {
 
-                    boostPadList.add(rs2.getInt("boostpad67"));
-                    boostPadList.add(rs2.getInt("boostpad12"));
-                    boostPadList.add(rs2.getInt("boostpad43"));
-                    boostPadList.add(rs2.getInt("boostpad13"));
-                    boostPadList.add(rs2.getInt("boostpad66"));
-                    boostPadList.add(rs2.getInt("boostpad18"));
-                    boostPadList.add(rs2.getInt("boostpad11"));
-                    boostPadList.add(rs2.getInt("boostpad17"));
-                    boostPadList.add(rs2.getInt("boostpad5"));
-                    boostPadList.add(rs2.getInt("boostpad14"));
-                    boostPadList.add(rs2.getInt("boostpad4"));
-                    boostPadList.add(rs2.getInt("boostpad10"));
-                    boostPadList.add(rs2.getInt("boostpad7"));
-                    boostPadList.add(rs2.getInt("boostpad41"));
+                    boostPadList.add(rs2.getInt("boostpad0"));
+                    boostPadList.add(rs2.getInt("boostpad1"));
+                    boostPadList.add(rs2.getInt("boostpad2"));
                     boostPadList.add(rs2.getInt("boostpad3"));
-                    boostPadList.add(rs2.getInt("boostpad64"));
-                    boostPadList.add(rs2.getInt("boostpad40"));
-                    boostPadList.add(rs2.getInt("boostpad42"));
-                    boostPadList.add(rs2.getInt("boostpad63"));
-                    boostPadList.add(rs2.getInt("boostpad23"));
+                    boostPadList.add(rs2.getInt("boostpad4"));
+                    boostPadList.add(rs2.getInt("boostpad5"));
+                    boostPadList.add(rs2.getInt("boostpad6"));
+                    boostPadList.add(rs2.getInt("boostpad7"));
+                    boostPadList.add(rs2.getInt("boostpad8"));
+                    boostPadList.add(rs2.getInt("boostpad9"));
+                    boostPadList.add(rs2.getInt("boostpad10"));
+                    boostPadList.add(rs2.getInt("boostpad11"));
+                    boostPadList.add(rs2.getInt("boostpad12"));
+                    boostPadList.add(rs2.getInt("boostpad13"));
+                    boostPadList.add(rs2.getInt("boostpad14"));
+                    boostPadList.add(rs2.getInt("boostpad15"));
+                    boostPadList.add(rs2.getInt("boostpad16"));
+                    boostPadList.add(rs2.getInt("boostpad17"));
+                    boostPadList.add(rs2.getInt("boostpad18"));
                     boostPadList.add(rs2.getInt("boostpad19"));
                     boostPadList.add(rs2.getInt("boostpad20"));
-                    boostPadList.add(rs2.getInt("boostpad31"));
-                    boostPadList.add(rs2.getInt("boostpad28"));
                     boostPadList.add(rs2.getInt("boostpad21"));
-                    boostPadList.add(rs2.getInt("boostpad36"));
-                    boostPadList.add(rs2.getInt("boostpad68"));
+                    boostPadList.add(rs2.getInt("boostpad22"));
+                    boostPadList.add(rs2.getInt("boostpad23"));
+                    boostPadList.add(rs2.getInt("boostpad24"));
+                    boostPadList.add(rs2.getInt("boostpad25"));
+                    boostPadList.add(rs2.getInt("boostpad26"));
+                    boostPadList.add(rs2.getInt("boostpad27"));
+                    boostPadList.add(rs2.getInt("boostpad28"));
+                    boostPadList.add(rs2.getInt("boostpad29"));
+                    boostPadList.add(rs2.getInt("boostpad30"));
+                    boostPadList.add(rs2.getInt("boostpad31"));
                     boostPadList.add(rs2.getInt("boostpad32"));
-                    boostPadList.add(rs2.getInt("boostpad38"));
-                    boostPadList.add(rs2.getInt("boostpad34"));
-                    boostPadList.add(rs2.getInt("boostpad35"));
                     boostPadList.add(rs2.getInt("boostpad33"));
-                    boostPadList.add(rs2.getInt("boostpad65"));
-                    boostPadList.add(rs2.getInt("boostpad39"));
 
                 }
             }

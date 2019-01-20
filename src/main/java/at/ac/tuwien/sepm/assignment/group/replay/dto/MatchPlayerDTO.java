@@ -32,6 +32,8 @@ public class MatchPlayerDTO {
 
     private int actorId;
 
+    private int teamActorId;
+
     public MatchDTO getMatchDTO() {
         return matchDTO;
     }
@@ -196,5 +198,13 @@ public class MatchPlayerDTO {
 
     public void setDBBoostPadMap(Map<Integer, List<Integer>> boostPadMap) {
         this.dbBoostPadMap = boostPadMap;
+    }
+
+    public int getTeamActorId() {
+        return teamActorId;
+    }
+
+    public void setTeamActorId(int teamActorId) {
+        this.teamActorId = teamActorId;
     }
 }

@@ -18,23 +18,25 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.apache.commons.math3.complex.Quaternion;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.List;
 
-import static java.lang.StrictMath.acos;
+import static javafx.scene.paint.Color.color;
 
 /**
  * Match Animation Controller.
@@ -51,6 +53,8 @@ public class MatchAnimationController {
     private ExecutorService executorService;
 
     private HashMap<Rectangle, Integer> carShapes = new HashMap<>();
+    private Map<Integer, Integer> carToPlayerMap;
+    private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndTimeMap;
     private HashMap<Integer, RigidBodyInformation> rigidBodyInformationHashMap;
     private RigidBodyInformation ballInformation;
 
@@ -83,11 +87,6 @@ public class MatchAnimationController {
     private Image pauseImage;
     private Image playImage;
 
-    @FXML
-    private AnchorPane ap_MatchAnimation;
-
-    @FXML
-    private Canvas canvas_Animation;
 
     private Boolean play = false;
     private Boolean stopped = false;
@@ -117,6 +116,17 @@ public class MatchAnimationController {
     @FXML
     private Label player6boost_label;
 
+    private Color white = Color.rgb(255, 255, 255); // Color White
+
+    private Color teamBluePlayer1 = Color.rgb(0, 153, 255);
+    private Color teamBluePlayer2 = Color.rgb(0, 0, 255);
+    private Color teamBluePlayer3 = Color.rgb(0, 0, 90);
+
+    private Color teamRedPlayer1 = Color.rgb(255, 102, 204);
+    private Color teamRedPlayer2 = Color.rgb(255, 0, 0);
+    private Color teamRedPlayer3 = Color.rgb(80, 0, 0);
+
+
     private final Timeline timeline = new Timeline();
 
     public MatchAnimationController(JsonParseService jsonParseService, BoostInformationParser boostInformationParser, ExecutorService executorService) {
@@ -141,13 +151,13 @@ public class MatchAnimationController {
         });
         //Jump to animation frame time from slider position after mouse drag
         timelineSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if(!isNowChanging) {
+            if (!isNowChanging) {
                 timeline.jumpTo(Duration.seconds(timelineSlider.getValue()));
             }
         });
         //Change Slider Position to match animation
         timeline.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
-            if (!timelineSlider.isValueChanging() ) timelineSlider.setValue(newTime.toSeconds());
+            if (!timelineSlider.isValueChanging()) timelineSlider.setValue(newTime.toSeconds());
         });
 
     }
@@ -156,12 +166,12 @@ public class MatchAnimationController {
      * Method that sets up the Animation in a separate thread and starts the animation Playback afterwards
      */
     @FXML
-    private void onLoadAnimationButtonClicked(){
+    private void onLoadAnimationButtonClicked() {
         executorService.submit(() -> {
 
             try {
                 setupAnimation();
-            } catch (FileServiceException e){
+            } catch (FileServiceException e) {
                 LOG.error("Caught FileServiceException trying to setup Animation", e);
                 AlertHelper.showErrorMessage("Animation konnte nicht geladen werden");
                 return;
@@ -173,7 +183,8 @@ public class MatchAnimationController {
             //animation data
             double minFrameTime = Double.MIN_VALUE;
             double maxFrameTime = 0;
-            for (FrameDTO frameDTO : videoDTO.getFrames()){
+
+            for (FrameDTO frameDTO : videoDTO.getFrames()) {
 
                 //List of Keyvalues
                 List<KeyValue> values = new LinkedList<>();
@@ -182,11 +193,11 @@ public class MatchAnimationController {
                 values.addAll(mapBallToKayValue(shape_ball));
 
                 rigidBodyInformationHashMap = frameDTO.getCarRigidBodyInformations();
-                for (Rectangle car : carShapes.keySet()){
-                    values.addAll(mapCarToKayValue(car));
+                for (Rectangle car : carShapes.keySet()) {
+                    values.addAll(mapCarToKayValue(car, frameDTO.getFrameTime()));
                 }
                 double frameTime = frameDTO.getFrameTime();
-                KeyFrame kf = new KeyFrame(Duration.seconds(frameTime), "swag", null, values);
+                KeyFrame kf = new KeyFrame(Duration.seconds(frameTime),"",null, values);
                 timeline.getKeyFrames().add(kf);
                 if (minFrameTime > frameTime) minFrameTime = frameTime;
                 if (maxFrameTime < frameTime) maxFrameTime = frameTime;
@@ -199,10 +210,10 @@ public class MatchAnimationController {
             timelineSlider.setMax(maxFrameTime);
 
             stopped = true;
-                Platform.runLater(() -> {
-                    playAnimation();
-                });
+            Platform.runLater(() -> {
+                playAnimation();
             });
+        });
     }
 
     @FXML
@@ -226,11 +237,10 @@ public class MatchAnimationController {
 
     private void playAnimation() {
         play = true;
-        if(stopped) {
+        if (stopped) {
             stopped = false;
             timeline.playFromStart();
-        }
-        else timeline.play();
+        } else timeline.play();
         playPauseImageView.setImage(pauseImage);
     }
 
@@ -241,18 +251,33 @@ public class MatchAnimationController {
     }
 
     /**
-     * Maps the Car's Rigidbodyinformation of the current frame onto the given Shape
-     * Does not generate Keyvalues if there is no information about position / rotation
+     * Maps the Car's Rigidbodyinformation of the current frame onto the given Shape.
+     * Has to find the right CarActorID for the given FrameTime
+     * Does not generate Keyvalues if there is no information about position
      *
      * @param carShape the shape
-     * @return The List of Keyvalues, containing a Value for the X and Y Position and Keyvalue containing the Rotation
+     * @return The List of Keyvalues, containing a Value for the X and Y Position
      */
-    private List<KeyValue> mapCarToKayValue(Rectangle carShape){
+    private List<KeyValue> mapCarToKayValue(Rectangle carShape, double frameTime) {
         LinkedList<KeyValue> keyValues = new LinkedList<>();
         Vector3D position;
-        Quaternion rotation;
-        int actorId = carShapes.get(carShape);
-        if (rigidBodyInformationHashMap.get(actorId)!=null) {
+        int carActorId = carShapes.get(carShape);
+
+
+        int actorId = -1;
+        double oldFrameTime = 0.0f;
+
+        for (Pair<Integer, Double> carAndFrameTime : playerToCarAndTimeMap.get(carActorId)) {
+            double carFrameTime = carAndFrameTime.getValue();
+            if (carFrameTime <= frameTime) {
+                if (oldFrameTime < carFrameTime)
+                    actorId = carAndFrameTime.getKey();
+                oldFrameTime = carAndFrameTime.getValue();
+            }
+        }
+
+
+        if (rigidBodyInformationHashMap.get(actorId) != null) {
             if ((rigidBodyInformationHashMap.get(actorId).getPosition()) != null) {
                 position = rigidBodyInformationHashMap.get(actorId).getPosition();
                 KeyValue width = new KeyValue(carShape.xProperty(), position.getY() * scaleFactor);
@@ -261,14 +286,8 @@ public class MatchAnimationController {
                 keyValues.add(length);
             }
 
-            /*if (rigidBodyInformationHashMap.get(actorId).getRotation() != null) {
-                rotation=rigidBodyInformationHashMap.get(actorId).getRotation();
-                double ang = 2*acos(rotation.getQ0());
-                KeyValue rotationValue = new KeyValue(carShape.rotateProperty(), ang*180/Math.PI );
-                keyValues.add(rotationValue);
-            }*/
-
         }
+
         return keyValues;
     }
 
@@ -280,9 +299,9 @@ public class MatchAnimationController {
      * @param ballShape the shape
      * @return The List of Keyvalues, containing a Value for the X and Y Position
      */
-    private List<KeyValue> mapBallToKayValue(Circle ballShape){
+    private List<KeyValue> mapBallToKayValue(Circle ballShape) {
         LinkedList<KeyValue> keyValues = new LinkedList<>();
-        if (ballInformation!=null && ballInformation.getPosition()!= null) {
+        if (ballInformation != null && ballInformation.getPosition() != null) {
             KeyValue width = new KeyValue(ballShape.centerXProperty(), ballInformation.getPosition().getY() * scaleFactor);
             KeyValue length = new KeyValue(ballShape.centerYProperty(), ballInformation.getPosition().getX() * scaleFactor);
             keyValues.add(width);
@@ -296,46 +315,54 @@ public class MatchAnimationController {
      * Sets up the Animation. Spawns a Car for each player
      * Parses VideoDTO from the replay file
      */
-    private void setupAnimation() throws FileServiceException{
+    private void setupAnimation() throws FileServiceException {
 
         videoDTO = jsonParseService.getVideo(matchDTO);
 
 
         Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
+        carToPlayerMap = videoDTO.getCarActorIds();
+        playerToCarAndTimeMap = videoDTO.getPlayerToCarAndTimeMap();
 
         int countRed = 0;
         int countBlue = 0;
-        for (MatchPlayerDTO player : matchDTO.getPlayerData()){
+        for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
             Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
             if (player.getTeam() == TeamSide.RED) {
-                if(countRed == 0) {
+                if (countRed == 0) {
                     carShapes.put(shape_car_red_1, actorId);
                     shape_car_red_1.setVisible(true);
+                    shape_car_red_1.setFill(teamRedPlayer1);
                 } else if (countRed == 1) {
                     carShapes.put(shape_car_red_2, actorId);
                     shape_car_red_2.setVisible(true);
+                    shape_car_red_2.setFill(teamRedPlayer2);
                 } else if (countRed == 2) {
                     carShapes.put(shape_car_red_3, actorId);
                     shape_car_red_3.setVisible(true);
+                    shape_car_red_3.setFill(teamRedPlayer3);
                 }
-                countRed ++;
+                countRed++;
             } else {
-                if(countBlue == 0) {
+                if (countBlue == 0) {
                     carShapes.put(shape_car_blue_1, actorId);
                     shape_car_blue_1.setVisible(true);
+                    shape_car_blue_1.setFill(teamBluePlayer1);
                 } else if (countBlue == 1) {
                     carShapes.put(shape_car_blue_2, actorId);
+                    shape_car_blue_2.setFill(teamBluePlayer2);
                     shape_car_blue_2.setVisible(true);
                 } else if (countBlue == 2) {
                     carShapes.put(shape_car_blue_3, actorId);
                     shape_car_blue_3.setVisible(true);
+                    shape_car_blue_3.setFill(teamBluePlayer3);
                 }
-                countBlue ++;
+                countBlue++;
             }
         }
     }
 
-    private void generateBoostTimeline(double imagelength){
+    private void generateBoostTimeline(double imagelength) {
 
         Map<Integer, List<BoostDTO>> boostAmount = boostInformationParser.getBoostAmountMap();
 
@@ -350,74 +377,70 @@ public class MatchAnimationController {
         boolean isTeamRedPlayer2 = false;
         boolean isTeamRedPlayer3 = false;
 
-        for (MatchPlayerDTO player : matchDTO.getPlayerData()){
+        for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
 
-            BufferedImage boostPlayer = new BufferedImage((int)imagelength,1,BufferedImage.TYPE_INT_ARGB);
+            BufferedImage boostPlayer = new BufferedImage((int) imagelength, 1, BufferedImage.TYPE_INT_ARGB);
 
-            Color white = new Color(255, 255, 255); // Color White
-            Color teamBluePlayer1 = new Color(0, 36, 255);
-            Color teamBluePlayer2 = new Color(192, 0, 255);
-            Color teamBluePlayer3 = new Color(22, 188, 0);
-            Color teamRedPlayer1 = new Color(255, 0, 0);
-            Color teamRedPlayer2 = new Color(255, 204, 0);
-            Color teamRedPlayer3 = new Color(255, 255, 0);
 
             Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
 
-            Color currentColor = new Color(255, 255, 255);
+            Color currentColor = Color.rgb(255, 255, 255);
+
+
+
 
             //Select Color for Player
             if (player.getTeam() == TeamSide.BLUE) {
-                if(countBlue == 0) {
-                    currentColor = teamBluePlayer1;
+                if (countBlue == 0) {
                     isTeamBluePlayer1 = true;
                 } else if (countBlue == 1) {
-                    currentColor = teamBluePlayer2;
                     isTeamBluePlayer2 = true;
                 } else if (countBlue == 2) {
-                    currentColor = teamBluePlayer3;
                     isTeamBluePlayer3 = true;
                 }
-                countBlue ++;
+                countBlue++;
             } else {
-                if(countRed == 0) {
-                    currentColor = teamRedPlayer1;
+                if (countRed == 0) {
                     isTeamRedPlayer1 = true;
                 } else if (countRed == 1) {
-                    currentColor = teamRedPlayer2;
                     isTeamRedPlayer2 = true;
                 } else if (countRed == 2) {
-                    currentColor = teamRedPlayer3;
                     isTeamRedPlayer3 = true;
                 }
-                countRed ++;
+                countRed++;
+            }
+
+            for(Map.Entry<Rectangle, Integer> carShape : carShapes.entrySet()){
+                if (carShape.getValue() == actorId){
+                    currentColor = (Color)carShape.getKey().getFill();
+                }
             }
 
 
-            if(boostAmount.containsKey(actorId)){
+            if (boostAmount.containsKey(actorId)) {
                 List<BoostDTO> boost = boostAmount.get(actorId);
 
                 int currentFrameTime = 0;
                 int lastFrameTime = 0;
                 Color color;
 
-                for (BoostDTO entry : boost){
+                for (BoostDTO entry : boost) {
                     currentFrameTime = (int) Math.floor(entry.getFrameTime());
 
                     //Fill from beginning to first boost frameTime without any opacity
-                    if(lastFrameTime == 0){
+                    if (lastFrameTime == 0) {
                         color = mixColorsWithAlpha(white, currentColor, 255);
-                        for(int i = lastFrameTime; i < currentFrameTime; i++){
-                            boostPlayer.setRGB(i, 0, color.getRGB());
+                        for (int i = lastFrameTime; i < currentFrameTime; i++) {
+                            boostPlayer.setRGB(i, 0, getIntFromColor(color));
                         }
                     }
 
                     //Calculate new color with boost as opacity
                     int boostValue = entry.getBoostAmount();
-                    int opacity = scaleBoostOpacity(boostValue,0,100,0,255);
+                    int opacity = scaleBoostOpacity(boostValue, 0, 100, 0, 255);
                     color = mixColorsWithAlpha(white, currentColor, opacity);
-                    for(int i = currentFrameTime; i < boostPlayer.getWidth(); i++){
-                        boostPlayer.setRGB(i, 0, color.getRGB());
+                    for (int i = currentFrameTime; i < boostPlayer.getWidth(); i++) {
+                        boostPlayer.setRGB(i, 0, getIntFromColor(color));
                     }
 
                     lastFrameTime = currentFrameTime;
@@ -425,42 +448,42 @@ public class MatchAnimationController {
             }
 
             //Insert Bufferedimage into imageview item
-            if(isTeamBluePlayer1) {
+            if (isTeamBluePlayer1) {
                 Platform.runLater(() -> {
                     player1boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
                     player1boost.setScaleY(player1boost.getFitHeight());
                     player1boost_label.setText(player.getName());
                 });
                 isTeamBluePlayer1 = false;
-            } else if(isTeamBluePlayer2) {
+            } else if (isTeamBluePlayer2) {
                 Platform.runLater(() -> {
                     player2boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
                     player2boost.setScaleY(player2boost.getFitHeight());
                     player2boost_label.setText(player.getName());
                 });
                 isTeamBluePlayer2 = false;
-            } else if(isTeamBluePlayer3) {
+            } else if (isTeamBluePlayer3) {
                 Platform.runLater(() -> {
                     player3boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
                     player3boost.setScaleY(player3boost.getFitHeight());
                     player3boost_label.setText(player.getName());
                 });
                 isTeamBluePlayer3 = false;
-            } else if(isTeamRedPlayer1) {
+            } else if (isTeamRedPlayer1) {
                 Platform.runLater(() -> {
                     player4boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
                     player4boost.setScaleY(player4boost.getFitHeight());
                     player4boost_label.setText(player.getName());
                 });
                 isTeamRedPlayer1 = false;
-            } else if(isTeamRedPlayer2) {
+            } else if (isTeamRedPlayer2) {
                 Platform.runLater(() -> {
                     player5boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
                     player5boost.setScaleY(player5boost.getFitHeight());
                     player5boost_label.setText(player.getName());
                 });
                 isTeamRedPlayer2 = false;
-            } else if(isTeamRedPlayer3) {
+            } else if (isTeamRedPlayer3) {
                 Platform.runLater(() -> {
                     player6boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
                     player6boost.setScaleY(player6boost.getFitHeight());
@@ -473,17 +496,16 @@ public class MatchAnimationController {
 
     }
 
-    private Color mixColorsWithAlpha(Color color1, Color color2, int alpha)
-    {
-        float factor = alpha / 255f;
-        int red = (int) (color1.getRed() * (1 - factor) + color2.getRed() * factor);
-        int green = (int) (color1.getGreen() * (1 - factor) + color2.getGreen() * factor);
-        int blue = (int) (color1.getBlue() * (1 - factor) + color2.getBlue() * factor);
-        return new Color(red, green, blue);
+    private Color mixColorsWithAlpha(Color color1, Color color2, int alpha) {
+        double factor = alpha / 255f;
+        double red = (color1.getRed() * (1 - factor) + color2.getRed() * factor);
+        double green = (color1.getGreen() * (1 - factor) + color2.getGreen() * factor);
+        double blue = (color1.getBlue() * (1 - factor) + color2.getBlue() * factor);
+        return Color.color(red, green, blue);
     }
 
-    private int scaleBoostOpacity(int value, int oldMin, int oldMax, int newMin, int newMax){
-        return (((newMax-newMin)*(value-oldMin))/(oldMax-oldMin))+newMin;
+    private int scaleBoostOpacity(int value, int oldMin, int oldMax, int newMin, int newMax) {
+        return (((newMax - newMin) * (value - oldMin)) / (oldMax - oldMin)) + newMin;
     }
 
     public MatchDTO getMatchDTO() {
@@ -492,6 +514,18 @@ public class MatchAnimationController {
 
     public void setMatchDTO(MatchDTO matchDTO) {
         this.matchDTO = matchDTO;
+    }
+
+    public int getIntFromColor(Color color) {
+        int R = Math.round(255 * (float) color.getRed());
+        int G = Math.round(255 * (float) color.getGreen());
+        int B = Math.round(255 * (float) color.getBlue());
+
+        R = (R << 16) & 0x00FF0000;
+        G = (G << 8) & 0x0000FF00;
+        B = B & 0x000000FF;
+
+        return 0xFF000000 | R | G | B;
     }
 
 }

@@ -97,7 +97,7 @@ public class MatchStatsOverviewController {
         int mode = match.getTeamSize();
         this.labelGameMode.setText(mode + "vs" + mode);
 
-        this.labelDate.setText(match.getDateTime().toString());
+        this.labelDate.setText(match.getFormattedDateTime());
 
         //TODO: version 2
         //this.label_MatchDuration.setText();

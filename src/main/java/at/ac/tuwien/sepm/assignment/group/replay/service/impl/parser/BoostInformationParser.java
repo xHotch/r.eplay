@@ -3,8 +3,12 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
+import javafx.collections.transformation.SortedList;
+import net.minidev.json.JSONArray;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,12 +24,14 @@ public class BoostInformationParser {
     private double frameTime;
     private double frameDelta;
     private boolean gamePaused;
+    private int actorUpdateCount;
 
     private ReadContext ctx;
     private CarInformationParser carInformationParser;
 
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private int counter = 0;
 
     void setCtx(ReadContext ctx) {
         this.ctx = ctx;
@@ -35,22 +41,30 @@ public class BoostInformationParser {
         this.carInformationParser = carInformationParser;
     }
 
-    private Map<Integer, Integer> carComponentToCarId = new HashMap<>();
+    //Retrieved from CarInformationParser
+    Map<Integer, Integer> carPlayerMap;
+
+    private Map<Integer, Integer> carComponentToCarId;
     //Map that maps ActorID from a Player to a car. Key = carId, Value = playerId
-    private Map<Integer, Integer> carBoostMap = new HashMap<>();
+    private Map<Integer, Integer> carBoostMap;
     //Map that maps ActorID from a boost pad to a car/player. Key = carId, Value = playerId
-    private Map<Integer, Integer> carBoostPadMap = new HashMap<>();
+    private Map<Integer, Integer> carBoostPadMap;
 
     //Map that maps ActorID from a Car to a list of BoostAmountInformation. Key = playerId, Value = Boost amount information
-    private Map<Integer, List<BoostDTO>> boostAmountMap = new HashMap<>();
+    private Map<Integer, List<BoostDTO>> boostAmountMap;
     //Map that maps ActorID from a Car to a list of BoostPadDTO. Key = playerId, Value = Boost pad information
-    private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap = new HashMap<>();
+    private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap;
+
+    private List<Integer> uniqueBoostPadIds = new LinkedList<>();
 
     void setup(){
         carComponentToCarId = new HashMap<>();
         carBoostMap = new HashMap<>();
+        carBoostPadMap = new HashMap<>();
         boostAmountMap = new HashMap<>();
         boostPadMap = new HashMap<>();
+        carPlayerMap = carInformationParser.getPlayerCarMap();
+        uniqueBoostPadIds = new LinkedList<>();
     }
 
     /**
@@ -74,7 +88,6 @@ public class BoostInformationParser {
         this.gamePaused = gamePaused;
 
         getCarIDFromCarComponent();
-        getPlayerIDfromBoost();
         //parse the amount of boost, check if the classname is not 'TAGame.CarComponent_TA:ReplicatedActive' since this indicates active boosting, will be done later.
         parseBoostAmountInformation();
 
@@ -90,15 +103,15 @@ public class BoostInformationParser {
      * @param gamePaused           boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
      * @throws FileServiceException if the file couldn't be parsed
      */
-    void parseBoostPad(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+    void parseBoostPad(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused, int actorUpdateCount) throws FileServiceException {
         this.actorId = actorId;
         this.currentFrame = currentFrame;
         this.currentActorUpdateNr = currentActorUpdateNr;
         this.frameTime = frameTime;
         this.frameDelta = frameDelta;
         this.gamePaused = gamePaused;
+        this.actorUpdateCount = actorUpdateCount;
 
-        getPlayerIDfromBoostPad();
         //parse the boost pads information, if big or little pad was picked up and where.
         parseBoostPadInformation();
     }
@@ -114,42 +127,6 @@ public class BoostInformationParser {
             carComponentToCarId.putIfAbsent(carComponentId, carActorId);
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No Information about boost found - wrong replication info found");
-        }
-    }
-
-    /**
-     * Retrieves the player actor ID from the corresponding car actor ID and saves it in a map.
-     */
-    private void getPlayerIDfromBoost() {
-        LOG.trace("Called - getCarIDfromBoost");
-        try {
-            int carActorId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_TA:Vehicle'].ActorId", Integer.class);
-            Map<Integer, Integer> carPlayerMap = carInformationParser.getPlayerCarMap();
-            int playerId = carPlayerMap.get(carActorId);
-            carBoostMap.putIfAbsent(carActorId, playerId);
-        } catch (PathNotFoundException e) {
-            LOG.debug("No Information about boost found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No Information about boost found - wrong replicated info found");
-        }
-    }
-
-    /**
-     * Retrieves the player actor ID from the corresponding car boost component that picked up the boost.
-     */
-    private void getPlayerIDfromBoostPad() {
-        LOG.trace("Called - getPlayerIDfromBoostPad");
-        try {
-            int carActorId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
-            Map<Integer, Integer> carPlayerMap = carInformationParser.getPlayerCarMap();
-            int playerId = carPlayerMap.get(carActorId);
-            carBoostPadMap.putIfAbsent(carActorId, playerId);
-        } catch (PathNotFoundException e) {
-            LOG.debug("No Information about boost pad found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No Information about boost pad found - wrong replicated info found");
         }
     }
 
@@ -161,21 +138,20 @@ public class BoostInformationParser {
         LOG.trace("Called - parseBoostAmountInformation");
 
         try {
-            //get the current boost amount of the actor
-            int currentBoost = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class);
-            //map to 0 - 100, in the json it is from 0 - 255
-            currentBoost = (int)(currentBoost / 255.0 * 100.0);
-            //create new boost object
-            BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
-            int actualCarID = carComponentToCarId.get(actorId);
-            int actualPlayerID = carBoostMap.get(actualCarID);
-
-            boostAmountMap.putIfAbsent(actualPlayerID, new ArrayList<>());
-            boostAmountMap.get(actualPlayerID).add(boost);
+            if(ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class) != null) {
+                int currentBoost = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class);
+                //map to 0 - 100, in the json it is from 0 - 255
+                currentBoost = (int) (currentBoost / 255.0 * 100.0);
+                //create new boost object
+                BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
+                if(carComponentToCarId.containsKey(actorId)) {
+                    int actualCarID = carComponentToCarId.get(actorId);
+                    boostAmountMap.putIfAbsent(actualCarID, new ArrayList<>());
+                    boostAmountMap.get(actualCarID).add(boost);
+                }
+            }
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) { //TODO remove null exception
-            LOG.debug("No information about boost found - wrong replicated info found");
         }
 
     }
@@ -189,90 +165,288 @@ public class BoostInformationParser {
 
         //create new boost pad object, little boost pad = 12, big boost pad = 100 boost.
         try {
-            //get the over map constant id from the boost pad from the type name.
-            String typeName = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].TypeName");
-            String substring = typeName.substring(typeName.length()-2);
+            BoostPadDTO boostPad = new BoostPadDTO(frameTime, frameDelta, currentFrame, gamePaused);
 
-            int id = -1;
-            if(!substring.isEmpty() && substring.contains("_")) {
-                id = Integer.parseInt(substring.substring(1));
-            } else {
-                id = Integer.parseInt(substring);
-            }
+            if(ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class) != null) {
+                int carID = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
 
-            BoostPadDTO boostPad = new BoostPadDTO(frameTime, frameDelta, currentFrame, gamePaused, id);
+                int id = getPickedUpPosition(carID);
 
-            int actId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
-            int actualPlayerID = carBoostPadMap.get(actId);
-            if(actId != -1) {
-                boostPadMap.putIfAbsent(actualPlayerID, new HashMap<>());
-                fillBoostPadIds(actualPlayerID);
-                boostPadMap.get(actualPlayerID).get(id).add(boostPad);
+                // id == -1 --> no position found in the surrounding frames
+                if(id != -1) {
+                    boostPadMap.putIfAbsent(carID, new HashMap<>());
+                    fillBoostPadIds(carID);
+                    boostPadMap.get(carID).get(id).add(boostPad);
+                }
             }
         } catch (PathNotFoundException e) {
-            LOG.debug("No Information about boost amount found");
-        } catch (NullPointerException e) { //TODO not handle null pointer exception
-            LOG.debug("No such path found");
+            LOG.debug("No Information about boost pad found");
         }
     }
 
+    private int getPickedUpPosition(int carID) {
+        //loop through all current updates and search for a position for the specific player to evaulate which boost pad was picked up
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
+        int actID = -1;
+        try {
+            // search position in the current frame
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount; currentActorUpdate++) {
+                if (ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class) != null) {
+                    actID = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class);
+
+                    if (actID == carID) {
+                        x = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.X", Float.class);
+                        y = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Y", Float.class);
+                        z = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Z", Float.class);
+                        return getIDFromPosition(x, y, z);
+                    }
+                }
+
+            }
+            // search position in the n-1th frame
+            int actorUpdateCount_ = ctx.read("$.Frames[" + (currentFrame - 1) + "].ActorUpdates.length()");
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount_; currentActorUpdate++) {
+                if (ctx.read("$.Frames[" + (currentFrame - 1) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class) != null) {
+                    actID = ctx.read("$.Frames[" + (currentFrame - 1) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class);
+
+                    if (actID == carID) {
+                        x = ctx.read("$.Frames[" + (currentFrame - 1) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.X", Float.class);
+                        y = ctx.read("$.Frames[" + (currentFrame - 1) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Y", Float.class);
+                        z = ctx.read("$.Frames[" + (currentFrame - 1) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Z", Float.class);
+                        return getIDFromPosition(x, y, z);
+                    }
+                }
+
+            }
+
+            // search position in the n+1th frame
+            actorUpdateCount_ = ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates.length()");
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount_; currentActorUpdate++) {
+                if (ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class) != null) {
+                    actID = ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class);
+
+                    if (actID == carID) {
+                        x = ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.X", Float.class);
+                        y = ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Y", Float.class);
+                        z = ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Z", Float.class);
+                        return getIDFromPosition(x, y, z);
+                    }
+                }
+
+            }
+
+            // search position in the n-1th frame
+            actorUpdateCount_ = ctx.read("$.Frames[" + (currentFrame - 2) + "].ActorUpdates.length()");
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount_; currentActorUpdate++) {
+                if (ctx.read("$.Frames[" + (currentFrame - 2) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class) != null) {
+                    actID = ctx.read("$.Frames[" + (currentFrame - 2) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class);
+
+                    if (actID == carID) {
+                        x = ctx.read("$.Frames[" + (currentFrame - 2) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.X", Float.class);
+                        y = ctx.read("$.Frames[" + (currentFrame - 2) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Y", Float.class);
+                        z = ctx.read("$.Frames[" + (currentFrame - 2) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Z", Float.class);
+                        return getIDFromPosition(x, y, z);
+                    }
+                }
+
+            }
+
+            // search position in the n+1th frame
+            actorUpdateCount_ = ctx.read("$.Frames[" + (currentFrame + 2) + "].ActorUpdates.length()");
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount_; currentActorUpdate++) {
+                if (ctx.read("$.Frames[" + (currentFrame + 2) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class) != null) {
+                    actID = ctx.read("$.Frames[" + (currentFrame + 1) + "].ActorUpdates[" + currentActorUpdate + "].Id", Integer.class);
+
+                    if (actID == carID) {
+                        x = ctx.read("$.Frames[" + (currentFrame + 2) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.X", Float.class);
+                        y = ctx.read("$.Frames[" + (currentFrame + 2) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Y", Float.class);
+                        z = ctx.read("$.Frames[" + (currentFrame + 2) + "].ActorUpdates[" + currentActorUpdate + "].['TAGame.RBActor_TA:ReplicatedRBState'].Position.Z", Float.class);
+                        return getIDFromPosition(x, y, z);
+                    }
+                }
+
+            }
+        } catch (PathNotFoundException e) {
+            LOG.debug("No Information about position found");
+            return -1;
+        }
+         return -1;
+    }
+
+    private int getIDFromPosition(float x, float y, float z) {
+        float tolerance = 500.0f;
+
+        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= -4240.0 + tolerance && y > -4240.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 0;
+
+        if((x <= -1792.0 + tolerance && x > -1792.0 - tolerance) && (y <= -4184.0 + tolerance && y > -4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 1;
+
+        if((x <= 1792.0 + tolerance && x > 1792.0 - tolerance) && (y <= -4184.0 + tolerance && y > -4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 2;
+
+        if((x <= -3072.0 + tolerance && x > -3072.0 - tolerance) && (y <= -4096.0 + tolerance && y > -4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
+            return 3;
+
+        if((x <= 3072.0 + tolerance && x > 3072.0 - tolerance) && (y <= -4096.0 + tolerance && y > -4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
+            return 4;
+
+        if((x <= -940.0 + tolerance && x > -940.0 - tolerance) && (y <= -3308.0 + tolerance && y > -3308.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 5;
+
+        if((x <= 940.0 + tolerance && x > 940.0 - tolerance) && (y <= -3308.0 + tolerance && y > -3308.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 6;
+
+        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= -2816.0 + tolerance && y > -2816.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 7;
+
+        if((x <= -3584.0 + tolerance && x > -3584.0 - tolerance) && (y <= -2484.0 + tolerance && y > -2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 8;
+
+        if((x <= 3584.0 + tolerance && x > 3584.0 - tolerance) && (y <= -2484.0 + tolerance && y > -2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 9;
+
+        if((x <= -1788.0 + tolerance && x > -1788.0 - tolerance) && (y <= -2300.0 + tolerance && y > -2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 10;
+
+        if((x <= 1788.0 + tolerance && x > 1788.0 - tolerance) && (y <= -2300.0 + tolerance && y > -2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 11;
+
+        if((x <= -2048.0 + tolerance && x > -2048.0 - tolerance) && (y <= -1036.0 + tolerance && y > -1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 12;
+
+        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= -1024.0 + tolerance && y > -1024.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 13;
+
+        if((x <= 2048.0 + tolerance && x > 2048.0 - tolerance) && (y <= -1036.0 + tolerance && y > -1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 14;
+
+        if((x <= -3584.0 + tolerance && x > -3584.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
+            return 15;
+
+        if((x <= -1024.0 + tolerance && x > -1024.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 16;
+
+        if((x <= 1024.0 + tolerance && x > 1024.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 17;
+
+        if((x <= 3584.0 + tolerance && x > 3584.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
+            return 18;
+
+        if((x <= -2048.0 + tolerance && x > -2048.0 - tolerance) && (y <= 1036.0 + tolerance && y > 1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 19;
+
+        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= 1024.0 + tolerance && y > 1024.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 20;
+
+        if((x <= 2048.0 + tolerance && x > 2048.0 - tolerance) && (y <= 1036.0 + tolerance && y > 1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 21;
+
+        if((x <= -1788.0 + tolerance && x > -1788.0 - tolerance) && (y <= 2300.0 + tolerance && y > 2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 22;
+
+        if((x <= 1788.0 + tolerance && x > 1788.0 - tolerance) && (y <= 2300.0 + tolerance && y > 2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 23;
+
+        if((x <= -3584.0 + tolerance && x > -3584.0 - tolerance) && (y <= 2484.0 + tolerance && y > 2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 24;
+
+        if((x <= 3584.0 + tolerance && x > 3584.0 - tolerance) && (y <= 2484.0 + tolerance && y > 2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 25;
+
+        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= 2816.0 + tolerance && y > 2816.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 26;
+
+        if((x <= -940.0 + tolerance && x > -940.0 - tolerance) && (y <= 3310.0 + tolerance && y > 3310.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 27;
+
+        if((x <= 940.0 + tolerance && x > 940.0 - tolerance) && (y <= 3308.0 + tolerance && y > 3308.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 28;
+
+        if((x <= -3072.0 + tolerance && x > -3072.0 - tolerance) && (y <= 4096.0 + tolerance && y > 4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
+            return 29;
+
+        if((x <= 3072.0 + tolerance && x > 3072.0 - tolerance) && (y <= 4096.0 + tolerance && y > 4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
+            return 30;
+
+        if((x <= -1792.0 + tolerance && x > -1792.0 - tolerance) && (y <= 4184.0 + tolerance && y > 4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 31;
+
+        if((x <= 1792.0 + tolerance && x > 1792.0 - tolerance) && (y <= 4184.0 + tolerance && y > 4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 32;
+
+        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= 4240.0 + tolerance && y > 4240.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
+            return 33;
+
+        return -1;
+    }
+
     private void fillBoostPadIds(int actId) {
-        boostPadMap.get(actId).putIfAbsent(67, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(12, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(43, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(13, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(66, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(18, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(11, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(17, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(5, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(14, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(4, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(10, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(7, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(41, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(0, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(1, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(2, new LinkedList<>());
         boostPadMap.get(actId).putIfAbsent(3, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(64, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(40, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(42, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(63, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(23, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(4, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(5, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(6, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(7, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(8, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(9, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(10, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(11, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(12, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(13, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(14, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(15, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(16, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(17, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(18, new LinkedList<>());
         boostPadMap.get(actId).putIfAbsent(19, new LinkedList<>());
         boostPadMap.get(actId).putIfAbsent(20, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(31, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(28, new LinkedList<>());
         boostPadMap.get(actId).putIfAbsent(21, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(36, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(68, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(22, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(23, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(24, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(25, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(26, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(27, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(28, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(29, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(30, new LinkedList<>());
+        boostPadMap.get(actId).putIfAbsent(31, new LinkedList<>());
         boostPadMap.get(actId).putIfAbsent(32, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(38, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(34, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(35, new LinkedList<>());
         boostPadMap.get(actId).putIfAbsent(33, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(65, new LinkedList<>());
-        boostPadMap.get(actId).putIfAbsent(39, new LinkedList<>());
-    }
-
-    public void printDebugInformation() {
-
-        LOG.debug("\n");
-    }
-
-    public Map<Integer, Integer> getCarBoostMap() {
-        return carBoostMap;
-    }
-
-    public Map<Integer, Integer> getCarBoostPadMap() {
-        // contains the carID to playerID mappings
-        return carBoostPadMap;
     }
 
     public Map<Integer, List<BoostDTO>> getBoostAmountMap() {
-        return boostAmountMap;
+        LOG.trace("Called - boost amount calculate");
+        Map<Integer, List<BoostDTO>> boostAmounts = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : carInformationParser.getPlayerCarMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
+            if (boostAmounts.containsKey(entry.getValue())) {
+                boostAmounts.get(entry.getValue()).addAll(boostAmountMap.get(entry.getKey()));
+            } else {
+                boostAmounts.put(entry.getValue(), boostAmountMap.get(entry.getKey()));
+            }
+        }
+        return boostAmounts;
     }
 
     public Map<Integer, Map<Integer, List<BoostPadDTO>>> getBoostPadMap() {
-        // contains the carID and boost pad ID that was picked up
-        return boostPadMap;
+        // swap carID as keys and playerID as keys.
+        LOG.trace("Called - boost pads calculate");
+        Map<Integer, Map<Integer, List<BoostPadDTO>>> padMap = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : carInformationParser.getPlayerCarMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
+            if(boostPadMap.containsKey(entry.getKey())) {
+                padMap.putIfAbsent(entry.getValue(), new HashMap<>());
+
+                for(int i=0; i<=33; i++) {
+                    padMap.get(entry.getValue()).putIfAbsent(i, new LinkedList<>());
+                    padMap.get(entry.getValue()).get(i).addAll(boostPadMap.get(entry.getKey()).get(i));
+                }
+            }
+        }
+        return padMap;
     }
 }

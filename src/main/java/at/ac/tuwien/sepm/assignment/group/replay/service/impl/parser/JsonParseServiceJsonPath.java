@@ -5,17 +5,14 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BoostStatistic;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.PlayerStatistic;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.RigidBodyStatistic;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.io.FilenameUtils;
-import org.h2.mvstore.DataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -148,7 +144,12 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         matchDTO = readProperties();
         parseFrames();
         LOG.debug("End Parse");
-        playerInformationParser.setActorId(matchDTO.getPlayerData());
+        //playerInformationParser.setActorId(matchDTO.getPlayerData());
+        List<MatchPlayerDTO> players = playerInformationParser.getMatchPlayer();
+        if (matchDTO.getTeamSize() * 2 != players.size()) {
+            throw new FileServiceException("Wrong number of players in the game");
+        }
+        matchDTO.setPlayerData(players);
         LOG.debug("Start  Calculate");
         calculate(matchDTO);
         LOG.debug("End  Calculate");
@@ -164,6 +165,9 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
             VideoDTO videoDTO = parseVideo(jsonFile);
             videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
+            videoDTO.setCarActorIds(carInformationParser.getPlayerCarMap());
+            videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMap());
+
             return videoDTO;
         } finally {
             if (jsonFile!=null) {
@@ -190,8 +194,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         //pause game at the beginning
         boolean gamePaused = true;
 
-        //Frames for video
-        VideoDTO videoDTO = new VideoDTO();
 
         try {
 
@@ -212,9 +214,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 gamePaused = gameInformationParser.pauseGameIfGoalWasScored(frameTime);}
 
 
-                //Frames for video
-                //videoDTO.addFrame(frameTime);
-                FrameDTO frameDTO = new FrameDTO(frameTime);
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -246,7 +245,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             playerInformationParser.parse(actorId, currentFrame, currentActorUpdateNr);
 
                             break;
-                        case "TAGamee.GRI_TA":
+
+                        case "TAGame.Team_Soccar_TA":
+                            playerInformationParser.parseTeam(actorId, currentFrame, currentActorUpdateNr);
+                            break;
+                        case "TAGame.GRI_TA":
                             //parseMatchInformation
                             //e.g ['ProjectX.GRI_X:ReplicatetdGamePlaylist'] -> MatchType id
                             break;
@@ -256,7 +259,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             break;
 
                         case "TAGame.VehiclePickup_Boost_TA":
-                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused, actorUpdateCount);
                             break;
 
                         default:
@@ -341,7 +344,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             i++;
                             break;
                         case "TAGame.Car_TA":
-                            carInformationParser.parseVideoFrame(actorId, currentFrame, currentActorUpdateNr, frameDTO, gamePaused);
+                            carInformationParser.parseVideoFrame(actorId, currentFrame, currentActorUpdateNr, frameDTO, gamePaused, frameTime);
                             i++;
                             break;
                         case "TAGame.PRI_TA":
@@ -352,7 +355,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                             boostInformationParser.parse(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
                             break;
                         case "TAGame.VehiclePickup_Boost_TA":
-                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused);
+                            boostInformationParser.parseBoostPad(actorId, currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused, actorUpdateCount);
                             break;
                         default:
                             break;
@@ -401,7 +404,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             match.setDateTime(LocalDateTime.parse(dateTime, dtFormatter));
             match.setTeamSize(ctx.read("$.Properties.TeamSize"));
             match.setReadId(ctx.read("$.Properties.Id"));
-            List<MatchPlayerDTO> playerList = new ArrayList<>();
+            /*List<MatchPlayerDTO> playerList = new ArrayList<>();
             for (int i = 0; i < match.getTeamSize() * 2; i++) {
 
 
@@ -427,7 +430,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 playerList.add(matchPlayer);
             }
             match.setPlayerData(playerList);
-
+            */
 
         } catch (Exception e) {
             throw new FileServiceException(e.getMessage(), e);
