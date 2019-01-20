@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.TeamDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamCompareDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Markus Kogelbauer
@@ -50,11 +53,16 @@ public class SimpleTeamService implements TeamService {
     }
 
     @Override
-    public List<MatchDTO> readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamServiceException {
+    public TeamCompareDTO readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamServiceException {
         try {
-            return teamDAO.readTeamMatches(teamDTO1,teamDTO2);
+            TeamCompareDTO teamCompareDTO = new TeamCompareDTO();
+            teamCompareDTO.setMatchDTOList(teamDAO.readTeamMatches(teamDTO1,teamDTO2));
+            teamCompareDTO.setMatchStatsDTOList(teamDAO.readTeamStats(teamDTO1,teamDTO2));
+            Map<Integer, List<MatchStatsDTO>> matchIDToMatchStats = teamCompareDTO.getMatchStatsDTOList();
+            //TODO tie matchstats to team
+            return teamCompareDTO;
         } catch (TeamPersistenceException e) {
-            throw new TeamServiceException("failed to read team stats");
+            throw new TeamServiceException("failed to read team stats",e);
         }
     }
 
