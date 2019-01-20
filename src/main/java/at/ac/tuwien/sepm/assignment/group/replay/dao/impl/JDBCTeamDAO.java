@@ -179,8 +179,9 @@ public class JDBCTeamDAO implements TeamDAO {
                     matchStatsDTO.setShots(rs.getInt("shots"));
                     matchStatsDTO.setSaves(rs.getInt("saves"));
                     matchStatsDTO.setAssists(rs.getInt("assists"));
+                    matchStatsDTO.setAverageSpeed(rs.getDouble("averageSpeed"));
                     matchStatsDTO.setTeam(TeamSide.getById(rs.getInt("team")).get());
-                    matchStatsDTO.setMatchId(rs.getInt("matchid"));
+                    matchStatsDTO.setMatchId(rs.getInt("matchId"));
 
                     statsList.add(matchStatsDTO);
                 }
