@@ -1,23 +1,17 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
-import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,10 +28,11 @@ public class TeamCompareController {
     private TeamDTO teamDTO2;
     private TeamCompareDTO teamCompareDTO;
 
+    private String team1Color = "#f04555";
+    private String team2Color = "#246dfa";
+
     @FXML
     private BarChart<String,Double> teamBarChart;
-    @FXML
-    private CategoryAxis teamCategoryAxis;
     @FXML
     private NumberAxis teamNumberAxis;
     @FXML
@@ -60,17 +55,20 @@ public class TeamCompareController {
             (obs, oldValue, newValue) -> showMatchValue(newValue.intValue())
         );
         teamBarChart.setAnimated(false);
+        teamBarChart.setLegendVisible(false);
         teamNumberAxis.setAutoRanging(true);
+        setupPlayerTable();
     }
 
     void setTeamCompareData(TeamCompareDTO teamCompareDTO, TeamDTO teamDTO1, TeamDTO teamDTO2){
+        //filter matchStatsList to match MatchDTOList
         teamCompareDTO.setMatchStatsDTOList(teamCompareDTO.getMatchStatsDTOList().entrySet().stream()
             .filter(e -> teamCompareDTO.getMatchDTOList().stream().anyMatch(m -> m.getId() == e.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         this.teamCompareDTO = teamCompareDTO;
         this.teamDTO1 = teamDTO1;
         this.teamDTO2 = teamDTO2;
-        setupPlayerTable();
+        updatePlayerTable();
     }
 
     /**
@@ -81,14 +79,22 @@ public class TeamCompareController {
         playerName1Column.setCellValueFactory(new PropertyValueFactory<>("name"));
         playerName2Column.setStyle("-fx-alignment: CENTER;");
         playerName1Column.setStyle("-fx-alignment: CENTER;");
-        //Set PlayerData
+        playerName1Column.setStyle("-fx-text-fill: " + team1Color + ";");
+        playerName2Column.setStyle("-fx-text-fill: " + team2Color + ";");
+    }
+
+    private void updatePlayerTable() {
         ObservableList<PlayerDTO> team1Players = FXCollections.observableArrayList(teamDTO1.getPlayers());
         team1Table.setItems(team1Players);
+        playerName1Column.setText(teamDTO1.getName());
         ObservableList<PlayerDTO> team2Players = FXCollections.observableArrayList(teamDTO2.getPlayers());
         team2Table.setItems(team2Players);
+        playerName2Column.setText(teamDTO2.getName());
+        matchValueChoiceBox.getSelectionModel().select(0);
     }
 
     private void showMatchValue(int itemIndex) {
+        LOG.info("Show match Value: {}", matchValueChoiceBox.getSelectionModel().getSelectedItem());
         teamBarChart.getData().clear();
 
         XYChart.Series<String,Double> team1 = new XYChart.Series<>();
@@ -134,10 +140,11 @@ public class TeamCompareController {
 
         //set color for bars depending on team
         for (XYChart.Data data : team1.getData()) {
-            data.getNode().setStyle("-fx-bar-fill: #246dfa;");
+            data.getNode().setStyle("-fx-bar-fill: " + team1Color + ";");
         }
         for (XYChart.Data data : team2.getData()) {
-            data.getNode().setStyle("-fx-bar-fill: #f04555;");
+            data.getNode().setStyle("-fx-bar-fill:  " + team2Color + ";");
         }
+
     }
 }

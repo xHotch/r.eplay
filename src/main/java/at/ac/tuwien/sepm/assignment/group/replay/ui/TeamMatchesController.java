@@ -106,8 +106,6 @@ public class TeamMatchesController {
 
         if (!selectedMatches.isEmpty()) {
             try {
-                teamCompareDTO.setMatchDTOList(selectedMatches);
-                teamCompareController.setTeamCompareData(teamCompareDTO, team1, team2);
 
                 Stage teamCompareStage = new Stage();
                 // setup application
@@ -117,6 +115,9 @@ public class TeamMatchesController {
                 teamCompareStage.centerOnScreen();
                 teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
                 teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
+
+                teamCompareDTO.setMatchDTOList(selectedMatches);
+                teamCompareController.setTeamCompareData(teamCompareDTO, team1, team2);
 
                 ((Stage) compareSelectedMatchesButton.getScene().getWindow()).close();
                 teamCompareStage.toFront();
