@@ -21,12 +21,12 @@
       </BarChart>
       <TableView fx:id="team1Table" layoutX="54.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
         <columns>
-          <TableColumn fx:id="playerName1Column" prefWidth="439.0" text="Team 1" />
+          <TableColumn fx:id="playerName1Column" prefWidth="438.0" text="Team 1" />
         </columns>
       </TableView>
       <TableView fx:id="team2Table" layoutX="530.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
          <columns>
-            <TableColumn fx:id="playerName2Column" prefWidth="439.0" text="Team 2" />
+            <TableColumn fx:id="playerName2Column" prefWidth="438.0" text="Team 2" />
          </columns>
       </TableView>
    </children>
