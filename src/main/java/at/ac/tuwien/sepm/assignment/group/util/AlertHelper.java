@@ -27,7 +27,7 @@ public class AlertHelper {
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Eingabefehler"/*"Wrong input error"*/);
-        alert.setHeaderText("Error");
+        alert.setHeaderText("Fehler");
         alert.setContentText(errorMessage);
 
         alert.showAndWait();

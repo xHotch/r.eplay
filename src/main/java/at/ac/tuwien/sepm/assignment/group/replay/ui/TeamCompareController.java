@@ -50,7 +50,7 @@ public class TeamCompareController {
     @FXML
     private void initialize()
     {
-        matchValueChoiceBox.getItems().addAll("Tore","Assists","Shots","Saves","Score","Average Speed"); //TODO German names
+        matchValueChoiceBox.getItems().addAll("Tore","Paraden","Vorlagen","Schüsse","Punkte","⌀ Geschwindigkeit");
         matchValueChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
             (obs, oldValue, newValue) -> showMatchValue(newValue.intValue())
         );
