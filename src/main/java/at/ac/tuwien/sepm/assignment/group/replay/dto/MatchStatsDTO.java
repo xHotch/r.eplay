@@ -11,7 +11,7 @@ public class MatchStatsDTO {
     private int saves;
     private double averageSpeed;
     private int matchId;
-    private int teamId;
+    private long teamId;
 
     public TeamSide getTeam() {
         return team;
@@ -77,11 +77,11 @@ public class MatchStatsDTO {
         this.matchId = matchId;
     }
 
-    public int getTeamId() {
+    public long getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(int teamId) {
+    public void setTeamId(long teamId) {
         this.teamId = teamId;
     }
 }

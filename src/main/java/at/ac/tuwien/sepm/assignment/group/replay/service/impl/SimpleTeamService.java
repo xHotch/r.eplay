@@ -2,10 +2,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.TeamDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamCompareDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamValidationException;
@@ -14,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Markus Kogelbauer
@@ -56,14 +56,39 @@ public class SimpleTeamService implements TeamService {
     public TeamCompareDTO readTeamMatches(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamServiceException {
         try {
             TeamCompareDTO teamCompareDTO = new TeamCompareDTO();
-            teamCompareDTO.setMatchDTOList(teamDAO.readTeamMatches(teamDTO1,teamDTO2));
-            teamCompareDTO.setMatchStatsDTOList(teamDAO.readTeamStats(teamDTO1,teamDTO2));
-            Map<Integer, List<MatchStatsDTO>> matchIDToMatchStats = teamCompareDTO.getMatchStatsDTOList();
-            //TODO tie matchstats to team
+            teamCompareDTO.setMatchDTOList(teamDAO.readTeamMatches(teamDTO1, teamDTO2));
+            teamCompareDTO.setMatchStatsDTOList(teamDAO.readTeamStats(teamDTO1, teamDTO2));
+            //Map<MatchId,Map<TeamSide,TeamId>>
+            Map<Integer, Map<TeamSide, Long>> teamSideToTeamId = new HashMap<>();
+            teamCompareDTO.getMatchDTOList().forEach(match -> teamSideToTeamId.put(match.getId(), mapTeamSideToTeamID(match, teamDTO1, teamDTO2)));
+
+            //Map teamSide from matchStats to the right TeamDTO
+            teamCompareDTO.getMatchStatsDTOList().forEach((matchID, mapSideToID) -> mapSideToID.forEach(matchStatsDTO -> matchStatsDTO.setTeamId(teamSideToTeamId.get(matchID).get(matchStatsDTO.getTeam()))));
+
             return teamCompareDTO;
         } catch (TeamPersistenceException e) {
-            throw new TeamServiceException("failed to read team stats",e);
+            throw new TeamServiceException("failed to read team stats", e);
         }
+    }
+
+    /**
+     * Maps both teamSide from the matchDTO to a TeamID
+     * @param matchDTO the match
+     * @param team1DTO the first team
+     * @param team2DTO the second team
+     * @return A Map withe teamSide as key and the teamId as value
+     */
+    private Map<TeamSide, Long> mapTeamSideToTeamID(MatchDTO matchDTO, TeamDTO team1DTO, TeamDTO team2DTO) {
+        Map<TeamSide, Long> teamSideToTeamId = new EnumMap<>(TeamSide.class);
+        List<MatchPlayerDTO> matchPlayerDTOList = matchDTO.getPlayerData().stream().filter(p -> p.getTeam() == TeamSide.RED).collect(Collectors.toList());
+        if (matchPlayerDTOList.stream().map(MatchPlayerDTO::getPlayerDTO).anyMatch(p -> team1DTO.getPlayers().contains(p))) {
+            teamSideToTeamId.put(TeamSide.RED, team1DTO.getId());
+            teamSideToTeamId.put(TeamSide.BLUE, team2DTO.getId());
+        } else {
+            teamSideToTeamId.put(TeamSide.RED, team2DTO.getId());
+            teamSideToTeamId.put(TeamSide.BLUE, team1DTO.getId());
+        }
+        return teamSideToTeamId;
     }
 
     @Override
