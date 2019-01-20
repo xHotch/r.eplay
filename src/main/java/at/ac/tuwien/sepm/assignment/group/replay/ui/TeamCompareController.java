@@ -2,9 +2,15 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -24,10 +30,9 @@ public class TeamCompareController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private TeamService teamService;
-
     private TeamDTO teamDTO1;
     private TeamDTO teamDTO2;
+    private TeamCompareDTO teamCompareDTO;
 
     @FXML
     private BarChart<String,Double> teamBarChart;
@@ -37,11 +42,15 @@ public class TeamCompareController {
     private NumberAxis teamNumberAxis;
     @FXML
     private ChoiceBox<String> matchValueChoiceBox;
-    private TeamCompareDTO teamCompareDTO;
 
-    public TeamCompareController(TeamService teamService) {
-        this.teamService = teamService;
-    }
+    @FXML
+    private TableView<PlayerDTO> team1Table;
+    @FXML
+    private TableColumn<PlayerDTO, String> playerName1Column;
+    @FXML
+    private TableView<PlayerDTO> team2Table;
+    @FXML
+    private TableColumn<PlayerDTO, String> playerName2Column;
 
     @FXML
     private void initialize()
@@ -61,6 +70,22 @@ public class TeamCompareController {
         this.teamCompareDTO = teamCompareDTO;
         this.teamDTO1 = teamDTO1;
         this.teamDTO2 = teamDTO2;
+        setupPlayerTable();
+    }
+
+    /**
+     * Helper Method to setup up the player team Table Columns
+     */
+    private void setupPlayerTable() {
+        playerName2Column.setCellValueFactory(new PropertyValueFactory<>("name"));
+        playerName1Column.setCellValueFactory(new PropertyValueFactory<>("name"));
+        playerName2Column.setStyle("-fx-alignment: CENTER;");
+        playerName1Column.setStyle("-fx-alignment: CENTER;");
+        //Set PlayerData
+        ObservableList<PlayerDTO> team1Players = FXCollections.observableArrayList(teamDTO1.getPlayers());
+        team1Table.setItems(team1Players);
+        ObservableList<PlayerDTO> team2Players = FXCollections.observableArrayList(teamDTO2.getPlayers());
+        team2Table.setItems(team2Players);
     }
 
     private void showMatchValue(int itemIndex) {
@@ -99,7 +124,7 @@ public class TeamCompareController {
                         value = 0;
                         break;
                 }
-                if(matchStatsDTO.getTeam() == TeamSide.RED) team1.getData().add(new XYChart.Data<>("Match " + i,value));
+                if(matchStatsDTO.getTeamId() == teamDTO1.getId()) team1.getData().add(new XYChart.Data<>("Match " + i,value));
                 else team2.getData().add(new XYChart.Data<>("Match " + i,value));
             }
             i++;
