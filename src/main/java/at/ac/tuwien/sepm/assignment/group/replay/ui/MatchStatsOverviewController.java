@@ -130,8 +130,8 @@ public class MatchStatsOverviewController {
             }
         }
 
-        this.labelTeamRed.setText("Goals: " + redGoals);
-        this.labelTeamBlue.setText("Goals: " + blueGoals);
+        this.labelTeamRed.setText("Tore: " + redGoals);
+        this.labelTeamBlue.setText("Tore: " + blueGoals);
 
         tableTeamBlue.setItems(playerListBlue);
         tableTeamRed.setItems(playerListRed);
