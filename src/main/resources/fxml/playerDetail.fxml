@@ -22,7 +22,7 @@
           <TableColumn fx:id="assistsTableColumn" prefWidth="75.0" text="⌀ Vorlagen" />
             <TableColumn fx:id="savesTableColumn" prefWidth="75.0" text="⌀ Paraden" />
             <TableColumn fx:id="shotsTableColumn" prefWidth="75.0" text="⌀ Schüsse" />
-            <TableColumn fx:id="scoreTableColumn" prefWidth="75.0" text="⌀ Punke" />
+            <TableColumn fx:id="scoreTableColumn" prefWidth="75.0" text="⌀ Punkte" />
             <TableColumn fx:id="speedTableColumn" prefWidth="120.0" text="⌀ Geschwindigkeit" />
             <TableColumn fx:id="boostpadTableColumn" prefWidth="150.0" text="⌀ Boostpads gesammelt" />
             <TableColumn fx:id="boostTableColumn" prefWidth="120.0" text="⌀ Boost pro Minute" />

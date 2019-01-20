@@ -425,9 +425,13 @@ public class BoostInformationParser {
         Map<Integer, List<BoostDTO>> boostAmounts = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : carInformationParser.getPlayerCarMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
             if (boostAmounts.containsKey(entry.getValue())) {
-                boostAmounts.get(entry.getValue()).addAll(boostAmountMap.get(entry.getKey()));
+                if(boostAmountMap.containsKey(entry.getKey())) {
+                    boostAmounts.get(entry.getValue()).addAll(boostAmountMap.get(entry.getKey()));
+                }
             } else {
-                boostAmounts.put(entry.getValue(), boostAmountMap.get(entry.getKey()));
+                if(boostAmountMap.containsKey(entry.getKey())) {
+                    boostAmounts.put(entry.getValue(), boostAmountMap.get(entry.getKey()));
+                }
             }
         }
         return boostAmounts;
