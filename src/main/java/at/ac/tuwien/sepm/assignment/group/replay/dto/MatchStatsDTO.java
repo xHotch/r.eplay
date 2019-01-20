@@ -10,7 +10,8 @@ public class MatchStatsDTO {
     private int shots;
     private int saves;
     private double averageSpeed;
-    private boolean teamDTO;
+    private int matchId;
+    private int teamId;
 
     public TeamSide getTeam() {
         return team;
@@ -68,11 +69,19 @@ public class MatchStatsDTO {
         this.averageSpeed = averageSpeed;
     }
 
-    public boolean isTeamDTO() {
-        return teamDTO;
+    public int getMatchId() {
+        return matchId;
     }
 
-    public void setTeamDTO(boolean teamDTO) {
-        this.teamDTO = teamDTO;
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 }
