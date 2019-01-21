@@ -25,6 +25,7 @@ public class MatchDTO {
     private File replayFile;
     private BufferedImage ballHeatmapImage;
     private String ballHeatmapFilename;
+    private double matchTime;
 
     public File getReplayFile() {
         return replayFile;
@@ -126,6 +127,14 @@ public class MatchDTO {
 
     public void setBallHeatmapFilename(String ballHeatmapFilename) {
         this.ballHeatmapFilename = ballHeatmapFilename;
+    }
+
+    public double getMatchTime() {
+        return matchTime;
+    }
+
+    public void setMatchTime(double matchTime) {
+        this.matchTime = matchTime;
     }
 
     /**
