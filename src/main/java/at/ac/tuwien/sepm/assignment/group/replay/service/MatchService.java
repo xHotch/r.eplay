@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.service;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 
@@ -56,4 +58,11 @@ public interface MatchService {
      */
     List<MatchDTO> searchMatches(String name, LocalDateTime begin, LocalDateTime end, int teamSize) throws MatchServiceException, FilterValidationException;
 
+    /**
+     * calculates the total stats from a team in a match
+     * @param matchDTO the match
+     * @param teamSide blue or red side
+     * @return the teamStats from a team
+     */
+    MatchStatsDTO calcTeamStats(MatchDTO matchDTO, TeamSide teamSide);
 }
