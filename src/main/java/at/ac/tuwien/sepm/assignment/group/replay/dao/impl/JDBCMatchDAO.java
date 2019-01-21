@@ -199,7 +199,7 @@ public class JDBCMatchDAO implements MatchDAO {
         List<MatchDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_ALL_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
 
-            setMatchDTO(result, ps);
+            setMatchDTO(result, ps,true);
         } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
@@ -365,7 +365,7 @@ public class JDBCMatchDAO implements MatchDAO {
                 ps.setTimestamp(7, Timestamp.valueOf(begin));
                 ps.setBoolean(8, false);
             }
-            setMatchDTO(result, ps);
+            setMatchDTO(result, ps,true);
         } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
@@ -373,7 +373,7 @@ public class JDBCMatchDAO implements MatchDAO {
         return result;
     }
 
-    void setMatchDTO(List<MatchDTO> result, PreparedStatement ps) throws SQLException, MatchPersistenceException, FilePersistenceException {
+    void setMatchDTO(List<MatchDTO> result, PreparedStatement ps,boolean files) throws SQLException, MatchPersistenceException, FilePersistenceException {
         try (ResultSet rs = ps.executeQuery()) {
             while(rs.next()) {
 
@@ -386,13 +386,13 @@ public class JDBCMatchDAO implements MatchDAO {
                 match.setPossessionRed(rs.getInt("possessionRed"));
                 match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
                 match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
-                match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
+                if(files) match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
                 match.setBallHeatmapFilename(rs.getString("ballHeatmapFilename"));
 
                 // retrieve the players from the match
                 List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
                 match.setPlayerData(matchPlayers);
-                folderDAO.getHeatmaps(match);
+                if(files) folderDAO.getHeatmaps(match);
                 result.add(match);
                 LOG.debug("Added match to the result list!");
             }
@@ -405,31 +405,8 @@ public class JDBCMatchDAO implements MatchDAO {
         List<MatchDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_MATCHES_FROM_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, playerDTO.getId());
-            try (ResultSet rs = ps.executeQuery()) {
-                while(rs.next()) {
-
-                    MatchDTO match = new MatchDTO();
-                    match.setId(rs.getInt("id"));
-                    match.setDateTime(rs.getTimestamp("dateTime").toLocalDateTime());
-                    match.setTeamSize(rs.getInt("teamSize"));
-                    match.setReadId(rs.getString("readId"));
-                    match.setPossessionBlue(rs.getInt("possessionBlue"));
-                    match.setPossessionRed(rs.getInt("possessionRed"));
-                    match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
-                    match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
-                    match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
-                    //match.setReplayFile(new File(rs.getString("fileName")));
-                    match.setBallHeatmapFilename(rs.getString("ballHeatmapFilename"));
-
-                    // retrieve the players from the match
-                    List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
-                    match.setPlayerData(matchPlayers);
-                    //folderDAO.getHeatmaps(match);
-                    result.add(match);
-                    LOG.debug("Added match to the result list!");
-                }
-            }
-        } catch (SQLException e) {
+            setMatchDTO(result,ps,false);
+        } catch (SQLException | FilePersistenceException e) {
             String msg = "Could not read match";
             throw new MatchPersistenceException(msg, e);
         }

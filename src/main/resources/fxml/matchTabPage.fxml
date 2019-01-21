@@ -23,7 +23,7 @@
       </TableView>
       <Button fx:id="uploadReplayButton" layoutX="564.0" layoutY="106.0" mnemonicParsing="false" onAction="#onUploadReplayButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
       <Button layoutX="119.0" layoutY="517.0" mnemonicParsing="false" onAction="#onMatchDeleteButtonClicked" text="Match löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
-      <Button disable="true" layoutX="210.0" layoutY="684.0" mnemonicParsing="false" text="Ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
+      <Button layoutX="210.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchCompareButtonClicked" text="Ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
       <Button layoutX="381.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchdetailsButtonClicked" text="Matchdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="360.0" />
       <CheckBox fx:id="nameCheckBox" layoutX="651.0" layoutY="498.0" mnemonicParsing="false" text="Spielername" AnchorPane.bottomAnchor="224.0" AnchorPane.rightAnchor="300.0" />
       <Label layoutX="537.0" layoutY="498.0" text="Spielername" AnchorPane.bottomAnchor="224.0" AnchorPane.rightAnchor="200.0" />

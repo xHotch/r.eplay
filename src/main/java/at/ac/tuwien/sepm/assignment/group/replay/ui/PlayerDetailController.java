@@ -120,7 +120,7 @@ public class PlayerDetailController {
             lossesLabel.setText("" + avgStatsDTO.getLosses());
         } catch (PlayerServiceException e) {
             LOG.error("Caught PlayerServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Laden der Spieler Details");
         }
 
     }

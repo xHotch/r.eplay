@@ -130,8 +130,8 @@ public class MatchStatsOverviewController {
             }
         }
 
-        this.labelTeamRed.setText("Goals: " + redGoals);
-        this.labelTeamBlue.setText("Goals: " + blueGoals);
+        this.labelTeamRed.setText("Tore: " + redGoals);
+        this.labelTeamBlue.setText("Tore: " + blueGoals);
 
         tableTeamBlue.setItems(playerListBlue);
         tableTeamRed.setItems(playerListRed);
@@ -143,14 +143,14 @@ public class MatchStatsOverviewController {
         ObservableList<MatchPlayerDTO> playersTeamRed = tableTeamRed.getSelectionModel().getSelectedItems();
 
         if (playersTeamBlue.isEmpty() && playersTeamRed.isEmpty()) {
-            AlertHelper.showErrorMessage("No player selected");
+            AlertHelper.showErrorMessage("Kein Spieler ausgewählt");
         } else {
             for (MatchPlayerDTO matchPlayer : playersTeamBlue) {
                 try {
                     playerService.showPlayer(matchPlayer.getPlayerDTO());
                 } catch (PlayerServiceException e) {
                     LOG.error("Caught PlayerServiceException", e);
-                    AlertHelper.showErrorMessage(e.getMessage());
+                    AlertHelper.showErrorMessage("Fehler beim Hinzufügen des Spielers: " + matchPlayer.getPlayerDTO().getName());
                 }
             }
 
@@ -159,7 +159,7 @@ public class MatchStatsOverviewController {
                     playerService.showPlayer(matchPlayer.getPlayerDTO());
                 } catch (PlayerServiceException e) {
                     LOG.error("Caught PlayerServiceException", e);
-                    AlertHelper.showErrorMessage(e.getMessage());
+                    AlertHelper.showErrorMessage("Fehler beim Hinzufügen des Spielers" + matchPlayer.getPlayerDTO().getName());
                 }
             }
             playerController.updatePlayerTable();

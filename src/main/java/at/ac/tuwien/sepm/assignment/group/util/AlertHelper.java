@@ -26,8 +26,8 @@ public class AlertHelper {
         LOG.trace("Called - showErrorMessage");
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Wrong input error");
-        alert.setHeaderText("Error");
+        alert.setTitle("Eingabefehler"/*"Wrong input error"*/);
+        alert.setHeaderText("Fehler");
         alert.setContentText(errorMessage);
 
         alert.showAndWait();

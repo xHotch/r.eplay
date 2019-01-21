@@ -138,7 +138,7 @@ public class TeamController {
             LOG.debug("");
         } catch (TeamServiceException e) {
             LOG.error("Caught TeamServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim Laden der Teams");
         }
     }
 
@@ -159,13 +159,13 @@ public class TeamController {
                 deleteTeamTexts();
             } catch (TeamValidationException e) {
                 LOG.error("caught TeamValidationException", e);
-                AlertHelper.showErrorMessage(e.getMessage());
+                AlertHelper.showErrorMessage("Fehler beim Löschen des Teams: Ungültiges Team");
             } catch (TeamServiceException e) {
                 LOG.error("caught TeamServiceException", e);
-                AlertHelper.showErrorMessage(e.getMessage());
+                AlertHelper.showErrorMessage("Fehler beim Löschen des Teams: Team konnte nicht gelöscht werden");
             }
         } else {
-            AlertHelper.showErrorMessage("No team selected");
+            AlertHelper.showErrorMessage("Kein Team ausgewählt");
         }
     }
 

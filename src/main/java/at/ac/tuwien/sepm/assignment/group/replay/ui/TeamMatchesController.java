@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamCompareDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
@@ -37,6 +38,7 @@ public class TeamMatchesController {
     private TeamDTO team1;
     private TeamDTO team2;
 
+    private TeamCompareDTO teamCompareDTO;
     @FXML
     private TableView<MatchDTO> tableViewMatches;
     @FXML
@@ -86,7 +88,8 @@ public class TeamMatchesController {
         this.team2 = team2;
 
         try {
-            ObservableList<MatchDTO> matches = FXCollections.observableArrayList(teamService.readTeamMatches(team1, team2));
+            teamCompareDTO = teamService.readTeamMatches(team1, team2);
+            ObservableList<MatchDTO> matches = FXCollections.observableArrayList(teamCompareDTO.getMatchDTOList());
 
             tableViewMatches.setItems(matches);
             tableViewMatches.getSelectionModel().selectAll();
@@ -103,7 +106,6 @@ public class TeamMatchesController {
 
         if (!selectedMatches.isEmpty()) {
             try {
-                teamCompareController.setTeamCompareData(selectedMatches, team1, team2);
 
                 Stage teamCompareStage = new Stage();
                 // setup application
@@ -113,6 +115,9 @@ public class TeamMatchesController {
                 teamCompareStage.centerOnScreen();
                 teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
                 teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
+
+                teamCompareDTO.setMatchDTOList(selectedMatches);
+                teamCompareController.setTeamCompareData(teamCompareDTO, team1, team2);
 
                 ((Stage) compareSelectedMatchesButton.getScene().getWindow()).close();
                 teamCompareStage.toFront();

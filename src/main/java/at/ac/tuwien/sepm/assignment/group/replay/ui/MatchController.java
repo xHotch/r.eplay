@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -54,6 +55,7 @@ public class MatchController {
     private JsonParseService jsonParseService;
     private MatchService matchService;
     private PlayerService playerService;
+    private MatchCompareController matchCompareController;
 
     private boolean filter = false;
 
@@ -87,7 +89,7 @@ public class MatchController {
     private CheckBox typCheckBox;
 
 
-    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, BoostStatisticsController boostStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController, MatchAnimationController matchAnimationController) {
+    public MatchController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, ReplayService replayService, JsonParseService jsonParseService, MatchService matchService, PlayerService playerService, PlayerController playerController, MatchStatsOverviewController matchStatsOverviewController, BallStatisticsController ballStatisticsController, BoostStatisticsController boostStatisticsController, MatchPlayerStatisticsController matchPlayerStatisticsController, MatchAnimationController matchAnimationController, MatchCompareController matchCompareController) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
         this.replayService = replayService;
@@ -100,6 +102,7 @@ public class MatchController {
         this.boostStatisticsController = boostStatisticsController;
         this.matchPlayerStatisticsController = matchPlayerStatisticsController;
         this.matchAnimationController = matchAnimationController;
+        this.matchCompareController = matchCompareController;
     }
 
     /**
@@ -108,6 +111,7 @@ public class MatchController {
      */
     @FXML
     private void initialize() {
+        tableViewMatches.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         choiceBoxMatchtyp.getItems().addAll(1,2,3);
         setupMatchTable();
         updateMatchTable();
@@ -162,7 +166,7 @@ public class MatchController {
         }
 
         // load match details for the new window
-        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
+        if (tableViewMatches.getSelectionModel().getSelectedItems().size() == 1) {
             MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
             matchStatsOverviewController.loadBasicMatchData(selectedMatch);
             ballStatisticsController.loadBallStatistics(selectedMatch);
@@ -174,7 +178,7 @@ public class MatchController {
             matchdetailsStage.toFront();
             LOG.debug("Opening Match Details window complete");
         } else {
-            AlertHelper.showErrorMessage("No match selected");
+            AlertHelper.showErrorMessage("Wählen Sie genau ein Match aus");
         }
 
     }
@@ -183,17 +187,41 @@ public class MatchController {
     private void onMatchDeleteButtonClicked() {
         LOG.info("Match delete button clicked");
         LOG.trace("called - onMatchDeleteButtonClicked");
-        if (tableViewMatches.getSelectionModel().getSelectedItem() != null) {
+        if (tableViewMatches.getSelectionModel().getSelectedItems().size() == 1) {
             MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
             try {
                 matchService.deleteMatch(selectedMatch);
                 updateMatchTable();
             } catch (MatchServiceException e) {
                 LOG.error("caught MatchServiceException", e);
-                AlertHelper.showErrorMessage(e.getMessage());
+                AlertHelper.showErrorMessage("Fehler beim Löschen des Matches");
             }
         } else {
-            AlertHelper.showErrorMessage("No match selected");
+            AlertHelper.showErrorMessage("Wählen Sie genau ein match aus");
+        }
+    }
+
+    @FXML
+    private void onMatchCompareButtonClicked() {
+        List<MatchDTO> selectedMatches = tableViewMatches.getSelectionModel().getSelectedItems();
+        if (selectedMatches.size() == 2) {
+            Stage matchCompareStage = new Stage();
+            // setup application
+            matchCompareStage.setTitle("Matchvergleich");
+            matchCompareStage.setWidth(1024);
+            matchCompareStage.setHeight(768);
+            matchCompareStage.centerOnScreen();
+            matchCompareStage.setOnCloseRequest(event -> LOG.debug("Select team matches window closed"));
+            try {
+                matchCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/matchComparePage.fxml", Parent.class)));
+            } catch (IOException e) {
+                LOG.error("Loading compareMatches fxml failed", e);
+            }
+            matchCompareController.setUp(selectedMatches.get(0), selectedMatches.get(1));
+            matchCompareStage.toFront();
+            matchCompareStage.showAndWait();
+        } else {
+            AlertHelper.alert(Alert.AlertType.INFORMATION, "Info", null, "Es müssen genau zwei Matches ausgewählt werden.");
         }
     }
 
@@ -253,22 +281,22 @@ public class MatchController {
                 });
             } catch (FileServiceException e) {
                 LOG.error("Caught File Service Exception", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Löschen der JSON Datei"));
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Speichern der Spieler"));
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültige Spieler"));
             } catch (MatchServiceException e) {
                 LOG.error("Caught MatchServiceException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Speichern des Matches"));
             } catch (MatchValidationException e) {
                 LOG.error("Caught MatchValidationException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültiges Match"));
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Replay existiert bereits"));
             } catch (Exception e){
                 LOG.error("Caught Exception ##############", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
@@ -303,14 +331,14 @@ public class MatchController {
                 }
                 if (timeCheckBox.isSelected()) {
                     if (fromDatePicker.getValue() == null || toDatePicker.getValue() == null) {
-                        throw new FilterValidationException("pls select both Dates");
+                        throw new FilterValidationException("Bitte beide Daten auswählen");
                     }
                     begin = fromDatePicker.getValue().atStartOfDay();
                     end = toDatePicker.getValue().atStartOfDay().plusDays(1).minusSeconds(1);
                 }
                 if (typCheckBox.isSelected()) {
                     if (choiceBoxMatchtyp.getValue() == null) {
-                        throw new FilterValidationException("Choose a Matchtyp");
+                        throw new FilterValidationException("Kein Matchtyp ausgewählt");
                     }
                     teamSize = choiceBoxMatchtyp.getValue();
                 }
@@ -323,7 +351,7 @@ public class MatchController {
             tableViewMatches.setItems(sortedMatches);
         } catch (MatchServiceException e) {
             LOG.error("Caught MatchServiceException {} ", e.getMessage());
-            AlertHelper.showErrorMessage(e.getMessage());
+            AlertHelper.showErrorMessage("Fehler beim laden der Matches");
         } catch (FilterValidationException e) {
             LOG.error("Caught FilterValidationException {} ", e.getMessage());
             AlertHelper.showErrorMessage(e.getMessage());
