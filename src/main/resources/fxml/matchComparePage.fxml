@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchCompareController">
+    <children>
+        <ChoiceBox fx:id="matchValueChoiceBox" layoutX="16.0" layoutY="34.0" prefWidth="150.0" />
+        <BarChart fx:id="matchBarChart" layoutX="54.0" layoutY="313.0" prefHeight="358.0" prefWidth="916.0">
+            <xAxis>
+                <CategoryAxis fx:id="matchCategoryAxis" side="BOTTOM" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="matchNumberAxis" side="LEFT" />
+            </yAxis>
+        </BarChart>
+        <TableView fx:id="match1Table" layoutX="54.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
+            <columns>
+                <TableColumn fx:id="playerName1Column" prefWidth="162.0" text="Player" />
+            <TableColumn fx:id="team1Column" prefWidth="277.0" text="Teams" />
+            </columns>
+        </TableView>
+        <TableView fx:id="match2Table" layoutX="530.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
+            <columns>
+                <TableColumn fx:id="playerName2Column" prefWidth="162.0" text="Player" />
+            <TableColumn fx:id="team2Column" prefWidth="277.0" text="Teams" />
+            </columns>
+        </TableView>
+      <Label layoutX="246.0" layoutY="59.0" text="Match 1">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="722.0" layoutY="59.0" text="Match 2">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>
