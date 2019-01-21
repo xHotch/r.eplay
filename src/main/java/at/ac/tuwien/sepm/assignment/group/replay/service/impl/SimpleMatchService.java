@@ -113,6 +113,7 @@ public class SimpleMatchService implements MatchService {
                 matchStatsDTO.setShots(matchStatsDTO.getShots() + matchPlayerDTO.getShots());
             }
         }
+        matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() / (matchDTO.getPlayerData().size() / 2));
         return matchStatsDTO;
     }
 
