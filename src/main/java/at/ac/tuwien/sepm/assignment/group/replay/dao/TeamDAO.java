@@ -4,6 +4,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 
 import java.util.List;
@@ -54,4 +55,12 @@ public interface TeamDAO {
      * @throws TeamPersistenceException if something failed during persistence of the team
      */
     Map<Integer, List<MatchStatsDTO>> readTeamStats(TeamDTO teamDTO1, TeamDTO teamDTO2) throws TeamPersistenceException;
+
+    /**
+     * Reads all teams from a player
+     * @param playerDTO the player
+     * @return List with the teams from the player
+     * @throws TeamPersistenceException if something fails during persistence
+     */
+    List<TeamDTO> readPlayerTeams(PlayerDTO playerDTO) throws TeamPersistenceException;
 }

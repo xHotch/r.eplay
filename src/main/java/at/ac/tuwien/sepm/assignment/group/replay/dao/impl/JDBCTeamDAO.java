@@ -31,6 +31,8 @@ public class JDBCTeamDAO implements TeamDAO {
 
     private static final String READ_ALL_TEAMS = "SELECT * FROM team";
     private static final String READ_PLAYERS_FROM_TEAM = "SELECT * from teamPlayer where teamId = ?";
+    private static final String READ_TEAMS_FROM_PLAYER = "Select t.id, t.name, t.teamsize from team t join " +
+        "teamplayer tp on t.id = tp.teamid where tp.playerid = ?";
 
     private static final String READ_MATCHES_FROM_TEAMS = "Select *" +
         "from MATCH_ where ID = any( " +
@@ -188,6 +190,30 @@ public class JDBCTeamDAO implements TeamDAO {
             }
         } catch (SQLException e) {
             throw new TeamPersistenceException("could not read team stats", e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<TeamDTO> readPlayerTeams(PlayerDTO playerDTO) throws TeamPersistenceException {
+        LOG.trace("Called - readPlayerTeams");
+        List<TeamDTO> result = new LinkedList<>();
+        try (PreparedStatement ps = connection.prepareStatement(READ_TEAMS_FROM_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, playerDTO.getId());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    TeamDTO teamDTO = new TeamDTO();
+                    teamDTO.setId(rs.getLong("id"));
+                    teamDTO.setTeamSize(rs.getInt("teamSize"));
+                    teamDTO.setName(rs.getString("name"));
+
+                    List<PlayerDTO> players = readTeamPlayers(teamDTO);
+                    teamDTO.setPlayers(players);
+                    result.add(teamDTO);
+                }
+            }
+        } catch (SQLException e) {
+            throw new TeamPersistenceException("could not read teams", e);
         }
         return result;
     }
