@@ -21,16 +21,16 @@
                 <NumberAxis fx:id="matchNumberAxis" side="LEFT" />
             </yAxis>
         </BarChart>
-        <TableView fx:id="match1Table" layoutX="54.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
+        <TableView fx:id="match1TableRed" layoutX="54.0" layoutY="86.0" prefHeight="114.0" prefWidth="440.0">
             <columns>
-                <TableColumn fx:id="playerName1Column" prefWidth="162.0" text="Player" />
-            <TableColumn fx:id="team1Column" prefWidth="277.0" text="Teams" />
+                <TableColumn fx:id="playerName1ColumnRed" prefWidth="162.0" text="Spieler" />
+            <TableColumn fx:id="team1ColumnRed" prefWidth="275.0" text="Teams" />
             </columns>
         </TableView>
-        <TableView fx:id="match2Table" layoutX="530.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
+        <TableView fx:id="match2TableRed" layoutX="530.0" layoutY="86.0" prefHeight="114.0" prefWidth="440.0">
             <columns>
-                <TableColumn fx:id="playerName2Column" prefWidth="162.0" text="Player" />
-            <TableColumn fx:id="team2Column" prefWidth="277.0" text="Teams" />
+                <TableColumn fx:id="playerName2ColumnRed" prefWidth="162.0" text="Spieler" />
+            <TableColumn fx:id="team2ColumnRed" prefWidth="275.0" text="Teams" />
             </columns>
         </TableView>
       <Label layoutX="246.0" layoutY="59.0" text="Match 1">
@@ -43,5 +43,17 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
+      <TableView fx:id="match1TableBlue" layoutX="55.0" layoutY="207.0" prefHeight="114.0" prefWidth="440.0">
+        <columns>
+          <TableColumn fx:id="playerName1ColumnBlue" prefWidth="162.0" text="Spieler" />
+          <TableColumn fx:id="team1ColumnBlue" prefWidth="275.0" text="Teams" />
+        </columns>
+      </TableView>
+      <TableView fx:id="match2TableBlue" layoutX="530.0" layoutY="207.0" prefHeight="114.0" prefWidth="440.0">
+        <columns>
+          <TableColumn fx:id="playerName2ColumnBlue" prefWidth="162.0" text="Spieler" />
+          <TableColumn fx:id="team2ColumnBlue" prefWidth="275.0" text="Teams" />
+        </columns>
+      </TableView>
     </children>
 </AnchorPane>
