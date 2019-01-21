@@ -3,11 +3,8 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
@@ -100,6 +97,24 @@ public class SimpleMatchService implements MatchService {
             String message = "Could not get matches from DAO";
             throw new MatchServiceException(message,e);
         }
+    }
+
+    @Override
+    public MatchStatsDTO calcTeamStats(MatchDTO matchDTO, TeamSide teamSide) {
+        MatchStatsDTO matchStatsDTO = new MatchStatsDTO();
+        matchStatsDTO.setTeam(teamSide);
+        for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
+            if (matchPlayerDTO.getTeam() == teamSide) {
+                matchStatsDTO.setAssists(matchStatsDTO.getAssists() + matchPlayerDTO.getAssists());
+                matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() + matchPlayerDTO.getAverageSpeed());
+                matchStatsDTO.setGoals(matchStatsDTO.getGoals() + matchPlayerDTO.getGoals());
+                matchStatsDTO.setSaves(matchStatsDTO.getSaves() + matchPlayerDTO.getSaves());
+                matchStatsDTO.setScore(matchStatsDTO.getScore() + matchPlayerDTO.getScore());
+                matchStatsDTO.setShots(matchStatsDTO.getShots() + matchPlayerDTO.getShots());
+            }
+        }
+        matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() / (matchDTO.getPlayerData().size() / 2));
+        return matchStatsDTO;
     }
 
 

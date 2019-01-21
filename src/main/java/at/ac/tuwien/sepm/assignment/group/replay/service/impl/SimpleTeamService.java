@@ -71,6 +71,18 @@ public class SimpleTeamService implements TeamService {
         }
     }
 
+    @Override
+    public PlayerTeamsDTO readPlayerTeams(PlayerDTO playerDTO) throws TeamServiceException {
+        PlayerTeamsDTO playerTeamsDTO = new PlayerTeamsDTO();
+        playerTeamsDTO.setPlayerDTO(playerDTO);
+        try {
+            playerTeamsDTO.setTeams(teamDAO.readPlayerTeams(playerDTO));
+        } catch (TeamPersistenceException e) {
+            throw new TeamServiceException("failed to read teams", e);
+        }
+        return playerTeamsDTO;
+    }
+
     /**
      * Maps both teamSide from the matchDTO to a TeamID
      * @param matchDTO the match
