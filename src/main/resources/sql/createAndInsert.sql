@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS match_
   possessionBlue int,
   possessionRed int,
   fileName VARCHAR(100) NOT NULL UNIQUE,
-  ballHeatmapFilename VARCHAR(80) NOT NULL
+  ballHeatmapFilename VARCHAR(80) NOT NULL,
+  matchTime double
 );
 
 CREATE TABLE IF NOT EXISTS player
