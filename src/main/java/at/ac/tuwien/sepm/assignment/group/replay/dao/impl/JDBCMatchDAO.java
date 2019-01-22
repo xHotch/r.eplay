@@ -30,7 +30,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String INSERT_MATCH = "INSERT INTO match_ SET dateTime = ?, teamSize = ?, readId = ?," +
-        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?, ballHeatmapFilename = ?, fileName = ?";
+        " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?, ballHeatmapFilename = ?, fileName = ?, matchTime = ?";
     private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?," +
         " team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, " +
         "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
@@ -91,6 +91,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setInt(7, matchDTO.getPossessionRed());
             ps.setString(9, matchDTO.getReplayFile().getName());
             ps.setString(8, matchDTO.getBallHeatmapFilename());
+            ps.setDouble(10, matchDTO.getMatchTime());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
@@ -388,6 +389,7 @@ public class JDBCMatchDAO implements MatchDAO {
                 match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
                 if(files) match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
                 match.setBallHeatmapFilename(rs.getString("ballHeatmapFilename"));
+                match.setMatchTime(rs.getDouble("matchTime"));
 
                 // retrieve the players from the match
                 List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);

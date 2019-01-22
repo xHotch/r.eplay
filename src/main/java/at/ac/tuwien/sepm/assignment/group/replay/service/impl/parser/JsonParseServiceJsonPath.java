@@ -404,6 +404,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             match.setDateTime(LocalDateTime.parse(dateTime, dtFormatter));
             match.setTeamSize(ctx.read("$.Properties.TeamSize"));
             match.setReadId(ctx.read("$.Properties.Id"));
+            match.setMatchTime(ctx.read("$.Frames[-1].Time"));
             /*List<MatchPlayerDTO> playerList = new ArrayList<>();
             for (int i = 0; i < match.getTeamSize() * 2; i++) {
 

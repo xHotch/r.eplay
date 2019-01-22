@@ -113,6 +113,7 @@ public class SimpleMatchService implements MatchService {
                 matchStatsDTO.setShots(matchStatsDTO.getShots() + matchPlayerDTO.getShots());
             }
         }
+        matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() / (matchDTO.getPlayerData().size() / 2));
         return matchStatsDTO;
     }
 
@@ -122,6 +123,7 @@ public class SimpleMatchService implements MatchService {
         String errMsg = "";
 
         if (matchDTO.getDateTime() == null) errMsg += "No MatchDate\n";
+        if(matchDTO.getMatchTime() < 0) errMsg += "MatchTime cannot be negative\n";
         if (matchDTO.getPlayerData() == null || matchDTO.getPlayerData().isEmpty()) errMsg += "No players found in match\n";
         else {
             if (matchDTO.getPlayerData().size() != matchDTO.getTeamSize() * 2) errMsg += "Team size does not equal player list\n";

@@ -99,8 +99,7 @@ public class MatchStatsOverviewController {
 
         this.labelDate.setText(match.getFormattedDateTime());
 
-        //TODO: version 2
-        //this.label_MatchDuration.setText();
+        this.labelMatchDuration.setText("" + String.format("%02d", (int)Math.round(match.getMatchTime())/60) + ":" + String.format("%02d", (int)Math.round(match.getMatchTime())%60));
 
         List<MatchPlayerDTO> matchPlayers = match.getPlayerData();
 

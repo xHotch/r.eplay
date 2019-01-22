@@ -7,14 +7,14 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimplePlayerService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
+import com.jayway.jsonpath.internal.function.numeric.Average;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,8 +31,13 @@ import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Gabriel Aichinger
@@ -212,6 +217,78 @@ public class PlayerTest {
 
         //check if player is shown
         Assert.assertTrue(retrievedPlayers.contains(player1));
+    }
+
+    /**
+     * This test checks if the wins and losses are calculated correct
+     *
+     */
+    @Test
+    public void getAvgStatsServiceTest() throws Exception {
+        PlayerDAO playerDAO = mock(PlayerDAO.class);
+        MatchDAO matchDAO = mock(MatchDAO.class);
+
+        MatchType matchType = MatchType.RANKED1V1;
+        PlayerDTO playerDTO = new PlayerDTO();
+        playerDTO.setId(2);
+        playerDTO.setName("Test");
+        playerDTO.setPlatformID(12345);
+
+        PlayerDTO playerDTO2 = new PlayerDTO();
+        playerDTO2.setId(1);
+        playerDTO2.setName("Test2");
+        playerDTO2.setPlatformID(123456);
+
+        AvgStatsDTO mockedStats = new AvgStatsDTO();
+        mockedStats.setScore(220.0);
+        mockedStats.setSpeed(1300.0);
+        mockedStats.setShots(3.0);
+        mockedStats.setSaves(1.0);
+        mockedStats.setAssists(0.0);
+        mockedStats.setGoals(2);
+
+
+
+        MatchPlayerDTO player1 = new MatchPlayerDTO();
+        player1.setAverageSpeed(1300.0);
+        player1.setSaves(1);
+        player1.setAssists(0);
+        player1.setGoals(2);
+        player1.setShots(3);
+        player1.setScore(220);
+        player1.setPlayerDTO(playerDTO);
+        player1.setTeam(TeamSide.RED);
+
+        MatchPlayerDTO player2 = new MatchPlayerDTO();
+        player2.setAverageSpeed(1300.0);
+        player2.setSaves(1);
+        player2.setAssists(0);
+        player2.setGoals(3);
+        player2.setShots(3);
+        player2.setScore(220);
+        player2.setPlayerDTO(playerDTO2);
+        player2.setTeam(TeamSide.BLUE);
+
+        List<MatchPlayerDTO> players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+
+
+        MatchDTO match1 = new MatchDTO();
+
+        match1.setTeamSize(1);
+        match1.setId(12);
+        match1.setPlayerData(players);
+
+        List<MatchDTO> mockedMatchList = new ArrayList<>();
+        mockedMatchList.add(match1);
+        when(playerDAO.getAvgStats(playerDTO, matchType)).thenReturn(mockedStats);
+        when(matchDAO.readMatchesFromPlayer(playerDTO)).thenReturn(mockedMatchList);
+        PlayerService ps = new SimplePlayerService(playerDAO, matchDAO);
+
+        AvgStatsDTO result = ps.getAvgStats(playerDTO, matchType);
+        Assert.assertThat(result.getWins(), is(0));
+        Assert.assertThat(result.getLosses(), is(1));
     }
 
 

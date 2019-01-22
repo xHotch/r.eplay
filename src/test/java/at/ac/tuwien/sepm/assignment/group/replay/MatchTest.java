@@ -7,12 +7,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCPlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FilterValidationException;
@@ -42,6 +39,7 @@ import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -479,6 +477,48 @@ public class MatchTest {
 
         retrievedMatches = matchDAO.readMatchesFromPlayer(player);
         assertThat(retrievedMatches.size(), is(0));
+    }
+
+    @Test
+    public void calcTeamStatsTest() {
+        MatchDTO match = new MatchDTO();
+        MatchPlayerDTO player1 = new MatchPlayerDTO();
+        MatchPlayerDTO player2 = new MatchPlayerDTO();
+        MatchPlayerDTO player3 = new MatchPlayerDTO();
+        MatchPlayerDTO player4 = new MatchPlayerDTO();
+        player1.setTeam(TeamSide.RED);
+        player2.setTeam(TeamSide.RED);
+        player3.setTeam(TeamSide.BLUE);
+        player4.setTeam(TeamSide.BLUE);
+        player1.setGoals(1);
+        player1.setShots(2);
+        player1.setScore(220);
+        player1.setAssists(0);
+        player1.setSaves(0);
+        player1.setAverageSpeed(1300);
+
+        player2.setGoals(0);
+        player2.setShots(1);
+        player2.setScore(120);
+        player2.setAssists(1);
+        player2.setSaves(1);
+        player2.setAverageSpeed(1400);
+
+        List<MatchPlayerDTO> players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+        players.add(player3);
+        players.add(player4);
+        match.setPlayerData(players);
+
+        MatchStatsDTO result = matchService.calcTeamStats(match, TeamSide.RED);
+
+        assertThat(result.getAssists(), is(1));
+        assertThat(result.getGoals(), is(1));
+        assertThat(result.getShots(), is(3));
+        assertThat(result.getScore(), is(340));
+        assertThat(result.getSaves(), is(1));
+        assertThat(result.getAverageSpeed(), is(1350.0));
     }
 
 
