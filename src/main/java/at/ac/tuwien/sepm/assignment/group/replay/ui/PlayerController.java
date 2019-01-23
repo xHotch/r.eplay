@@ -89,38 +89,7 @@ public class PlayerController {
         updatePlayerTable();
 
         typChoiceBox.getItems().addAll(MatchType.RANKED1V1, MatchType.RANKED2V2, MatchType.RANKED3V3);
-        typChoiceBox.getSelectionModel().selectFirst();
-
-    }
-
-    @FXML
-    private void onPlayerDetailsButtonClicked() {
-        LOG.info("Player Details button clicked");
-
-        Stage playerDetailStage = new Stage();
-        // setup application
-        playerDetailStage.setTitle("Player Details");
-        playerDetailStage.setWidth(1024);
-        playerDetailStage.setHeight(768);
-        playerDetailStage.centerOnScreen();
-        playerDetailStage.setOnCloseRequest(event -> {
-            LOG.debug("Player Details window closed");
-        });
-
-
-        try {
-            playerDetailStage.setScene(new Scene(springFXMLLoader.load("/fxml/playerDetail.fxml", Parent.class)));
-        } catch (IOException e) {
-            LOG.error("Loading Player Detail fxml failed", e);
-        }
-
-        if (tableViewPlayers.getSelectionModel().getSelectedItems().size() == 1) {
-            playerDetailController.loadPlayer(tableViewPlayers.getSelectionModel().getSelectedItem());
-            playerDetailStage.toFront();
-            playerDetailStage.showAndWait();
-        } else {
-            AlertHelper.showErrorMessage("Du musst genau einen Spieler auswählen");
-        }
+        typChoiceBox.getSelectionModel().selectLast();
 
     }
 
@@ -176,7 +145,7 @@ public class PlayerController {
      * Loads the players into the player table
      * Calls the showErrorMessage if an Exception occurs
      */
-    protected void updatePlayerTable() {
+    void updatePlayerTable() {
         try {
             ObservableList<PlayerDTO> observablePlayers = FXCollections.observableArrayList(playerService.getPlayers());
 

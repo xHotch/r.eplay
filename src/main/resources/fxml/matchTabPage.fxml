@@ -13,18 +13,18 @@
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchController">
    <children>
-      <TableView fx:id="tableViewMatches" layoutX="85.0" layoutY="91.0" prefHeight="619.0" prefWidth="543.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="461.0" AnchorPane.topAnchor="20.0">
+      <TableView fx:id="tableViewMatches" editable="true" layoutX="85.0" layoutY="91.0" prefHeight="619.0" prefWidth="582.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="422.0" AnchorPane.topAnchor="20.0">
          <columns>
-            <TableColumn fx:id="tableColumnMatchDate" prefWidth="115.0" text="Datum" />
-            <TableColumn fx:id="tableColumnMatchType" prefWidth="65.0" text="Matchtyp" />
-            <TableColumn fx:id="tableColumnPlayersBlue" prefWidth="180.0" text="Spieler Team Blau" />
-            <TableColumn fx:id="tableColumnPlayersRed" prefWidth="180.0" text="Spieler Team Rot" />
+            <TableColumn fx:id="tableColumnMatchDate" prefWidth="115.0" resizable="false" text="Datum" />
+            <TableColumn fx:id="tableColumnMatchType" prefWidth="65.0" resizable="false" text="Matchtyp" />
+            <TableColumn fx:id="tableColumnPlayersBlue" prefWidth="191.0" text="Spieler Team Blau" />
+            <TableColumn fx:id="tableColumnPlayersRed" prefWidth="191.0" text="Spieler Team Rot" />
          </columns>
       </TableView>
       <Button fx:id="uploadReplayButton" layoutX="564.0" layoutY="106.0" mnemonicParsing="false" onAction="#onUploadReplayButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Replay öffnen..." AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="80.0" />
       <Button layoutX="119.0" layoutY="517.0" mnemonicParsing="false" onAction="#onMatchDeleteButtonClicked" text="Match löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
       <Button layoutX="210.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchCompareButtonClicked" text="Ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="140.0" />
-      <Button layoutX="381.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchdetailsButtonClicked" text="Matchdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="360.0" />
+      <Button layoutX="366.0" layoutY="684.0" mnemonicParsing="false" onAction="#onMatchdetailsButtonClicked" text="Matchdetails anzeigen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="366.0" />
       <CheckBox fx:id="nameCheckBox" layoutX="651.0" layoutY="498.0" mnemonicParsing="false" text="Spielername" AnchorPane.bottomAnchor="224.0" AnchorPane.rightAnchor="300.0" />
       <Label layoutX="537.0" layoutY="498.0" text="Spielername" AnchorPane.bottomAnchor="224.0" AnchorPane.rightAnchor="200.0" />
       <TextField fx:id="nameTextField" layoutX="611.0" layoutY="494.0" AnchorPane.bottomAnchor="220.0" AnchorPane.rightAnchor="45.0" />

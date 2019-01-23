@@ -11,7 +11,7 @@
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamCompareController">
    <children>
       <ChoiceBox fx:id="matchValueChoiceBox" layoutX="16.0" layoutY="34.0" prefWidth="150.0" />
-      <BarChart fx:id="teamBarChart" layoutX="54.0" layoutY="313.0" prefHeight="358.0" prefWidth="916.0">
+      <BarChart fx:id="teamBarChart" layoutX="54.0" layoutY="329.0" prefHeight="342.0" prefWidth="916.0">
         <xAxis>
           <CategoryAxis fx:id="teamCategoryAxis" side="BOTTOM" />
         </xAxis>
@@ -19,12 +19,12 @@
           <NumberAxis fx:id="teamNumberAxis" side="LEFT" />
         </yAxis>
       </BarChart>
-      <TableView fx:id="team1Table" layoutX="54.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
+      <TableView fx:id="team1Table" layoutX="54.0" layoutY="86.0" prefHeight="210.0" prefWidth="440.0">
         <columns>
           <TableColumn fx:id="playerName1Column" prefWidth="438.0" text="Team 1" />
         </columns>
       </TableView>
-      <TableView fx:id="team2Table" layoutX="530.0" layoutY="86.0" prefHeight="227.0" prefWidth="440.0">
+      <TableView fx:id="team2Table" layoutX="530.0" layoutY="86.0" prefHeight="210.0" prefWidth="440.0">
          <columns>
             <TableColumn fx:id="playerName2Column" prefWidth="438.0" text="Team 2" />
          </columns>
