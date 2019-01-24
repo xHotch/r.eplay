@@ -365,6 +365,13 @@ public class MatchController {
         tableColumnMatchDate.setCellValueFactory(new PropertyValueFactory<>("formattedDateTime"));
         tableColumnPlayersRed.setCellValueFactory(new PropertyValueFactory<>("teamRedPlayers"));
         tableColumnPlayersBlue.setCellValueFactory(new PropertyValueFactory<>("teamBluePlayers"));
+        tableColumnMatchType.setCellValueFactory(new PropertyValueFactory<>("matchType"));
+
+        tableColumnMatchDate.setStyle("-fx-alignment: CENTER;");
+        tableColumnMatchType.setStyle("-fx-alignment: CENTER;");
+        tableColumnPlayersRed.setStyle("-fx-alignment: CENTER;");
+        tableColumnPlayersBlue.setStyle("-fx-alignment: CENTER;");
+
 
         tableColumnMatchDate.setSortType(TableColumn.SortType.DESCENDING);
         tableColumnMatchDate.setSortable(true);

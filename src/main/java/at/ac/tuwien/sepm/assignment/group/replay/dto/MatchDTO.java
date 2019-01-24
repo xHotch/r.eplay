@@ -194,4 +194,7 @@ public class MatchDTO {
         return players.toString();
     }
 
+    public String getMatchType(){
+        return "" + teamSize + " vs " + teamSize;
+    }
 }
