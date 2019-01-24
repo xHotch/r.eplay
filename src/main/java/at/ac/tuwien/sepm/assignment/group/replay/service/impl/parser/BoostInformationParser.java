@@ -111,6 +111,7 @@ public class BoostInformationParser {
                 //create new boost object
                 BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
                 if(carComponentToCarId.containsKey(actorId)) {
+                    //TODO save the component id not the car id
                     int actualCarID = carComponentToCarId.get(actorId);
                     boostAmountMap.putIfAbsent(actualCarID, new ArrayList<>());
                     boostAmountMap.get(actualCarID).add(boost);
@@ -133,17 +134,15 @@ public class BoostInformationParser {
         try {
             BoostPadDTO boostPad = new BoostPadDTO(frameTime, frameDelta, currentFrame, gamePaused);
 
-            if(ctx.read(FRAMESTRING + currentFrame + ACTORUPDATESTRING + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class) != null) {
-                int carID = ctx.read(FRAMESTRING + currentFrame + ACTORUPDATESTRING + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
+            int carID = ctx.read(FRAMESTRING + currentFrame + ACTORUPDATESTRING + currentActorUpdateNr + "].['TAGame.VehiclePickup_TA:ReplicatedPickupData'].ActorId", Integer.class);
 
-                int id = getPickedUpPosition(carID, currentFrame, actorUpdateCount);
+            int id = getPickedUpPosition(carID, currentFrame, actorUpdateCount);
 
-                // id == -1 --> no position found in the surrounding frames
-                if(id != -1) {
-                    boostPadMap.putIfAbsent(carID, new HashMap<>());
-                    fillBoostPadIds(carID);
-                    boostPadMap.get(carID).get(id).add(boostPad);
-                }
+            // id == -1 --> no position found in the surrounding frames
+            if(id != -1) {
+                boostPadMap.putIfAbsent(carID, new HashMap<>());
+                fillBoostPadIds(carID);
+                boostPadMap.get(carID).get(id).add(boostPad);
             }
         } catch (PathNotFoundException e) {
             // ignore
@@ -163,7 +162,7 @@ public class BoostInformationParser {
         int id = -1;
         try {
             // search position in the current frame
-            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount; currentActorUpdate++) {
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount && id == -1; currentActorUpdate++) {
                 id = searchSurroundingFrames(currentFrame, 0, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
@@ -173,7 +172,7 @@ public class BoostInformationParser {
 
             // search position in the n-1th frame
             int actorUpdateCount2 = ctx.read(FRAMESTRING + (currentFrame - 1) + actorUpdatesLength);
-            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2; currentActorUpdate++) {
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2 && id == -1; currentActorUpdate++) {
                 id = searchSurroundingFrames(currentFrame, -1, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
@@ -183,7 +182,7 @@ public class BoostInformationParser {
 
             // search position in the n+1th frame
             actorUpdateCount2 = ctx.read(FRAMESTRING + (currentFrame + 1) + actorUpdatesLength);
-            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2; currentActorUpdate++) {
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2 && id == -1; currentActorUpdate++) {
                 id = searchSurroundingFrames(currentFrame, 1, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
@@ -193,7 +192,7 @@ public class BoostInformationParser {
 
             // search position in the n-2th frame
             actorUpdateCount2 = ctx.read(FRAMESTRING + (currentFrame - 2) + actorUpdatesLength);
-            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2; currentActorUpdate++) {
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2 && id == -1; currentActorUpdate++) {
                 id = searchSurroundingFrames(currentFrame, -2, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
@@ -203,7 +202,7 @@ public class BoostInformationParser {
 
             // search position in the n+2th frame
             actorUpdateCount2 = ctx.read(FRAMESTRING + (currentFrame + 2) + actorUpdatesLength);
-            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2; currentActorUpdate++) {
+            for (int currentActorUpdate = 0; currentActorUpdate < actorUpdateCount2 && id == -1; currentActorUpdate++) {
                 id = searchSurroundingFrames(currentFrame, 2, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
@@ -263,6 +262,7 @@ public class BoostInformationParser {
      */
     public Map<Integer, List<BoostDTO>> getBoostAmountMap() {
         LOG.trace("Called - boost amount calculate");
+        //TODO map component to car first
         Map<Integer, List<BoostDTO>> boostAmounts = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : carInformationParser.getPlayerCarMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
             if (boostAmounts.containsKey(entry.getValue())) {
