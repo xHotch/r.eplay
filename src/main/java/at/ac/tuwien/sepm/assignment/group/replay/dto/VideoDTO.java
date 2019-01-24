@@ -23,6 +23,13 @@ public class VideoDTO {
 
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndTimeMap;
 
+    private Map<Integer, Integer> carActorIds;
+
+    private List<FrameDTO> frames;
+
+
+
+
     public MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndTimeMap() {
         return playerToCarAndTimeMap;
     }
@@ -39,7 +46,6 @@ public class VideoDTO {
         this.carActorIds = carActorIds;
     }
 
-    private Map<Integer, Integer> carActorIds;
 
     public Map<Long, Integer> getActorIds() {
         return actorIds;
@@ -49,8 +55,6 @@ public class VideoDTO {
         this.actorIds = actorIds;
     }
 
-    //frames
-    private List<FrameDTO> frames;
 
     public List<FrameDTO> getFrames() {
         return frames;

@@ -324,6 +324,7 @@ public class MatchAnimationController {
         carToPlayerMap = videoDTO.getCarActorIds();
         playerToCarAndTimeMap = videoDTO.getPlayerToCarAndTimeMap();
 
+
         int countRed = 0;
         int countBlue = 0;
         for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
