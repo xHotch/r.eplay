@@ -20,13 +20,7 @@ public class CarInformationParser {
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private int actorId;
-    private int currentFrame;
-    private int currentActorUpdateNr;
-    private double frameTime;
-    private double frameDelta;
-    private boolean gamePaused;
-    private FrameDTO frameDTO;
+
 
     //Map that maps ActorID from a car to a player. Key = CarActorId, Value = playerActorId
     private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
@@ -34,13 +28,10 @@ public class CarInformationParser {
 
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndFrameTimeMap = new LinkedMultiValueMap<>();
 
+    private Map<Integer, List<Pair<Integer, Double>>> playerToCarAndFrameListMap = new HashMap<>();
 
-    //Map that maps ActorID from a Car to a list of RigidBodyInformation
-    private LinkedHashMap<Integer, List<RigidBodyInformation>> rigidBodyMap = new LinkedHashMap<>();
-
-    //Map that maps ActorIDs from two cars into a Map. Key = AttackerID, Value = VictimID
-    private LinkedHashMap<Integer, Integer> demolitionMap = new LinkedHashMap<>();
-
+    //Map that maps ActorID from a Player to a list of RigidBodyInformation
+    private LinkedHashMap<Integer, List<RigidBodyInformation>> playerToRigidBodyMap = new LinkedHashMap<>();
 
 
     private RigidBodyParser rigidBodyParser;
@@ -63,32 +54,17 @@ public class CarInformationParser {
      */
     void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
         LOG.trace("Called - parse");
-        this.actorId = actorId;
-        this.currentFrame = currentFrame;
-        this.currentActorUpdateNr = currentActorUpdateNr;
-        this.frameTime = frameTime;
-        this.frameDelta = frameDelta;
-        this.gamePaused = gamePaused;
 
-        getPlayerIDfromCar();
-        parseRigidBodyInformation();
+        parseRigidBodyInformation(getPlayerIDfromCar(currentFrame, currentActorUpdateNr, actorId, frameTime),currentFrame,currentActorUpdateNr,frameTime,gamePaused);
 
     }
 
 
     void parseVideoFrame(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) throws FileServiceException {
         LOG.trace("Called - parse");
-        this.actorId = actorId;
-        this.currentFrame = currentFrame;
-        this.currentActorUpdateNr = currentActorUpdateNr;
-        this.frameDTO = frameDTO;
-        this.frameTime = frameTime;
-        this.frameDelta = frameDelta;
-        this.gamePaused = gamePaused;
 
-
-        getPlayerIDfromCar();
-        parseFrameRigidBodyInformation();
+        mapPlayerIDtoCarAndTime(actorId, currentFrame, currentActorUpdateNr, frameTime);
+        parseFrameRigidBodyInformation(actorId,currentFrame,currentActorUpdateNr,frameDTO,gamePaused,frameTime);
 
     }
 
@@ -98,60 +74,76 @@ public class CarInformationParser {
      */
     void setup(){
         playerCarMap = new LinkedHashMap<>();
-        rigidBodyMap = new LinkedHashMap<>();
     }
 
     /**
      * Reads the PlayerID of a player, if it is assigned to a car and puts it in the playerCarMap with Key = CarActorId, Value = playerActorId
      */
-    private void getPlayerIDfromCar() {
+    private int getPlayerIDfromCar(int currentFrame, int currentActorUpdateNr, int actorId, double frameTime) {
         LOG.trace("Called - getPlayerIDfromCar");
         try {
 
             int playerID = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['Engine.Pawn:PlayerReplicationInfo'].ActorId");
-            String typeName =  ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].TypeName");
 
             if (playerCarMap.containsKey(actorId)){
                 LOG.debug("New Player {} for car {} (old PlayerActor {}), at frame {}", playerID, actorId, playerCarMap.get(actorId), currentFrame);
-                //LOG.debug("---TypeName = {}", typeName);
             }
             playerCarMap.putIfAbsent(actorId, playerID);
 
+            playerToCarAndFrameListMap.putIfAbsent(actorId,new ArrayList<>());
+            playerToCarAndFrameListMap.get(actorId).add(Pair.create(playerID,frameTime));
+
+            return playerID;
+        } catch (PathNotFoundException e) {
+            //No Information about new CarActor found
+        }
+
+        List<Pair<Integer, Double>> playerAndTimeList = playerToCarAndFrameListMap.get(actorId);
+
+        double compareTime = 0.0;
+        int playerid = -1;
+        for (Pair<Integer, Double> playerAndTime : playerAndTimeList){
+            if (playerAndTime.getValue() < frameTime){
+                if(playerAndTime.getValue()>compareTime){
+                    playerid = playerAndTime.getKey();
+                    compareTime=playerAndTime.getValue();
+                }
+            }
+        }
+
+        return playerid;
+
+    }
+
+    /**
+     * Reads the PlayerID of a player, if it is assigned to a car and puts it in the playerCarAndFrameTimeMap with Key = PlayerActorID, Value = carActorId and Frametime
+     */
+    private void mapPlayerIDtoCarAndTime(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime){
+        LOG.trace("Called - mapPlayerIDtoCarAndTime");
+        try {
+
+            int playerID = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['Engine.Pawn:PlayerReplicationInfo'].ActorId");
+
+            playerCarMap.putIfAbsent(actorId, playerID);
             playerToCarAndFrameTimeMap.add(playerID, Pair.create(actorId,frameTime));
 
-            LOG.debug("New Player for car found at frame {}, actorupdate {}", currentFrame, currentActorUpdateNr);
+
         } catch (PathNotFoundException e) {
-            LOG.debug("No Information about player found");
+            //No Information about new CarActor found
         }
     }
-
-    /**
-     * Reads information about a demolition, and if one occurs, puts the carActorIDs into the demolitionMap.
-     */
-    private void getDemoIDs() {
-        LOG.trace("Called - getPlayerIDfromCar");
-        try {
-            int attackerActorId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.Car_TA:ReplicatedDemolish'].AttackerActorId");
-            int victimActorId = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['TAGame.Car_TA:ReplicatedDemolish'].VictimActorId");
-
-            demolitionMap.put(attackerActorId,victimActorId);
-            LOG.debug("Demolished in frame {}", currentFrame,currentActorUpdateNr );
-        } catch (PathNotFoundException e) {
-            LOG.debug("No Information about player found");
-        }
-    }
-
 
 
     /**
      * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
      */
-    private void parseRigidBodyInformation() throws FileServiceException {
+    private void parseRigidBodyInformation(int playerID, int currentFrame, int currentActorUpdateNr, double frameTime, boolean gamePaused) throws FileServiceException {
         LOG.trace("Called - parseRigidBodyInformation");
 
-        rigidBodyMap.putIfAbsent(actorId, new ArrayList<>());
+        playerToRigidBodyMap.putIfAbsent(playerID, new ArrayList<>());
         try {
-            rigidBodyMap.get(actorId).add(rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused));
+            playerToRigidBodyMap.get(playerID).add(rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, gamePaused));
+
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about player found");
         }
@@ -161,11 +153,11 @@ public class CarInformationParser {
     /**
      * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
      */
-    private void parseFrameRigidBodyInformation() throws FileServiceException {
+    private void parseFrameRigidBodyInformation(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) throws FileServiceException {
         LOG.trace("Called - parseRigidBodyInformation");
 
         try {
-            frameDTO.getCarRigidBodyInformations().put(actorId,rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, frameDelta, gamePaused));
+            frameDTO.getCarRigidBodyInformations().put(actorId,rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime, gamePaused));
         } catch (PathNotFoundException e) {
             LOG.debug("No Information about player found");
         } 
@@ -173,24 +165,11 @@ public class CarInformationParser {
 
 
     Map<Integer, List<RigidBodyInformation>> getRigidBodyListPlayer() {
-        LOG.trace("Called - getRigidBodyListPlayer");
-        Map<Integer, List<RigidBodyInformation>> rigidBodyPlayers = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : playerCarMap.entrySet()) { // getValue() = playerKey, getKey() = carKey
-            if (rigidBodyPlayers.containsKey(entry.getValue())) {
-                rigidBodyPlayers.get(entry.getValue()).addAll(rigidBodyMap.get(entry.getKey()));
-            } else {
-                rigidBodyPlayers.put(entry.getValue(), rigidBodyMap.get(entry.getKey()));
-            }
-        }
-        return rigidBodyPlayers;
+        return playerToRigidBodyMap;
     }
 
-    public LinkedHashMap<Integer, Integer> getPlayerCarMap() {
+    LinkedHashMap<Integer, Integer> getPlayerCarMap() {
         return playerCarMap;
-    }
-
-    public LinkedHashMap<Integer, List<RigidBodyInformation>> getRigidBodyMap() {
-        return rigidBodyMap;
     }
 
 
@@ -198,11 +177,8 @@ public class CarInformationParser {
         this.ctx = ctx;
     }
 
-    public LinkedHashMap<Integer, Integer> getDemolitionMap() {
-        return demolitionMap;
-    }
 
-    public MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndFrameTimeMap() {
+    MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndFrameTimeMap() {
         return playerToCarAndFrameTimeMap;
     }
 }

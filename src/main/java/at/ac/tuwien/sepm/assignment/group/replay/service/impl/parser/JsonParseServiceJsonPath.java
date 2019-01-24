@@ -340,7 +340,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
                     switch (className) {
                         case "TAGame.Ball_TA":
-                            ballInformationParser.parseVideoFrame(currentFrame, currentActorUpdateNr, frameDTO, gamePaused);
+                            ballInformationParser.parseVideoFrame(currentFrame, currentActorUpdateNr, frameDTO, gamePaused, frameTime);
                             i++;
                             break;
                         case "TAGame.Car_TA":

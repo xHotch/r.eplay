@@ -127,7 +127,7 @@ public class JsonParseServiceTest {
             }
 
             Assert.assertThat(playerFound,is(true));
-            testMaps();
+
 
 
 
@@ -142,14 +142,7 @@ public class JsonParseServiceTest {
     }
 
 
-    private void testMaps(){
-        LinkedHashMap<Integer, Integer> playerCarMap = carInformationParser.getPlayerCarMap();
 
-        LinkedHashMap<Integer, List<RigidBodyInformation>> rigidBodyMap = carInformationParser.getRigidBodyMap();
-
-        long mapSize = playerCarMap.size();
-        Assert.assertEquals(rigidBodyMap.size(),mapSize);
-    }
 
 
 }

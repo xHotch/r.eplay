@@ -37,12 +37,11 @@ public class RigidBodyParser {
      * @param frameId       ID of the frame to parse
      * @param actorUpdateId ID of the ActorUpdate to parse
      * @param frameTime     frameTime of the frame
-     * @param frameDelta    deltaTime of the frame
      * @param gamePaused    boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
      * @return RigidBodyInformation Containing rotation, velocity and position information, as well as frame and delta time values.
      * @throws FileServiceException if the file couldn't be parsed
      */
-    RigidBodyInformation parseRigidBodyInformation(int frameId, int actorUpdateId, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+    RigidBodyInformation parseRigidBodyInformation(int frameId, int actorUpdateId, double frameTime, boolean gamePaused) throws FileServiceException {
         LOG.trace("Called - parseRigidBodyInformation");
 
         LinkedHashMap<String, Object> position = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyPosition);
@@ -60,7 +59,7 @@ public class RigidBodyParser {
 
         rigidBodyInformation.setGamePaused(gamePaused);
         rigidBodyInformation.setFrameTime(frameTime);
-        rigidBodyInformation.setFrameDelta(frameDelta);
+
 
         return rigidBodyInformation;
     }
