@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostIDs;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostDTO;
@@ -45,10 +46,6 @@ public class BoostInformationParser {
     Map<Integer, Integer> carPlayerMap;
 
     private Map<Integer, Integer> carComponentToCarId;
-    //Map that maps ActorID from a Player to a car. Key = carId, Value = playerId
-    private Map<Integer, Integer> carBoostMap;
-    //Map that maps ActorID from a boost pad to a car/player. Key = carId, Value = playerId
-    private Map<Integer, Integer> carBoostPadMap;
 
     //Map that maps ActorID from a Car to a list of BoostAmountInformation. Key = playerId, Value = Boost amount information
     private Map<Integer, List<BoostDTO>> boostAmountMap;
@@ -59,8 +56,6 @@ public class BoostInformationParser {
 
     void setup(){
         carComponentToCarId = new HashMap<>();
-        carBoostMap = new HashMap<>();
-        carBoostPadMap = new HashMap<>();
         boostAmountMap = new HashMap<>();
         boostPadMap = new HashMap<>();
         carPlayerMap = carInformationParser.getPlayerCarMap();
@@ -186,9 +181,9 @@ public class BoostInformationParser {
 
     private int getPickedUpPosition(int carID) {
         //loop through all current updates and search for a position for the specific player to evaulate which boost pad was picked up
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
+        double x;
+        double y;
+        double z;
         int actID = -1;
         try {
             // search position in the current frame
@@ -275,112 +270,8 @@ public class BoostInformationParser {
          return -1;
     }
 
-    private int getIDFromPosition(float x, float y, float z) {
-        float tolerance = 500.0f;
-
-        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= -4240.0 + tolerance && y > -4240.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 0;
-
-        if((x <= -1792.0 + tolerance && x > -1792.0 - tolerance) && (y <= -4184.0 + tolerance && y > -4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 1;
-
-        if((x <= 1792.0 + tolerance && x > 1792.0 - tolerance) && (y <= -4184.0 + tolerance && y > -4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 2;
-
-        if((x <= -3072.0 + tolerance && x > -3072.0 - tolerance) && (y <= -4096.0 + tolerance && y > -4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
-            return 3;
-
-        if((x <= 3072.0 + tolerance && x > 3072.0 - tolerance) && (y <= -4096.0 + tolerance && y > -4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
-            return 4;
-
-        if((x <= -940.0 + tolerance && x > -940.0 - tolerance) && (y <= -3308.0 + tolerance && y > -3308.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 5;
-
-        if((x <= 940.0 + tolerance && x > 940.0 - tolerance) && (y <= -3308.0 + tolerance && y > -3308.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 6;
-
-        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= -2816.0 + tolerance && y > -2816.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 7;
-
-        if((x <= -3584.0 + tolerance && x > -3584.0 - tolerance) && (y <= -2484.0 + tolerance && y > -2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 8;
-
-        if((x <= 3584.0 + tolerance && x > 3584.0 - tolerance) && (y <= -2484.0 + tolerance && y > -2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 9;
-
-        if((x <= -1788.0 + tolerance && x > -1788.0 - tolerance) && (y <= -2300.0 + tolerance && y > -2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 10;
-
-        if((x <= 1788.0 + tolerance && x > 1788.0 - tolerance) && (y <= -2300.0 + tolerance && y > -2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 11;
-
-        if((x <= -2048.0 + tolerance && x > -2048.0 - tolerance) && (y <= -1036.0 + tolerance && y > -1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 12;
-
-        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= -1024.0 + tolerance && y > -1024.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 13;
-
-        if((x <= 2048.0 + tolerance && x > 2048.0 - tolerance) && (y <= -1036.0 + tolerance && y > -1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 14;
-
-        if((x <= -3584.0 + tolerance && x > -3584.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
-            return 15;
-
-        if((x <= -1024.0 + tolerance && x > -1024.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 16;
-
-        if((x <= 1024.0 + tolerance && x > 1024.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 17;
-
-        if((x <= 3584.0 + tolerance && x > 3584.0 - tolerance) && (y <= 0.0 + tolerance && y > 0.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
-            return 18;
-
-        if((x <= -2048.0 + tolerance && x > -2048.0 - tolerance) && (y <= 1036.0 + tolerance && y > 1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 19;
-
-        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= 1024.0 + tolerance && y > 1024.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 20;
-
-        if((x <= 2048.0 + tolerance && x > 2048.0 - tolerance) && (y <= 1036.0 + tolerance && y > 1036.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 21;
-
-        if((x <= -1788.0 + tolerance && x > -1788.0 - tolerance) && (y <= 2300.0 + tolerance && y > 2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 22;
-
-        if((x <= 1788.0 + tolerance && x > 1788.0 - tolerance) && (y <= 2300.0 + tolerance && y > 2300.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 23;
-
-        if((x <= -3584.0 + tolerance && x > -3584.0 - tolerance) && (y <= 2484.0 + tolerance && y > 2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 24;
-
-        if((x <= 3584.0 + tolerance && x > 3584.0 - tolerance) && (y <= 2484.0 + tolerance && y > 2484.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 25;
-
-        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= 2816.0 + tolerance && y > 2816.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 26;
-
-        if((x <= -940.0 + tolerance && x > -940.0 - tolerance) && (y <= 3310.0 + tolerance && y > 3310.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 27;
-
-        if((x <= 940.0 + tolerance && x > 940.0 - tolerance) && (y <= 3308.0 + tolerance && y > 3308.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 28;
-
-        if((x <= -3072.0 + tolerance && x > -3072.0 - tolerance) && (y <= 4096.0 + tolerance && y > 4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
-            return 29;
-
-        if((x <= 3072.0 + tolerance && x > 3072.0 - tolerance) && (y <= 4096.0 + tolerance && y > 4096.0 - tolerance) && (z <= 73.0 + tolerance && z > 73.0 - tolerance))
-            return 30;
-
-        if((x <= -1792.0 + tolerance && x > -1792.0 - tolerance) && (y <= 4184.0 + tolerance && y > 4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 31;
-
-        if((x <= 1792.0 + tolerance && x > 1792.0 - tolerance) && (y <= 4184.0 + tolerance && y > 4184.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 32;
-
-        if((x <= 0.0 + tolerance && x > 0.0 - tolerance) && (y <= 4240.0 + tolerance && y > 4240.0 - tolerance) && (z <= 70.0 + tolerance && z > 70.0 - tolerance))
-            return 33;
-
-        return -1;
+    private int getIDFromPosition(double x, double y, double z) {
+        return BoostIDs.getID(x, y, z);
     }
 
     private void fillBoostPadIds(int actId) {
