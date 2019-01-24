@@ -124,7 +124,7 @@ public class PlayerController {
             counter++;
         }
         //let the user confirm the deletion
-        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Lösche Spieler",null,"Bist du dir sicher, dass du die Folgenden Spieler löschen möchtest? \n" + playerNames);
+        Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Lösche Spieler",null,"Bist du dir sicher, dass du die folgenden Spieler löschen möchtest? \n" + playerNames);
 
         if (result.get() == ButtonType.OK) {
             try {

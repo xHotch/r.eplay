@@ -183,6 +183,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         matchDAO.createMatch(matchDTO);
         matchDAO.createMatch(matchDTO);
     }
@@ -240,6 +242,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
 
@@ -258,6 +262,7 @@ public class MatchTest {
         Assert.assertThat(match.getDateTime(), is(matchDTO.getDateTime()));
         Assert.assertThat(match.getTeamSize(), is(matchDTO.getTeamSize()));
         Assert.assertThat(match.getReadId(), is(matchDTO.getReadId()));
+        Assert.assertThat(match.getMatchTime(), is(matchDTO.getMatchTime()));
 
         // verify player data ...
         for (MatchPlayerDTO player:match.getPlayerData()) {
@@ -280,16 +285,18 @@ public class MatchTest {
         MatchDTO match = new MatchDTO();
 
         match.setDateTime(null);
+        match.setMatchTime(-1);
         match.setPlayerData(null);
 
         try {
             matchService.createMatch(match);
             fail();
         } catch (MatchValidationException e) {
-            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "No players found in match\n"));
+            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "MatchTime cannot be negative\n" + "No players found in match\n"));
         }
 
         match.setDateTime(LocalDateTime.now());
+        match.setMatchTime(400);
         match.setTeamSize(3);
 
         MatchPlayerDTO playerRed = new MatchPlayerDTO();
@@ -382,6 +389,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
 
@@ -462,6 +471,8 @@ public class MatchTest {
         matchDTO.setTeamSize(1);
 
         matchDTO.setReadId("Test");
+
+        matchDTO.setMatchTime(400);
 
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();

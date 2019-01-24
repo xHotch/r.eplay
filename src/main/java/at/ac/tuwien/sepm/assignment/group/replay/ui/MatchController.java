@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -189,12 +190,19 @@ public class MatchController {
         LOG.trace("called - onMatchDeleteButtonClicked");
         if (tableViewMatches.getSelectionModel().getSelectedItems().size() == 1) {
             MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
-            try {
-                matchService.deleteMatch(selectedMatch);
-                updateMatchTable();
-            } catch (MatchServiceException e) {
-                LOG.error("caught MatchServiceException", e);
-                AlertHelper.showErrorMessage("Fehler beim Löschen des Matches");
+
+            //let the user confirm the deletion
+            String matchName = selectedMatch.getFormattedDateTime() + ", " + selectedMatch.getMatchType() + ", " + selectedMatch.getTeamBluePlayers() + ", " + selectedMatch.getTeamRedPlayers();
+            Optional<ButtonType> result = AlertHelper.alert(Alert.AlertType.CONFIRMATION,"Lösche Match",null,"Bist du dir sicher, dass du folgendes Match löschen möchtest? \n" + matchName);
+
+            if (result.get() == ButtonType.OK) {
+                try {
+                    matchService.deleteMatch(selectedMatch);
+                    updateMatchTable();
+                } catch (MatchServiceException e) {
+                    LOG.error("caught MatchServiceException", e);
+                    AlertHelper.showErrorMessage("Fehler beim Löschen des Matches");
+                }
             }
         } else {
             AlertHelper.showErrorMessage("Wählen Sie genau ein match aus");
