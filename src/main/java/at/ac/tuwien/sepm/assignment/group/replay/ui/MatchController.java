@@ -251,14 +251,15 @@ public class MatchController {
         }
 
         executorService.submit(() -> {
-            File json;
+            File json = null;
+            File replayFile;
             try {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(true));
                 Platform.runLater(() -> uploadReplayButton.setDisable(true));
-                File replayFile = replayService.copyReplayFile(inputFile);
-                json = replayService.parseReplayFileToJson(replayFile);
+                replayFile = replayService.copyReplayFile(inputFile);
                 MatchDTO matchDto;
                 try {
+                    json = replayService.parseReplayFileToJson(replayFile);
                     matchDto = jsonParseService.parseMatch(json);
                     matchDto.setReplayFile(replayFile);
                 } finally {
@@ -279,9 +280,6 @@ public class MatchController {
                     updateMatchTable();
                     playerController.updatePlayerTable();
                 });
-            } catch (FileServiceException e) {
-                LOG.error("Caught File Service Exception", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Löschen der JSON Datei"));
             } catch (PlayerServiceException e) {
                 LOG.error("Caught PlayerServiceException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Speichern der Spieler"));
@@ -297,6 +295,9 @@ public class MatchController {
             } catch (ReplayAlreadyExistsException e) {
                 LOG.error("Caught ReplayAlreadyExistsException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Replay existiert bereits"));
+            } catch (FileServiceException e) {
+                LOG.error("Caught File Service Exception", e);
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Löschen der JSON Datei"));
             } catch (Exception e){
                 LOG.error("Caught Exception ##############", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));

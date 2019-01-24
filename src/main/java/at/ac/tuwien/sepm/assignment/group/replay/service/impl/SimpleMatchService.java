@@ -76,6 +76,7 @@ public class SimpleMatchService implements MatchService {
     @Override
     public void deleteFile(File file) throws FileServiceException {
         LOG.trace("Called - deleteFile");
+        if(file == null) return;
         String extension = FilenameUtils.getExtension(file.getName());
         if (!extension.equals("json")){
             throw new FileServiceException("Can not delete File with type " + extension);
