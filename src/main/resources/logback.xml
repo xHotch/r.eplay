@@ -17,10 +17,12 @@
 
     <!-- Example: <logger name="at.ac.tuwien.sepm.assignment.group.replay.service.impl" level="INFO" /> -->
 
+    <logger name="at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser" level="error" />
+    <logger name="com.jayway.jsonpath" level="error" />
     <root level="debug">
         <appender-ref ref="FILE" />
     </root>
-    <root level="error">
+    <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

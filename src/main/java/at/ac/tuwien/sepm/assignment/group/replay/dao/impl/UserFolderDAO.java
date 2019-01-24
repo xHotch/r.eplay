@@ -128,9 +128,10 @@ public class UserFolderDAO implements FolderDAO {
         return replayToJsonParser;
     }
 
-    public File getFile(String fileName) {
+    @Override
+    public File getFile(File directory, String fileName) {
         LOG.trace("Called - getFile");
-        return new File(fileDirectory, fileName);
+        return new File(directory, fileName);
     }
 
 

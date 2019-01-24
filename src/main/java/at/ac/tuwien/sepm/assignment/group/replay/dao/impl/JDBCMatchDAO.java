@@ -89,7 +89,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setDouble(5, matchDTO.getTimeBallInRedSide());
             ps.setInt(6, matchDTO.getPossessionBlue());
             ps.setInt(7, matchDTO.getPossessionRed());
-            ps.setString(9, matchDTO.getReplayFile().getName());
+            ps.setString(9, matchDTO.getReplayFilename());
             ps.setString(8, matchDTO.getBallHeatmapFilename());
             ps.setDouble(10, matchDTO.getMatchTime());
             ps.executeUpdate();
@@ -387,14 +387,13 @@ public class JDBCMatchDAO implements MatchDAO {
                 match.setPossessionRed(rs.getInt("possessionRed"));
                 match.setTimeBallInBlueSide(rs.getDouble("timeBallInBlueSide"));
                 match.setTimeBallInRedSide(rs.getDouble("timeBallInRedSide"));
-                if(files) match.setReplayFile(folderDAO.getFile(rs.getString("fileName")));
+                match.setReplayFilename(rs.getString("fileName"));
                 match.setBallHeatmapFilename(rs.getString("ballHeatmapFilename"));
                 match.setMatchTime(rs.getDouble("matchTime"));
 
                 // retrieve the players from the match
                 List<MatchPlayerDTO> matchPlayers = readMatchPlayers(match);
                 match.setPlayerData(matchPlayers);
-                if(files) folderDAO.getHeatmaps(match);
                 result.add(match);
                 LOG.debug("Added match to the result list!");
             }

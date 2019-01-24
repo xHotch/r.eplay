@@ -114,8 +114,18 @@ public class SimpleMatchService implements MatchService {
                 matchStatsDTO.setShots(matchStatsDTO.getShots() + matchPlayerDTO.getShots());
             }
         }
-        matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() / (matchDTO.getPlayerData().size() / 2));
+        matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() / (matchDTO.getPlayerData().size() / 2.0));
         return matchStatsDTO;
+    }
+
+    @Override
+    public void getHeatmaps(MatchDTO matchDTO) throws FileServiceException {
+        LOG.trace("Called - getHeatmaps");
+        try {
+            folderDAO.getHeatmaps(matchDTO);
+        } catch (FilePersistenceException e){
+            throw new FileServiceException("Could read heatmaps", e);
+        }
     }
 
 

@@ -168,6 +168,11 @@ public class MatchController {
         // load match details for the new window
         if (tableViewMatches.getSelectionModel().getSelectedItems().size() == 1) {
             MatchDTO selectedMatch = tableViewMatches.getSelectionModel().getSelectedItem();
+            try {
+                matchService.getHeatmaps(selectedMatch);
+            } catch (FileServiceException e) {
+                LOG.error("Could not read Heatmaps", e);
+            }
             matchStatsOverviewController.loadBasicMatchData(selectedMatch);
             ballStatisticsController.loadBallStatistics(selectedMatch);
             matchPlayerStatisticsController.loadMatchPlayerStatistics(selectedMatch);
@@ -261,7 +266,7 @@ public class MatchController {
                 try {
                     json = replayService.parseReplayFileToJson(replayFile);
                     matchDto = jsonParseService.parseMatch(json);
-                    matchDto.setReplayFile(replayFile);
+                    matchDto.setReplayFilename(replayFile.getName());
                 } finally {
                     matchService.deleteFile(json);
                 }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
@@ -65,4 +66,11 @@ public interface MatchService {
      * @return the teamStats from a team
      */
     MatchStatsDTO calcTeamStats(MatchDTO matchDTO, TeamSide teamSide);
+
+    /**
+     * Gets the Heatmap Images from the heatmaps directory and saves it to the MatchDTO
+     * @param matchDTO the match to get the heatmap
+     * @throws FileServiceException if the heatmap image could not be read
+     */
+    void getHeatmaps(MatchDTO matchDTO) throws FileServiceException;
 }

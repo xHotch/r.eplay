@@ -102,7 +102,7 @@ public class JsonParseServiceTest {
         playerStatistic = new PlayerStatistic(rigidBodyStatistic);
         boostStatistic = new BoostStatistic();
 
-        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,boostStatistic,replayService, matchService);
+        jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,boostStatistic,replayService, matchService, mockFolderDAO);
 
     }
 

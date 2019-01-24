@@ -10,29 +10,22 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FilterValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.MatchValidationException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.ReplayAlreadyExistsException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.ReplayServiceRLRP;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.JsonParseServiceJsonPath;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.apache.commons.io.FileUtils;
-import org.h2.jdbc.JdbcSQLException;
 import org.hamcrest.CoreMatchers;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.File;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -140,7 +133,7 @@ public class MatchTest {
         matchDTO.setDateTime(LocalDate.now().atStartOfDay());
 
         // set fileName
-        matchDTO.setReplayFile(new File("TestFile"));
+        matchDTO.setReplayFilename("TestFile");
 
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
@@ -183,7 +176,12 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
-        matchDAO.createMatch(matchDTO);
+        try {
+            matchDAO.createMatch(matchDTO);
+        } catch (MatchAlreadyExistsException e)
+        {
+            fail();
+        }
         matchDAO.createMatch(matchDTO);
     }
 
@@ -196,7 +194,7 @@ public class MatchTest {
         matchDTO.setDateTime(LocalDate.now().atStartOfDay());
 
         // set fileName
-        matchDTO.setReplayFile(new File("TestFile"));
+        matchDTO.setReplayFilename("TestFile");
 
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
@@ -338,7 +336,7 @@ public class MatchTest {
         matchDTO.setDateTime(LocalDate.now().atStartOfDay());
 
         // set fileName
-        matchDTO.setReplayFile(new File("TestFile"));
+        matchDTO.setReplayFilename("TestFile");
 
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
@@ -419,7 +417,7 @@ public class MatchTest {
         matchDTO.setDateTime(LocalDate.now().atStartOfDay());
 
         // set fileName
-        matchDTO.setReplayFile(new File("TestFile"));
+        matchDTO.setReplayFilename("TestFile");
 
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();

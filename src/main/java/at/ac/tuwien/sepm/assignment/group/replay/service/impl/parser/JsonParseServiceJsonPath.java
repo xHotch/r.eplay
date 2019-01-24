@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dao.FolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
@@ -51,10 +52,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     private BoostStatistic boostStatistic;
     private ReplayService replayService;
     private MatchService matchService;
+    private FolderDAO folderDAO;
 
 
-
-    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, BoostStatistic boostStatistic, ReplayService replayService, MatchService matchService) {
+    public JsonParseServiceJsonPath(RigidBodyParser rigidBodyParser, PlayerInformationParser playerInformationParser, GameInformationParser gameInformationParser, CarInformationParser carInformationParser, BallInformationParser ballInformationParser, BoostInformationParser boostInformationParser, PlayerStatistic playerStatistic, BallStatistic ballStatistic, BoostStatistic boostStatistic, ReplayService replayService, MatchService matchService, FolderDAO folderDAO) {
         this.rigidBodyParser = rigidBodyParser;
         this.playerInformationParser = playerInformationParser;
         this.gameInformationParser = gameInformationParser;
@@ -66,6 +67,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         this.boostStatistic = boostStatistic;
         this.replayService = replayService;
         this.matchService = matchService;
+        this.folderDAO = folderDAO;
     }
 
 
@@ -162,7 +164,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         //get json from .replay
         File jsonFile = null;
         try {
-            jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
+            jsonFile=replayService.parseReplayFileToJson(folderDAO.getFile(folderDAO.getFileDirectory(),matchDTO.getReplayFilename()));
             VideoDTO videoDTO = parseVideo(jsonFile);
             videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
             videoDTO.setCarActorIds(carInformationParser.getPlayerCarMap());

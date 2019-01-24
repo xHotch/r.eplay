@@ -89,10 +89,11 @@ public interface FolderDAO {
     void getHeatmaps(MatchDTO matchDTO) throws FilePersistenceException;
 
     /**
-     * Returns a File with the given FileName from the File Folder
+     * Returns a File with the given FileName from the given directory Folder
+     * @param directory the folder
      * @param fileName the FileName
-     * @return the File from the File Folder
+     * @return the File from the directory Folder
      */
-    File getFile(String fileName);
+    File getFile(File directory, String fileName);
 
 }
