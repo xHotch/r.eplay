@@ -28,7 +28,9 @@ public class CarInformationParser {
 
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndFrameTimeMap = new LinkedMultiValueMap<>();
 
-    private Map<Integer, List<Pair<Integer, Double>>> playerToCarAndFrameListMap = new HashMap<>();
+
+
+    private Map<Integer, List<Pair<Integer, Double>>> carToPlayerAndFrameListMap = new HashMap<>();
 
     //Map that maps ActorID from a Player to a list of RigidBodyInformation
     private LinkedHashMap<Integer, List<RigidBodyInformation>> playerToRigidBodyMap = new LinkedHashMap<>();
@@ -74,6 +76,9 @@ public class CarInformationParser {
      */
     void setup(){
         playerCarMap = new LinkedHashMap<>();
+        playerToCarAndFrameTimeMap = new LinkedMultiValueMap<>();
+        carToPlayerAndFrameListMap = new HashMap<>();
+        playerToRigidBodyMap = new LinkedHashMap<>();
     }
 
     /**
@@ -90,15 +95,15 @@ public class CarInformationParser {
             }
             playerCarMap.putIfAbsent(actorId, playerID);
 
-            playerToCarAndFrameListMap.putIfAbsent(actorId,new ArrayList<>());
-            playerToCarAndFrameListMap.get(actorId).add(Pair.create(playerID,frameTime));
+            carToPlayerAndFrameListMap.putIfAbsent(actorId,new ArrayList<>());
+            carToPlayerAndFrameListMap.get(actorId).add(Pair.create(playerID,frameTime));
 
             return playerID;
         } catch (PathNotFoundException e) {
             //No Information about new CarActor found
         }
 
-        List<Pair<Integer, Double>> playerAndTimeList = playerToCarAndFrameListMap.get(actorId);
+        List<Pair<Integer, Double>> playerAndTimeList = carToPlayerAndFrameListMap.get(actorId);
 
         double compareTime = 0.0;
         int playerid = -1;
@@ -127,6 +132,8 @@ public class CarInformationParser {
             playerCarMap.putIfAbsent(actorId, playerID);
             playerToCarAndFrameTimeMap.add(playerID, Pair.create(actorId,frameTime));
 
+            carToPlayerAndFrameListMap.putIfAbsent(actorId,new ArrayList<>());
+            carToPlayerAndFrameListMap.get(actorId).add(Pair.create(playerID,frameTime));
 
         } catch (PathNotFoundException e) {
             //No Information about new CarActor found
@@ -180,5 +187,9 @@ public class CarInformationParser {
 
     MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndFrameTimeMap() {
         return playerToCarAndFrameTimeMap;
+    }
+
+    public Map<Integer, List<Pair<Integer, Double>>> getCarToPlayerAndFrameListMap() {
+        return carToPlayerAndFrameListMap;
     }
 }

@@ -115,6 +115,8 @@ public class BoostInformationParser {
                     int actualCarID = carComponentToCarId.get(actorId);
                     boostAmountMap.putIfAbsent(actualCarID, new ArrayList<>());
                     boostAmountMap.get(actualCarID).add(boost);
+                } else {
+                    LOG.debug("No Car for Component {}, at FrameTime {}", actorId , frameTime);
                 }
             }
         } catch (PathNotFoundException e) {
