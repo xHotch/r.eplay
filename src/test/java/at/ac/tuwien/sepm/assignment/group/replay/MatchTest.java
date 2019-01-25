@@ -39,8 +39,7 @@ import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -547,5 +546,13 @@ public class MatchTest {
         player.setShots(shots);
         player.setSaves(saves);
         player.setHeatmapImage(new BufferedImage(200,200,BufferedImage.TYPE_INT_RGB));
+
+        //set boost pad list
+        Map<Integer, List<BoostPadDTO>> boostPadMap = new HashMap<>();
+        for(int i=0; i<=33; i++) {
+            boostPadMap.putIfAbsent(i, new LinkedList<>());
+            boostPadMap.get(i).add(new BoostPadDTO(0.0, 0.0, 0, false));
+        }
+        player.setBoostPadMap(boostPadMap);
     }
 }
