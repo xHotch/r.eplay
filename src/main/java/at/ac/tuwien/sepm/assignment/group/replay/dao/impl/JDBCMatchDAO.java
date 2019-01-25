@@ -103,7 +103,6 @@ public class JDBCMatchDAO implements MatchDAO {
         }
         for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
 
-            //todo vlt löschen
             matchPlayerDTO.setMatchDTO(matchDTO);
             createMatchPlayer(matchPlayerDTO);
         }

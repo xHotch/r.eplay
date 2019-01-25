@@ -31,7 +31,7 @@ public interface PlayerService {
      *
      * @param players players to delete
      * @throws PlayerValidationException if the list of players to delete is empty
-     * @throws PlayerPersistenceException throws persistence exception if something failed
+     * @throws PlayerServiceException throws persistence exception if something failed
      *                                    while deleting a player in the database
      */
     void deletePlayers(List<PlayerDTO> players) throws PlayerValidationException, PlayerServiceException;

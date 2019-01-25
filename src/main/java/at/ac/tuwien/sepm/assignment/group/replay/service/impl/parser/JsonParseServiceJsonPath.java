@@ -36,7 +36,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private File jFile;
+
     private ReadContext ctx;
     private MatchDTO matchDTO;
 
@@ -69,76 +69,11 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     }
 
 
-    private VideoDTO parseVideo(File jsonFile) throws FileServiceException {
-        LOG.trace("called - parseMatch");
-        if (jsonFile == null) {
-
-            throw new FileServiceException("Can't parse null");
-        }
-        String extension = FilenameUtils.getExtension(jsonFile.getName());
-        if (!extension.equals("json")) {
-            throw new FileServiceException("wrong file type: " + extension);
-        }
-
-            try {
-                Configuration conf = Configuration.builder().options(Option.DEFAULT_PATH_LEAF_TO_NULL).build();
-                ctx = JsonPath.using(conf).parse(jsonFile);
-
-                playerInformationParser.setCtx(ctx);
-                playerInformationParser.setUp();
-                rigidBodyParser.setCtx(ctx);
-                carInformationParser.setCtx(ctx);
-                carInformationParser.setup();
-                ballInformationParser.setCtx(ctx);
-                ballInformationParser.setup();
-                boostInformationParser.setCtx(ctx);
-                boostInformationParser.setup();
-
-                jFile = jsonFile;
-            } catch (IOException e) {
-                throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
-            }
-
-
-
-        LOG.debug("Start Parse");
-        VideoDTO videoDTO = new VideoDTO();
-        videoDTO.setFrames(parseVideoFrames());
-        LOG.debug("End Parse");
-        return videoDTO;
-    }
-
     @Override
     public MatchDTO parseMatch(File jsonFile) throws FileServiceException {
         LOG.trace("called - parseMatch");
-        if (jsonFile == null) {
 
-            throw new FileServiceException("Can't parse null");
-        }
-        String extension = FilenameUtils.getExtension(jsonFile.getName());
-        if (!extension.equals("json")) {
-            throw new FileServiceException("wrong file type: " + extension);
-        }
-
-            try {
-                Configuration conf = Configuration.builder().options(Option.DEFAULT_PATH_LEAF_TO_NULL).build();
-                ctx = JsonPath.using(conf).parse(jsonFile);
-
-                playerInformationParser.setCtx(ctx);
-                playerInformationParser.setUp();
-                rigidBodyParser.setCtx(ctx);
-                gameInformationParser.setCtx(ctx);
-                carInformationParser.setCtx(ctx);
-                carInformationParser.setup();
-                ballInformationParser.setCtx(ctx);
-                ballInformationParser.setup();
-                boostInformationParser.setCtx(ctx);
-                boostInformationParser.setup();
-
-                jFile = jsonFile;
-            } catch (IOException e) {
-                throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
-            }
+        setupParsers(jsonFile);
 
         LOG.debug("Start Parse");
         matchDTO = readProperties();
@@ -156,14 +91,60 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         return matchDTO;
     }
 
+    /**
+     * Method that parses the Json and setups up the other Parsers by calling their setUp methods and setting the JsonPath ReadContext
+     *
+     * @throws FileServiceException the File can't be parsed
+     */
+    private void setupParsers(File jsonFile) throws FileServiceException{
+        if (jsonFile == null) {
+
+            throw new FileServiceException("Can't parse null");
+        }
+        String extension = FilenameUtils.getExtension(jsonFile.getName());
+        if (!extension.equals("json")) {
+            throw new FileServiceException("wrong file type: " + extension);
+        }
+
+        try {
+            Configuration conf = Configuration.builder().options(Option.DEFAULT_PATH_LEAF_TO_NULL).build();
+            ctx = JsonPath.using(conf).parse(jsonFile);
+
+            playerInformationParser.setCtx(ctx);
+            playerInformationParser.setUp();
+            rigidBodyParser.setCtx(ctx);
+            gameInformationParser.setCtx(ctx);
+            carInformationParser.setCtx(ctx);
+            carInformationParser.setup();
+            ballInformationParser.setCtx(ctx);
+            ballInformationParser.setup();
+            boostInformationParser.setCtx(ctx);
+            boostInformationParser.setup();
+
+        } catch (IOException e) {
+            throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
+        }
+
+    }
+
     @Override
     public VideoDTO getVideo(MatchDTO matchDTO) throws FileServiceException{
+        LOG.trace("called - getVideo");
 
         //get json from .replay
         File jsonFile = null;
         try {
             jsonFile=replayService.parseReplayFileToJson(matchDTO.getReplayFile());
-            VideoDTO videoDTO = parseVideo(jsonFile);
+
+
+            setupParsers(jsonFile);
+
+            LOG.debug("Start Parse");
+            VideoDTO videoDTO = new VideoDTO();
+            videoDTO.setFrames(parseVideoFrames());
+            LOG.debug("End Parse");
+
+
             videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
             videoDTO.setCarActorIds(carInformationParser.getPlayerCarMap());
             videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMap());
@@ -382,7 +363,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
      */
     private void calculate(MatchDTO matchDTO) {
         LOG.trace("Called - calculate");
-        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations()); //TODO link actorID to matchplayer
+        playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations());
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
         boostStatistic.calculate(matchDTO.getPlayerData(), ballInformationParser.getRigidBodyInformations(), boostInformationParser.getBoostPadMap());
     }
@@ -405,33 +386,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             match.setTeamSize(ctx.read("$.Properties.TeamSize"));
             match.setReadId(ctx.read("$.Properties.Id"));
             match.setMatchTime(ctx.read("$.Frames[-1].Time"));
-            /*List<MatchPlayerDTO> playerList = new ArrayList<>();
-            for (int i = 0; i < match.getTeamSize() * 2; i++) {
-
-
-                PlayerDTO playerDTO = new PlayerDTO();
-                MatchPlayerDTO matchPlayer = new MatchPlayerDTO();
-
-                matchPlayer.setMatchDTO(match);
-                matchPlayer.setPlayerDTO(playerDTO);
-
-                matchPlayer.setAssists(ctx.read("$.Properties.PlayerStats[" + i + "].Assists"));
-                matchPlayer.setGoals(ctx.read("$.Properties.PlayerStats[" + i + "].Goals"));
-                matchPlayer.setSaves(ctx.read("$.Properties.PlayerStats[" + i + "].Saves"));
-                matchPlayer.setShots(ctx.read("$.Properties.PlayerStats[" + i + "].Shots"));
-                matchPlayer.setScore(ctx.read("$.Properties.PlayerStats[" + i + "].Score"));
-                playerDTO.setName(ctx.read("$.Properties.PlayerStats[" + i + "].Name"));
-                matchPlayer.setTeam(TeamSide.getById(ctx.read("$.Properties.PlayerStats[" + i + "].Team")).get());
-
-                long id = ctx.read("$.Properties.PlayerStats[" + i + "].OnlineID");
-                if (id == 0) {
-                    throw new FileServiceException("A player has no id");
-                }
-                playerDTO.setPlatformID(id);
-                playerList.add(matchPlayer);
-            }
-            match.setPlayerData(playerList);
-            */
 
         } catch (Exception e) {
             throw new FileServiceException(e.getMessage(), e);

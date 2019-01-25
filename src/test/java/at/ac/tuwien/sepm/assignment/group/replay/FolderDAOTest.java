@@ -131,4 +131,9 @@ public class FolderDAOTest {
         Assert.assertNotNull(matchDTO.getBallHeatmapImage());
         Assert.assertNotNull(matchDTO.getPlayerData().get(0).getHeatmapImage());
     }
+
+    @Test(expected = CouldNotCreateFolderException.class)
+    public void testCouldNotCreateFolder() throws CouldNotCreateFolderException {
+        folderDAO.setupDirectory(" /*!");
+    }
 }
