@@ -152,9 +152,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
             return videoDTO;
         } finally {
-            if (jsonFile!=null) {
-                matchService.deleteFile(jsonFile);
-            }
+            matchService.deleteFile(jsonFile);
         }
     }
 

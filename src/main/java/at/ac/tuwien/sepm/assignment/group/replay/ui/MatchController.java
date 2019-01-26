@@ -265,7 +265,7 @@ public class MatchController {
 
         executorService.submit(() -> {
             File json = null;
-            File replayFile;
+            File replayFile = null;
             try {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(true));
                 Platform.runLater(() -> uploadReplayButton.setDisable(true));
@@ -306,15 +306,25 @@ public class MatchController {
                 LOG.error("Caught MatchValidationException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültiges Match"));
             } catch (ReplayAlreadyExistsException e) {
+                try {
+                    matchService.deleteFile(replayFile);
+                } catch (FileServiceException e1) {
+                    LOG.error("Could not delete replay file", e1);
+                }
                 LOG.error("Caught ReplayAlreadyExistsException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Replay existiert bereits"));
             } catch (FileServiceException e) {
+                try {
+                    matchService.deleteFile(replayFile);
+                } catch (FileServiceException e1) {
+                    LOG.error("Could not delete replay file", e1);
+                }
                 LOG.error("Caught File Service Exception", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays"));
             } catch (Exception e){
                 LOG.error("Caught Exception ##############", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
-            }finally {
+            } finally {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(false));
                 Platform.runLater(() -> uploadReplayButton.setDisable(false));
             }

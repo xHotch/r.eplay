@@ -182,7 +182,7 @@ public class MatchDAOTest {
         matchDTO.setPossessionRed(50);
         matchDTO.setTimeBallInBlueSide(60.0);
         matchDTO.setTimeBallInRedSide(60.0);
-        matchDTO.setReplayFile(new File("Test.replay"));
+        matchDTO.setReplayFilename("Test.replay");
 
         PlayerDTO player1 = new PlayerDTO();
         player1.setId(1L);

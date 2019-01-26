@@ -39,7 +39,7 @@ public class ReplayServiceRLRP implements ReplayService {
     public File parseReplayFileToJson(File replayFile) throws FileServiceException {
         LOG.trace("Called - parseReplayFileToJson");
 
-        File jsonFile;
+        File jsonFile = null;
         try {
             if (replayToJsonParser == null || !replayToJsonParser.exists()) {
                 //Last File (.exe) is returned
@@ -72,6 +72,11 @@ public class ReplayServiceRLRP implements ReplayService {
             }
 
         } catch (Exception e) {
+            try {
+                folderDAO.deleteFile(jsonFile);
+            } catch (FilePersistenceException e1) {
+                LOG.error("File error",e1);
+            }
             throw new FileServiceException(e.getMessage(), e);
         }
 

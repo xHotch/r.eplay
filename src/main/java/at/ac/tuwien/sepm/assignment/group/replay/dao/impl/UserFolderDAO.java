@@ -148,7 +148,7 @@ public class UserFolderDAO implements FolderDAO {
                 throw new FilePersistenceException("File " + file.getName() +  " could not be deleted");
             }
         } else {
-            throw new FilePersistenceException("Can not delete File with type " + extension);
+            throw new FilePersistenceException("Can not delete File with type: ." + extension);
         }
     }
 
