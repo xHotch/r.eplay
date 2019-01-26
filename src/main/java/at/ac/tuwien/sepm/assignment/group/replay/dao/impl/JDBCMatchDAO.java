@@ -270,7 +270,7 @@ public class JDBCMatchDAO implements MatchDAO {
                 ps.setBoolean(2, false);
             }
             ps.setInt(3, teamSize);
-            ps.setBoolean(4, (teamSize > 0 && teamSize <= 3));
+            ps.setBoolean(4, !(teamSize > 0 && teamSize <= 3));
 
             if (end == null) {
                 ps.setTimestamp(5, null);
