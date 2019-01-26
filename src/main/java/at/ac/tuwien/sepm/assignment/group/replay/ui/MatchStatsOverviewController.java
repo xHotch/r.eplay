@@ -163,6 +163,13 @@ public class MatchStatsOverviewController {
      * Helper Method to setup up the Player Table Columns
      */
     private void setUpPlayerTable() {
+        setPlayerTable(tableTeamBlue, playerNameBlue, playerGoalsBlue, playerShotsBlue, playerSavesBlue, playerAssistsBlue, playerAvgSpeedBlue);
+
+        setPlayerTable(tableTeamRed, playerNameRed, playerGoalsRed, playerShotsRed, playerSavesRed, playerAssistsRed, playerAvgSpeedRed);
+
+    }
+
+    private void setPlayerTable(TableView<MatchPlayerDTO> tableTeamBlue, TableColumn<MatchPlayerDTO, String> playerNameBlue, TableColumn<MatchPlayerDTO, Integer> playerGoalsBlue, TableColumn<MatchPlayerDTO, Integer> playerShotsBlue, TableColumn<MatchPlayerDTO, Integer> playerSavesBlue, TableColumn<MatchPlayerDTO, Integer> playerAssistsBlue, TableColumn<MatchPlayerDTO, Double> playerAvgSpeedBlue) {
         tableTeamBlue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         playerNameBlue.setCellValueFactory(new PropertyValueFactory<>("name"));
         playerGoalsBlue.setCellValueFactory(new PropertyValueFactory<>("goals"));
@@ -170,15 +177,6 @@ public class MatchStatsOverviewController {
         playerSavesBlue.setCellValueFactory(new PropertyValueFactory<>("saves"));
         playerAssistsBlue.setCellValueFactory(new PropertyValueFactory<>("assists"));
         playerAvgSpeedBlue.setCellValueFactory(new PropertyValueFactory<>("averageSpeedAsInt"));
-
-        tableTeamRed.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        playerNameRed.setCellValueFactory(new PropertyValueFactory<>("name"));
-        playerGoalsRed.setCellValueFactory(new PropertyValueFactory<>("goals"));
-        playerShotsRed.setCellValueFactory(new PropertyValueFactory<>("shots"));
-        playerSavesRed.setCellValueFactory(new PropertyValueFactory<>("saves"));
-        playerAssistsRed.setCellValueFactory(new PropertyValueFactory<>("assists"));
-        playerAvgSpeedRed.setCellValueFactory(new PropertyValueFactory<>("averageSpeedAsInt"));
-
     }
 }
 

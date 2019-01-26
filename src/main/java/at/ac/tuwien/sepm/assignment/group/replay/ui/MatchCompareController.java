@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MatchCompareController {
@@ -112,27 +113,14 @@ public class MatchCompareController {
         team1ColumnBlue.setCellValueFactory(new PropertyValueFactory<>("teamNames"));
         team2ColumnBlue.setCellValueFactory(new PropertyValueFactory<>("teamNames"));
 
-        ArrayList<PlayerTeamsDTO> match1ListRed = new ArrayList<>();
-        ArrayList<PlayerTeamsDTO> match2ListRed = new ArrayList<>();
-        ArrayList<PlayerTeamsDTO> match1ListBlue = new ArrayList<>();
-        ArrayList<PlayerTeamsDTO> match2ListBlue = new ArrayList<>();
+        List<PlayerTeamsDTO> match1ListRed = new ArrayList<>();
+        List<PlayerTeamsDTO> match2ListRed = new ArrayList<>();
+        List<PlayerTeamsDTO> match1ListBlue = new ArrayList<>();
+        List<PlayerTeamsDTO> match2ListBlue = new ArrayList<>();
         try {
-            for(MatchPlayerDTO matchPlayerDTO : matchDTO1.getPlayerData()) {
-                PlayerTeamsDTO playerTeamsDTO = teamService.readPlayerTeams(matchPlayerDTO.getPlayerDTO());
-                if (matchPlayerDTO.getTeam() == TeamSide.RED) {
-                    match1ListRed.add(playerTeamsDTO);
-                } else {
-                    match1ListBlue.add(playerTeamsDTO);
-                }
-            }
-            for(MatchPlayerDTO matchPlayerDTO : matchDTO2.getPlayerData()) {
-                PlayerTeamsDTO playerTeamsDTO = teamService.readPlayerTeams(matchPlayerDTO.getPlayerDTO());
-                if (matchPlayerDTO.getTeam() == TeamSide.RED) {
-                    match2ListRed.add(playerTeamsDTO);
-                } else {
-                    match2ListBlue.add(playerTeamsDTO);
-                }
-            }
+            setPlayerLists(matchDTO1, match1ListRed, match1ListBlue);
+            setPlayerLists(matchDTO2, match2ListRed, match2ListBlue);
+
             ObservableList<PlayerTeamsDTO> list1Red = FXCollections.observableArrayList(match1ListRed);
             ObservableList<PlayerTeamsDTO> list2Red = FXCollections.observableArrayList(match2ListRed);
             ObservableList<PlayerTeamsDTO> list1Blue = FXCollections.observableArrayList(match1ListBlue);
@@ -144,6 +132,17 @@ public class MatchCompareController {
         } catch (TeamServiceException e) {
             LOG.error("Failed to read player teams", e);
             AlertHelper.showErrorMessage("Fehler beim Anzeigen der Spieler Teams.");
+        }
+    }
+
+    private void setPlayerLists(MatchDTO matchDTO1, List<PlayerTeamsDTO> match1ListRed, List<PlayerTeamsDTO> match1ListBlue) throws TeamServiceException {
+        for(MatchPlayerDTO matchPlayerDTO : matchDTO1.getPlayerData()) {
+            PlayerTeamsDTO playerTeamsDTO = teamService.readPlayerTeams(matchPlayerDTO.getPlayerDTO());
+            if (matchPlayerDTO.getTeam() == TeamSide.RED) {
+                match1ListRed.add(playerTeamsDTO);
+            } else {
+                match1ListBlue.add(playerTeamsDTO);
+            }
         }
     }
 

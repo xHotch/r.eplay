@@ -82,10 +82,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 while (rs.next()) {
 
                     PlayerDTO player = new PlayerDTO();
-                    player.setId(rs.getInt("id"));
-                    player.setName(rs.getString("name"));
-                    player.setPlatformID(rs.getLong("plattformid"));
-                    player.setShown(rs.getBoolean("shown"));
+                    setPlayerDTO(rs, player);
 
                     result.add(player);
                     LOG.debug("Added player to the result list!");
@@ -95,6 +92,13 @@ public class JDBCPlayerDAO implements PlayerDAO {
             throw new PlayerPersistenceException("Could not read player", e);
         }
         return result;
+    }
+
+    private void setPlayerDTO(ResultSet rs, PlayerDTO player) throws SQLException {
+        player.setId(rs.getInt("id"));
+        player.setName(rs.getString("name"));
+        player.setPlatformID(rs.getLong("plattformid"));
+        player.setShown(rs.getBoolean("shown"));
     }
 
     @Override
@@ -142,10 +146,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 rs.next();
 
                 player = new PlayerDTO();
-                player.setId(rs.getInt("id"));
-                player.setName(rs.getString("name"));
-                player.setPlatformID(rs.getLong("plattformid"));
-                player.setShown(rs.getBoolean("shown"));
+                setPlayerDTO(rs, player);
 
                 LOG.debug("Added player to the result list!");
 
