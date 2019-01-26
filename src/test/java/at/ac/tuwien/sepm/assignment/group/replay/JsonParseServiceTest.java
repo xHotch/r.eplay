@@ -64,7 +64,7 @@ public class JsonParseServiceTest {
     private BallStatistic ballStatistic;
     private BoostStatistic boostStatistic;
     private RigidBodyStatistic rigidBodyStatistic;
-    private FolderDAO mockFolderDAO;
+    private FolderDAO folderDAO;
     private PlayerDAO playerDAO;
     private MatchDAO matchDAO;
 
@@ -83,13 +83,13 @@ public class JsonParseServiceTest {
         goodReplay = new File(getClass().getResource("/testJson/goodReplay.json").getFile());
 
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-        mockFolderDAO = new UserFolderDAO("mockParser", "mockFiles", "mockHeatmaps");
-        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, mockFolderDAO);
+        folderDAO = new UserFolderDAO("mockParser", "mockFiles", "mockHeatmaps");
+        matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, folderDAO);
 
 
         rigidBodyParser = new RigidBodyParser();
-        replayService = new ReplayServiceRLRP(mockFolderDAO);
-        matchService = new SimpleMatchService(matchDAO, mockFolderDAO);
+        replayService = new ReplayServiceRLRP(folderDAO);
+        matchService = new SimpleMatchService(matchDAO, folderDAO);
 
         ballInformationParser = new BallInformationParser(rigidBodyParser);
         carInformationParser = new CarInformationParser(rigidBodyParser);
@@ -104,6 +104,13 @@ public class JsonParseServiceTest {
 
         jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,boostStatistic,replayService, matchService, mockFolderDAO);
 
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        FileUtils.deleteDirectory(folderDAO.getFileDirectory());
+        FileUtils.deleteDirectory(folderDAO.getParserDirectory());
+        FileUtils.deleteDirectory(folderDAO.getHeatmapDirectory());
     }
 
 

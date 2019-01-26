@@ -25,15 +25,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -176,6 +174,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         try {
             matchDAO.createMatch(matchDTO);
         } catch (MatchAlreadyExistsException e)
@@ -238,6 +238,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
 
@@ -256,6 +258,7 @@ public class MatchTest {
         Assert.assertThat(match.getDateTime(), is(matchDTO.getDateTime()));
         Assert.assertThat(match.getTeamSize(), is(matchDTO.getTeamSize()));
         Assert.assertThat(match.getReadId(), is(matchDTO.getReadId()));
+        Assert.assertThat(match.getMatchTime(), is(matchDTO.getMatchTime()));
 
         // verify player data ...
         for (MatchPlayerDTO player:match.getPlayerData()) {
@@ -278,16 +281,18 @@ public class MatchTest {
         MatchDTO match = new MatchDTO();
 
         match.setDateTime(null);
+        match.setMatchTime(-1);
         match.setPlayerData(null);
 
         try {
             matchService.createMatch(match);
             fail();
         } catch (MatchValidationException e) {
-            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "No players found in match\n"));
+            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "MatchTime cannot be negative\n" + "No players found in match\n"));
         }
 
         match.setDateTime(LocalDateTime.now());
+        match.setMatchTime(400);
         match.setTeamSize(3);
 
         MatchPlayerDTO playerRed = new MatchPlayerDTO();
@@ -380,6 +385,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
 
@@ -461,6 +468,8 @@ public class MatchTest {
 
         matchDTO.setReadId("Test");
 
+        matchDTO.setMatchTime(400);
+
         // will be used as container for the results from the db.
         retrievedMatches = new LinkedList<>();
 
@@ -534,5 +543,13 @@ public class MatchTest {
         player.setShots(shots);
         player.setSaves(saves);
         player.setHeatmapImage(new BufferedImage(200,200,BufferedImage.TYPE_INT_RGB));
+
+        //set boost pad list
+        Map<Integer, List<BoostPadDTO>> boostPadMap = new HashMap<>();
+        for(int i=0; i<=33; i++) {
+            boostPadMap.putIfAbsent(i, new LinkedList<>());
+            boostPadMap.get(i).add(new BoostPadDTO(0.0, 0.0, 0, false));
+        }
+        player.setBoostPadMap(boostPadMap);
     }
 }

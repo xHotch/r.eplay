@@ -103,7 +103,6 @@ public class JDBCMatchDAO implements MatchDAO {
         }
         for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
 
-            //todo vlt löschen
             matchPlayerDTO.setMatchDTO(matchDTO);
             createMatchPlayer(matchPlayerDTO);
         }
@@ -151,40 +150,10 @@ public class JDBCMatchDAO implements MatchDAO {
 
             ps.setLong(1, matchPlayerDTO.getPlayerId());
             ps.setInt(2, matchPlayerDTO.getMatchId());
-            ps.setInt(3, boostPadDTOMap.get(0).size());
-            ps.setInt(4, boostPadDTOMap.get(1).size());
-            ps.setInt(5, boostPadDTOMap.get(2).size());
-            ps.setInt(6, boostPadDTOMap.get(3).size());
-            ps.setInt(7, boostPadDTOMap.get(4).size());
-            ps.setInt(8, boostPadDTOMap.get(5).size());
-            ps.setInt(9, boostPadDTOMap.get(6).size());
-            ps.setInt(10, boostPadDTOMap.get(7).size());
-            ps.setInt(11, boostPadDTOMap.get(8).size());
-            ps.setInt(12, boostPadDTOMap.get(9).size());
-            ps.setInt(13, boostPadDTOMap.get(10).size());
-            ps.setInt(14, boostPadDTOMap.get(11).size());
-            ps.setInt(15, boostPadDTOMap.get(12).size());
-            ps.setInt(16, boostPadDTOMap.get(13).size());
-            ps.setInt(17, boostPadDTOMap.get(14).size());
-            ps.setInt(18, boostPadDTOMap.get(15).size());
-            ps.setInt(19, boostPadDTOMap.get(16).size());
-            ps.setInt(20, boostPadDTOMap.get(17).size());
-            ps.setInt(21, boostPadDTOMap.get(18).size());
-            ps.setInt(22, boostPadDTOMap.get(19).size());
-            ps.setInt(23, boostPadDTOMap.get(20).size());
-            ps.setInt(24, boostPadDTOMap.get(21).size());
-            ps.setInt(25, boostPadDTOMap.get(22).size());
-            ps.setInt(26, boostPadDTOMap.get(23).size());
-            ps.setInt(27, boostPadDTOMap.get(24).size());
-            ps.setInt(28, boostPadDTOMap.get(25).size());
-            ps.setInt(29, boostPadDTOMap.get(26).size());
-            ps.setInt(30, boostPadDTOMap.get(27).size());
-            ps.setInt(31, boostPadDTOMap.get(28).size());
-            ps.setInt(32, boostPadDTOMap.get(29).size());
-            ps.setInt(33, boostPadDTOMap.get(30).size());
-            ps.setInt(34, boostPadDTOMap.get(31).size());
-            ps.setInt(35, boostPadDTOMap.get(32).size());
-            ps.setInt(36, boostPadDTOMap.get(33).size());
+
+            for(int i=3; i<=36; i++) {
+                ps.setInt(i, boostPadDTOMap.get(i-3).size());
+            }
 
             ps.executeUpdate();
 
@@ -275,42 +244,9 @@ public class JDBCMatchDAO implements MatchDAO {
             try (ResultSet rs2 = ps2.executeQuery()) {
 
                 while (rs2.next()) {
-
-                    boostPadList.add(rs2.getInt("boostpad0"));
-                    boostPadList.add(rs2.getInt("boostpad1"));
-                    boostPadList.add(rs2.getInt("boostpad2"));
-                    boostPadList.add(rs2.getInt("boostpad3"));
-                    boostPadList.add(rs2.getInt("boostpad4"));
-                    boostPadList.add(rs2.getInt("boostpad5"));
-                    boostPadList.add(rs2.getInt("boostpad6"));
-                    boostPadList.add(rs2.getInt("boostpad7"));
-                    boostPadList.add(rs2.getInt("boostpad8"));
-                    boostPadList.add(rs2.getInt("boostpad9"));
-                    boostPadList.add(rs2.getInt("boostpad10"));
-                    boostPadList.add(rs2.getInt("boostpad11"));
-                    boostPadList.add(rs2.getInt("boostpad12"));
-                    boostPadList.add(rs2.getInt("boostpad13"));
-                    boostPadList.add(rs2.getInt("boostpad14"));
-                    boostPadList.add(rs2.getInt("boostpad15"));
-                    boostPadList.add(rs2.getInt("boostpad16"));
-                    boostPadList.add(rs2.getInt("boostpad17"));
-                    boostPadList.add(rs2.getInt("boostpad18"));
-                    boostPadList.add(rs2.getInt("boostpad19"));
-                    boostPadList.add(rs2.getInt("boostpad20"));
-                    boostPadList.add(rs2.getInt("boostpad21"));
-                    boostPadList.add(rs2.getInt("boostpad22"));
-                    boostPadList.add(rs2.getInt("boostpad23"));
-                    boostPadList.add(rs2.getInt("boostpad24"));
-                    boostPadList.add(rs2.getInt("boostpad25"));
-                    boostPadList.add(rs2.getInt("boostpad26"));
-                    boostPadList.add(rs2.getInt("boostpad27"));
-                    boostPadList.add(rs2.getInt("boostpad28"));
-                    boostPadList.add(rs2.getInt("boostpad29"));
-                    boostPadList.add(rs2.getInt("boostpad30"));
-                    boostPadList.add(rs2.getInt("boostpad31"));
-                    boostPadList.add(rs2.getInt("boostpad32"));
-                    boostPadList.add(rs2.getInt("boostpad33"));
-
+                    for(int i=0; i<=33; i++) {
+                        boostPadList.add(rs2.getInt("boostpad" + i));
+                    }
                 }
             }
 
