@@ -47,12 +47,13 @@ public class PlayerInformationParser {
             matchPlayer.setPlayerDTO(player);
             Long uniqueId = ctx.read(frame + currentFrame + actorUpdate + currentActorUpdateNr + "].['Engine.PlayerReplicationInfo:UniqueId'].SteamID64", Long.class);
             if (uniqueId != null) {
-                platformIdToActorId.put(uniqueId, actorId);
+
+                platformIdToActorId.putIfAbsent(uniqueId, actorId);
                 player.setPlatformID(uniqueId);
             } else {
                 uniqueId = ctx.read(frame + currentFrame + actorUpdate + currentActorUpdateNr + "].['Engine.PlayerReplicationInfo:UniqueId'].PsnId", Long.class);
                 if (uniqueId != null) {
-                    platformIdToActorId.put(uniqueId, actorId);
+                    platformIdToActorId.putIfAbsent(uniqueId, actorId);
                     player.setPlatformID(uniqueId);
                 } else {
                     throw new FileServiceException("Actor has no steam-id and no psn-id");

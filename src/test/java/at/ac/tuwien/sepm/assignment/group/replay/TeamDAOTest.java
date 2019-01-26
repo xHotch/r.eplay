@@ -127,6 +127,12 @@ public class TeamDAOTest {
         Assert.assertThat(team.getTeamSize(), is(2));
     }
 
+    @Test(expected = TeamPersistenceException.class)
+    public void readTeamsWithoutConnectionShouldThrowException() throws TeamPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        teamDAO.readTeams();
+    }
+
     @Test
     public void createTeamTest() throws TeamPersistenceException {
         TeamDTO team = new TeamDTO();
@@ -151,6 +157,12 @@ public class TeamDAOTest {
         Assert.assertThat(teams.size(), is(3));
     }
 
+    @Test(expected = TeamPersistenceException.class)
+    public void createTeamWithoutConnectionShouldThrowException() throws TeamPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        teamDAO.createTeam(new TeamDTO());
+    }
+
     @Test
     public void deleteTeamTest() throws TeamPersistenceException {
         TeamDTO teamDTO = new TeamDTO();
@@ -169,6 +181,12 @@ public class TeamDAOTest {
         Assert.assertThat(teamDAO.readTeams().size(), is(1));
     }
 
+    @Test(expected = TeamPersistenceException.class)
+    public void deleteTeamWithoutConnectionShouldThrowException() throws TeamPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        teamDAO.deleteTeam(new TeamDTO());
+    }
+
     @Test
     public void readPlayerTeamsTest() throws TeamPersistenceException {
         PlayerDTO player = new PlayerDTO();
@@ -181,5 +199,13 @@ public class TeamDAOTest {
         player.setId(5L);
 
         Assert.assertThat(teamDAO.readPlayerTeams(player).size(), is(0));
+    }
+
+    @Test(expected = TeamPersistenceException.class)
+    public void readPlayerTeamsWithoutConnectionShouldThrowException() throws TeamPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        PlayerDTO player = new PlayerDTO();
+        player.setId(1L);
+        teamDAO.readPlayerTeams(player);
     }
 }

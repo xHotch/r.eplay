@@ -142,10 +142,10 @@ public class SimplePlayerService implements PlayerService {
         LOG.trace("Called - playerDTOValidator");
         String errMsg = "";
         if (playerDTO.getName() == null || playerDTO.getName().equals("")) {
-            errMsg += "No name\n";
+            errMsg += "Kein Name\n";
         }
         if (playerDTO.getPlatformID() <= 0) {
-            errMsg += "plattformid is smaller or equal to zero\n";
+            errMsg += "plattformid ist kleiner oder gleich null\n";
         }
         if (!errMsg.equals("")) {
             throw new PlayerValidationException(errMsg);

@@ -257,7 +257,8 @@ public class MatchTest {
             matchService.createMatch(match);
             fail();
         } catch (MatchValidationException e) {
-            assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "MatchTime cannot be negative\n" + "No players found in match\n"));
+            //assertThat(e.getMessage(), CoreMatchers.is("No MatchDate\n" + "MatchTime cannot be negative\n" + "No players found in match\n"));
+            assertThat(e.getMessage(), CoreMatchers.is("Kein Matchdatum\n" + "Matchdauer kann nicht negativ sein\n" + "Keine Spieler im Match gefunden\n"));
         }
 
         match.setDateTime(LocalDateTime.now());
@@ -283,10 +284,16 @@ public class MatchTest {
             matchService.createMatch(match);
             fail();
         } catch (MatchValidationException e) {
+            /*
             assertThat(e.getMessage(), CoreMatchers.is("Team size does not equal player list\n" +
                 "No Name\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
                 "No Name\n" + "Goals negativ\n" + "Shots negativ\n" + "Assists negativ\n" + "Saves negativ\n" + "Score negativ\n" +
                 "Uneven teamsize\n"));
+            */
+            assertThat(e.getMessage(), CoreMatchers.is("Teamgröße stimmt nicht mit Spielerliste überein\n" +
+                "Kein Name\n" + "Tore negativ\n" + "Schüsse negativ\n" + "Vorlagen negativ\n" + "Paraden negativ\n" + "Punkte negativ\n" +
+                "Kein Name\n" + "Tore negativ\n" + "Schüsse negativ\n" + "Vorlagen negativ\n" + "Paraden negativ\n" + "Punkte negativ\n" +
+                "Ungerade Teamgröße\n"));
         }
     }
 

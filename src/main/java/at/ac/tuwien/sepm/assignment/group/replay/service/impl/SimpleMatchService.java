@@ -126,11 +126,11 @@ public class SimpleMatchService implements MatchService {
         LOG.trace("Called - matchDTOValidator");
         String errMsg = "";
 
-        if (matchDTO.getDateTime() == null) errMsg += "No MatchDate\n";
-        if(matchDTO.getMatchTime() < 0) errMsg += "MatchTime cannot be negative\n";
-        if (matchDTO.getPlayerData() == null || matchDTO.getPlayerData().isEmpty()) errMsg += "No players found in match\n";
+        if (matchDTO.getDateTime() == null) errMsg += "Kein Matchdatum\n";
+        if(matchDTO.getMatchTime() < 0) errMsg += "Matchdauer kann nicht negativ sein\n";
+        if (matchDTO.getPlayerData() == null || matchDTO.getPlayerData().isEmpty()) errMsg += "Keine Spieler im Match gefunden\n";
         else {
-            if (matchDTO.getPlayerData().size() != matchDTO.getTeamSize() * 2) errMsg += "Team size does not equal player list\n";
+            if (matchDTO.getPlayerData().size() != matchDTO.getTeamSize() * 2) errMsg += "Teamgröße stimmt nicht mit Spielerliste überein\n";
             int countTeamBlue = 0;
             int countTeamRed = 0;
             for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
@@ -142,7 +142,7 @@ public class SimpleMatchService implements MatchService {
                     countTeamBlue++;
                 }
             }
-            if (matchDTO.getTeamSize() != countTeamBlue || matchDTO.getTeamSize() != countTeamRed) errMsg += "Uneven teamsize\n";
+            if (matchDTO.getTeamSize() != countTeamBlue || matchDTO.getTeamSize() != countTeamRed) errMsg += "Ungerade Teamgröße\n";
         }
         if (!errMsg.equals("")) {
             throw new MatchValidationException(errMsg);
@@ -152,12 +152,12 @@ public class SimpleMatchService implements MatchService {
     private String matchPlayerDTOValidator(MatchPlayerDTO matchPlayerDTO) {
         LOG.trace("Called - matchPlayerDTOValidator");
         String errMsg = "";
-        if (matchPlayerDTO.getName() == null || matchPlayerDTO.getName().equals("")) errMsg += "No Name\n";
-        if (matchPlayerDTO.getGoals() < 0) errMsg += "Goals negativ\n";
-        if (matchPlayerDTO.getShots() < 0) errMsg += "Shots negativ\n";
-        if (matchPlayerDTO.getAssists() < 0) errMsg += "Assists negativ\n";
-        if (matchPlayerDTO.getSaves() < 0) errMsg += "Saves negativ\n";
-        if (matchPlayerDTO.getScore() < 0) errMsg += "Score negativ\n";
+        if (matchPlayerDTO.getName() == null || matchPlayerDTO.getName().equals("")) errMsg += "Kein Name\n";
+        if (matchPlayerDTO.getGoals() < 0) errMsg += "Tore negativ\n";
+        if (matchPlayerDTO.getShots() < 0) errMsg += "Schüsse negativ\n";
+        if (matchPlayerDTO.getAssists() < 0) errMsg += "Vorlagen negativ\n";
+        if (matchPlayerDTO.getSaves() < 0) errMsg += "Paraden negativ\n";
+        if (matchPlayerDTO.getScore() < 0) errMsg += "Punkte negativ\n";
         return errMsg;
     }
 
@@ -165,13 +165,13 @@ public class SimpleMatchService implements MatchService {
         LOG.trace("Called - searchParamValidator");
         String errMsg = "";
         if ((begin == null && end != null) || (end == null && begin != null)) {
-            errMsg += "begin and end must be set both or none of them\n";
+            errMsg += "Beginn und Ende müssen entweder beide oder keine gesetzt sein\n";
         }
         if (begin != null && end != null && begin.isAfter(end)) {
-            errMsg += "begin must be before end\n";
+            errMsg += "Beginn muss vor Ende sein\n";
         }
         if (teamSize < 0 || teamSize > 3) {
-            errMsg += "teamSize must be between 0 and 3\n";
+            errMsg += "Teamgröße muss zwischen 0 und 3 sein\n";
         }
         if (!errMsg.equals("")) {
             throw new FilterValidationException(errMsg);

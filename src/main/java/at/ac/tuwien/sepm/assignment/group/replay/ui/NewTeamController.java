@@ -54,7 +54,7 @@ public class NewTeamController {
             LOG.debug("after update TeamTable");
             ((Stage) saveTeamButton.getScene().getWindow()).close();
         } catch (TeamValidationException e) {
-            AlertHelper.showErrorMessage("Fehler beim Speichern des Teams: Ungültiges Team");
+            AlertHelper.showErrorMessage("Fehler beim Speichern des Teams: Ungültiges Team: " + e.getMessage());
         } catch (TeamServiceException e) {
             LOG.error(e.getMessage(), e);
             AlertHelper.showErrorMessage("Fehler beim Speichern des Teams: Team konnte nicht gespeichert werden");

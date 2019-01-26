@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * @author Philipp Hochhauser
  */
-@RunWith(MockitoJUnitRunner.class)
 public class FolderDAOTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

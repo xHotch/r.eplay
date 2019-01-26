@@ -123,7 +123,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         } catch (IOException e) {
             throw new FileServiceException("Could not parse replay file" + jsonFile.getAbsolutePath());
         }
-
     }
 
     @Override
@@ -135,7 +134,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         try {
             jsonFile=replayService.parseReplayFileToJson(folderDAO.getFile(folderDAO.getFileDirectory(),matchDTO.getReplayFilename()));
 
-
             setupParsers(jsonFile);
 
             LOG.debug("Start Parse");
@@ -145,7 +143,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
             videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
             videoDTO.setCarActorIds(carInformationParser.getPlayerCarMap());
-            videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMap());
+            videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMultiMap());
             videoDTO.setGoals(getGoals());
 
             return videoDTO;
@@ -172,9 +170,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         //pause game at the beginning
         boolean gamePaused = true;
 
-
         try {
-
             int frameCount = ctx.read("$.Frames.length()");
 
             LOG.debug("Match framecount : {}", frameCount);
@@ -190,8 +186,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 //pause game if goal was scored
                 if (!gamePaused){
                 gamePaused = gameInformationParser.pauseGameIfGoalWasScored(frameTime);}
-
-
 
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
 
@@ -269,12 +263,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
         HashMap<Integer, String> actors = new HashMap<>();
 
-
         //pause game at the beginning
         boolean gamePaused = true;
 
         try {
-
             int frameCount = ctx.read("$.Frames.length()");
 
             LOG.debug("Match framecount : {}", frameCount);
@@ -338,7 +330,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         return frameDTOS;
     }
 
-
     /**
      * Calculates all statistics to be save in the database
      *
@@ -384,7 +375,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - getGoals");
 
         List<GoalDTO> goalList = new ArrayList<>();
-
         int length = ctx.read("$.Properties.Goals.length()");
 
         for(int i = 0; i < length; i++){
@@ -395,10 +385,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
             goalList.add(goalDTO);
         }
-
         return goalList;
     }
-
-
 }
-
