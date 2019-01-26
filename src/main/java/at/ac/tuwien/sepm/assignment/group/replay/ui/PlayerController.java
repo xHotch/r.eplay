@@ -188,7 +188,7 @@ public class PlayerController {
             txtBoostpad.setText("" + String.format("%.2f", avgStatsDTO.getBoostpads()));
             txtBoost.setText("" + String.format("%.2f", avgStatsDTO.getBoost()));
         } catch (PlayerServiceException e) {
-            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
+            LOG.error("Caught PlayerServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim Laden der Spieler Details");
         }
     }

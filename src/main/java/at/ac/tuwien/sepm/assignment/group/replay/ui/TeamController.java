@@ -133,7 +133,7 @@ public class TeamController {
             tableViewTeams.setItems(observableTeams);
             LOG.debug("");
         } catch (TeamServiceException e) {
-            LOG.error("Caught TeamServiceException {} ", e.getMessage());
+            LOG.error("Caught TeamServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim Laden der Teams");
         }
     }

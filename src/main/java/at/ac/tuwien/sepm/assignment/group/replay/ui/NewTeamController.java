@@ -83,7 +83,7 @@ public class NewTeamController {
 
             tableViewPlayers.setItems(observablePlayers);
         } catch (PlayerServiceException e) {
-            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
+            LOG.error("Caught PlayerServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim Laden der Spieler");
         }
         comboBoxTeamSize.getItems().add(1);

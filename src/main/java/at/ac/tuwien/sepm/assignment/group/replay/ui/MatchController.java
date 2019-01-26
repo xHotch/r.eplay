@@ -372,10 +372,10 @@ public class MatchController {
             tableViewMatches.getSortOrder().add(tableColumnMatchDate);
             tableViewMatches.setItems(sortedMatches);
         } catch (MatchServiceException e) {
-            LOG.error("Caught MatchServiceException {} ", e.getMessage());
+            LOG.error("Caught MatchServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim laden der Matches");
         } catch (FilterValidationException e) {
-            LOG.error("Caught FilterValidationException {} ", e.getMessage());
+            LOG.error("Caught FilterValidationException", e);
             AlertHelper.showErrorMessage(e.getMessage());
         }
     }

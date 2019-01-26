@@ -39,7 +39,7 @@ public class JDBCConnectionManager {
             try {
                 connection.close();
             } catch (SQLException e) {
-                LOG.error("Failed to close connection '{}'", e.getMessage(), e);
+                LOG.error("Failed to close connection", e);
             }
             connection = null;
         }
