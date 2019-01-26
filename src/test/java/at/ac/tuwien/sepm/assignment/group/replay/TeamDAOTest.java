@@ -44,7 +44,7 @@ public class TeamDAOTest {
 
         jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
 
-        folderDAO = new UserFolderDAO();
+        folderDAO = new UserFolderDAO("testParserDir", "testFileDir", "testHeatmapDir");
 
         playerDAO = mock(PlayerDAO.class);
         PlayerDTO player = new PlayerDTO();
@@ -77,7 +77,6 @@ public class TeamDAOTest {
 
         jdbcMatchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, folderDAO);
 
-        //folderDAO = new UserFolderDAO("testParserDir", "testFileDir", "testHeatmapDir");
         teamDAO = new JDBCTeamDAO(jdbcConnectionManager, playerDAO, jdbcMatchDAO);
     }
 
