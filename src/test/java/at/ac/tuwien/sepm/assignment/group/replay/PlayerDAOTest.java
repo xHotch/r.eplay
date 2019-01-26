@@ -26,7 +26,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 
-@RunWith(MockitoJUnitRunner.class)
+
 public class PlayerDAOTest {
 
     private JDBCConnectionManager jdbcConnectionManager;
