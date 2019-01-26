@@ -170,6 +170,12 @@ public class MatchDAOTest {
 
     }
 
+    @Test(expected = MatchPersistenceException.class)
+    public void readMatchesWithoutConnectionShouldThrowException() throws MatchPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        matchDAO.readMatches();
+    }
+
     @Test
     public void createMatchTest() throws MatchPersistenceException, MatchAlreadyExistsException {
         MatchDTO matchDTO = new MatchDTO();
@@ -233,6 +239,12 @@ public class MatchDAOTest {
         Assert.assertThat(matchPlayers.size(), is(2));
     }
 
+    @Test(expected = MatchPersistenceException.class)
+    public void createMatchWithoutConnectionShouldThrowException() throws MatchPersistenceException, MatchAlreadyExistsException {
+        jdbcConnectionManager.closeConnection();
+        matchDAO.createMatch(new MatchDTO());
+    }
+
     @Test(expected = MatchAlreadyExistsException.class)
     public void createMatchTestShouldThrowMatchAlreadyExistsException() throws MatchPersistenceException, MatchAlreadyExistsException {
         MatchDTO matchDTO = new MatchDTO();
@@ -246,6 +258,14 @@ public class MatchDAOTest {
         matchDTO.setId(1);
         matchDAO.deleteMatch(matchDTO);
         Assert.assertThat(matchDAO.readMatches().size(), is(1));
+    }
+
+    @Test(expected = MatchPersistenceException.class)
+    public void deleteMatchWithoutConnectionShouldThrowException() throws MatchPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1);
+        matchDAO.deleteMatch(matchDTO);
     }
 
     @Test
@@ -272,6 +292,12 @@ public class MatchDAOTest {
         Assert.assertThat(retrievedMatches.size(), is(0));
     }
 
+    @Test(expected = MatchPersistenceException.class)
+    public void searchMatchesWithoutConnectionShouldThrowException() throws MatchPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        matchDAO.searchMatches("", null, null, 0);
+    }
+
     @Test
     public void readMatchesFromPlayerTest() throws MatchPersistenceException {
         PlayerDTO player = new PlayerDTO();
@@ -284,5 +310,13 @@ public class MatchDAOTest {
 
         retrievedMatches = matchDAO.readMatchesFromPlayer(player);
         Assert.assertThat(retrievedMatches.size(), is(0));
+    }
+
+    @Test(expected = MatchPersistenceException.class)
+    public void readMatchesFromPlayerWithoutConnectionShouldThrowException() throws MatchPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        PlayerDTO player = new PlayerDTO();
+        player.setId(1);
+        matchDAO.readMatchesFromPlayer(player);
     }
 }
