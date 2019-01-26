@@ -26,11 +26,11 @@ public class CarInformationParser {
     private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
 
 
-    private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndFrameTimeMap = new LinkedMultiValueMap<>();
+    private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndFrameTimeMultiMap = new LinkedMultiValueMap<>();
 
 
 
-    private Map<Integer, List<Pair<Integer, Double>>> carToPlayerAndFrameListMap = new HashMap<>();
+    private Map<Integer, List<Pair<Integer, Double>>> carToPlayerAndFrameMap = new HashMap<>();
 
     //Map that maps ActorID from a Player to a list of RigidBodyInformation
     private LinkedHashMap<Integer, List<RigidBodyInformation>> playerToRigidBodyMap = new LinkedHashMap<>();
@@ -47,6 +47,7 @@ public class CarInformationParser {
     /**
      * Calls other methods, to read information about cars from the json file.
      *
+     * @param actorId              ActorID of the car
      * @param currentFrame         ID of the frame to parse
      * @param currentActorUpdateNr ID of the ActorUpdate to parse
      * @param frameTime            frameTime of the frame
@@ -61,7 +62,17 @@ public class CarInformationParser {
 
     }
 
-
+    /**
+     * Calls other methods, to read information about cars from the json file.
+     *
+     * @param actorId              the ActorID from the Car
+     * @param frameDTO             the FrameDTO in which the parsed information gets stored
+     * @param currentFrame         ID of the frame to parse
+     * @param currentActorUpdateNr ID of the ActorUpdate to parse
+     * @param frameTime            frameTime of the frame
+     * @param gamePaused           boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
+     * @throws FileServiceException if the file couldn't be parsed
+     */
     void parseVideoFrame(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) throws FileServiceException {
         LOG.trace("Called - parse");
 
@@ -76,8 +87,8 @@ public class CarInformationParser {
      */
     void setup(){
         playerCarMap = new LinkedHashMap<>();
-        playerToCarAndFrameTimeMap = new LinkedMultiValueMap<>();
-        carToPlayerAndFrameListMap = new HashMap<>();
+        playerToCarAndFrameTimeMultiMap = new LinkedMultiValueMap<>();
+        carToPlayerAndFrameMap = new HashMap<>();
         playerToRigidBodyMap = new LinkedHashMap<>();
     }
 
@@ -95,15 +106,26 @@ public class CarInformationParser {
             }
             playerCarMap.putIfAbsent(actorId, playerID);
 
-            carToPlayerAndFrameListMap.putIfAbsent(actorId,new ArrayList<>());
-            carToPlayerAndFrameListMap.get(actorId).add(Pair.create(playerID,frameTime));
+            carToPlayerAndFrameMap.putIfAbsent(actorId,new ArrayList<>());
+            carToPlayerAndFrameMap.get(actorId).add(Pair.create(playerID,frameTime));
 
             return playerID;
         } catch (PathNotFoundException e) {
             //No Information about new CarActor found
         }
 
-        List<Pair<Integer, Double>> playerAndTimeList = carToPlayerAndFrameListMap.get(actorId);
+
+        return getPlayerIDfromCarAndTime(actorId,frameTime);
+
+    }
+
+    /**
+     * Returns the actorID from the player for a specific car and time
+     * @param actorID ActorID from the Car
+     * @param frameTime the frameTime
+     */
+    int getPlayerIDfromCarAndTime(int actorID, double frameTime){
+        List<Pair<Integer, Double>> playerAndTimeList = carToPlayerAndFrameMap.get(actorID);
 
         double compareTime = 0.0;
         int playerid = -1;
@@ -117,8 +139,8 @@ public class CarInformationParser {
         }
 
         return playerid;
-
     }
+
 
     /**
      * Reads the PlayerID of a player, if it is assigned to a car and puts it in the playerCarAndFrameTimeMap with Key = PlayerActorID, Value = carActorId and Frametime
@@ -130,10 +152,10 @@ public class CarInformationParser {
             int playerID = ctx.read("$.Frames[" + currentFrame + "].ActorUpdates[" + currentActorUpdateNr + "].['Engine.Pawn:PlayerReplicationInfo'].ActorId");
 
             playerCarMap.putIfAbsent(actorId, playerID);
-            playerToCarAndFrameTimeMap.add(playerID, Pair.create(actorId,frameTime));
+            playerToCarAndFrameTimeMultiMap.add(playerID, Pair.create(actorId,frameTime));
 
-            carToPlayerAndFrameListMap.putIfAbsent(actorId,new ArrayList<>());
-            carToPlayerAndFrameListMap.get(actorId).add(Pair.create(playerID,frameTime));
+            carToPlayerAndFrameMap.putIfAbsent(actorId,new ArrayList<>());
+            carToPlayerAndFrameMap.get(actorId).add(Pair.create(playerID,frameTime));
 
         } catch (PathNotFoundException e) {
             //No Information about new CarActor found
@@ -185,11 +207,11 @@ public class CarInformationParser {
     }
 
 
-    MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndFrameTimeMap() {
-        return playerToCarAndFrameTimeMap;
+    MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndFrameTimeMultiMap() {
+        return playerToCarAndFrameTimeMultiMap;
     }
 
-    public Map<Integer, List<Pair<Integer, Double>>> getCarToPlayerAndFrameListMap() {
-        return carToPlayerAndFrameListMap;
+    public Map<Integer, List<Pair<Integer, Double>>> getCarToPlayerAndFrameMap() {
+        return carToPlayerAndFrameMap;
     }
 }

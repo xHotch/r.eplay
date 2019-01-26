@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceEx
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostDTO;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
+import org.apache.commons.math3.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,19 @@ public class BoostInformationParser {
 
     //Map that maps car component to car id. Key = componentId, Value = carActorId
     private Map<Integer, Integer> carComponentToCarId;
-    //Map that maps ActorID from a Car to a list of BoostAmountInformation. Key = playerId, Value = Boost amount information
-    private Map<Integer, List<BoostDTO>> boostAmountMap;
+
+    //Map that maps ActorID from a Component to a list of BoostAmountInformation. Key = playerId, Value = Boost amount information
+    private Map<Integer, List<BoostDTO>> componentBoostAmountMap;
     //Map that maps ActorID from a Car to a list of BoostPadDTO. Key = playerId, Value = Boost pad information
     private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap;
 
     /**
      * Setup the maps each time a replay gets uploaded
      */
-    void setup(){
+    void setup() {
         carComponentToCarId = new HashMap<>();
-        boostAmountMap = new HashMap<>();
         boostPadMap = new HashMap<>();
+        componentBoostAmountMap = new HashMap<>();
     }
 
     /**
@@ -98,26 +100,20 @@ public class BoostInformationParser {
 
     /**
      * Parses the amount of boost for a player to a specific frame
-     *
      */
     private void parseBoostAmountInformation(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) {
         LOG.trace("Called - parseBoostAmountInformation");
 
         try {
-            if(ctx.read(FRAMESTRING + currentFrame + ACTORUPDATESTRING + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class) != null) {
+            if (ctx.read(FRAMESTRING + currentFrame + ACTORUPDATESTRING + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class) != null) {
                 int currentBoost = ctx.read(FRAMESTRING + currentFrame + ACTORUPDATESTRING + currentActorUpdateNr + "].['TAGame.CarComponent_Boost_TA:ReplicatedBoostAmount']", Integer.class);
                 //map to 0 - 100, in the json it is from 0 - 255
                 currentBoost = (int) (currentBoost / 255.0 * 100.0);
                 //create new boost object
                 BoostDTO boost = new BoostDTO(frameTime, frameDelta, currentFrame, gamePaused, currentBoost);
-                if(carComponentToCarId.containsKey(actorId)) {
-                    //TODO save the component id not the car id
-                    int actualCarID = carComponentToCarId.get(actorId);
-                    boostAmountMap.putIfAbsent(actualCarID, new ArrayList<>());
-                    boostAmountMap.get(actualCarID).add(boost);
-                } else {
-                    LOG.debug("No Car for Component {}, at FrameTime {}", actorId , frameTime);
-                }
+                componentBoostAmountMap.putIfAbsent(actorId, new ArrayList<>());
+                componentBoostAmountMap.get(actorId).add(boost);
+
             }
         } catch (PathNotFoundException e) {
             // ignore
@@ -127,7 +123,6 @@ public class BoostInformationParser {
 
     /**
      * Parses the boost pad informations
-     *
      */
     private void parseBoostPadInformation(int currentFrame, int currentActorUpdateNr, int actorUpdateCount, double frameTime, double frameDelta, boolean gamePaused) {
         LOG.trace("Called - parseBoostPadInformation");
@@ -141,10 +136,13 @@ public class BoostInformationParser {
             int id = getPickedUpPosition(carID, currentFrame, actorUpdateCount);
 
             // id == -1 --> no position found in the surrounding frames
-            if(id != -1) {
-                boostPadMap.putIfAbsent(carID, new HashMap<>());
-                fillBoostPadIds(carID);
-                boostPadMap.get(carID).get(id).add(boostPad);
+            if (id != -1) {
+
+                int playerId = carInformationParser.getPlayerIDfromCarAndTime(carID, frameTime);
+
+                boostPadMap.putIfAbsent(playerId, new HashMap<>());
+                fillBoostPadIds(playerId);
+                boostPadMap.get(playerId).get(id).add(boostPad);
             }
         } catch (PathNotFoundException e) {
             // ignore
@@ -153,8 +151,9 @@ public class BoostInformationParser {
 
     /**
      * Evaluates the position where the boost pad was picked up
-     * @param carID the car that picked up the boost pad
-     * @param currentFrame the current frame where the event has happened
+     *
+     * @param carID            the car that picked up the boost pad
+     * @param currentFrame     the current frame where the event has happened
      * @param actorUpdateCount number of actor updates for the current frame
      * @return the id of the boostpad
      */
@@ -168,7 +167,7 @@ public class BoostInformationParser {
                 id = searchSurroundingFrames(currentFrame, 0, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
-            if(id != -1) {
+            if (id != -1) {
                 return id;
             }
 
@@ -178,7 +177,7 @@ public class BoostInformationParser {
                 id = searchSurroundingFrames(currentFrame, -1, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
-            if(id != -1) {
+            if (id != -1) {
                 return id;
             }
 
@@ -188,7 +187,7 @@ public class BoostInformationParser {
                 id = searchSurroundingFrames(currentFrame, 1, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
-            if(id != -1) {
+            if (id != -1) {
                 return id;
             }
 
@@ -198,7 +197,7 @@ public class BoostInformationParser {
                 id = searchSurroundingFrames(currentFrame, -2, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
-            if(id != -1) {
+            if (id != -1) {
                 return id;
             }
 
@@ -208,21 +207,22 @@ public class BoostInformationParser {
                 id = searchSurroundingFrames(currentFrame, 2, currentActorUpdate, carID);
             }
             // return the id if a position was found in the surrounding frames
-            if(id != -1) {
+            if (id != -1) {
                 return id;
             }
         } catch (PathNotFoundException e) {
             // ignore
         }
-         return -1;
+        return -1;
     }
 
     /**
      * Searches for a position of the player that picked up the boost in the given frame
-     * @param currentFrame current frame
-     * @param frameOffset frame offset
+     *
+     * @param currentFrame       current frame
+     * @param frameOffset        frame offset
      * @param currentActorUpdate current actor update
-     * @param carID car ID to search for
+     * @param carID              car ID to search for
      * @return the id of the boost pad
      */
     private int searchSurroundingFrames(int currentFrame, int frameOffset, int currentActorUpdate, int carID) {
@@ -243,6 +243,7 @@ public class BoostInformationParser {
 
     /**
      * Retrieves the id from the position
+     *
      * @param x x value
      * @param y y value
      * @param z z value
@@ -253,27 +254,47 @@ public class BoostInformationParser {
     }
 
     private void fillBoostPadIds(int actId) {
-        for(int i=0; i<=33; i++) {
+        for (int i = 0; i <= 33; i++) {
             boostPadMap.get(actId).putIfAbsent(i, new LinkedList<>());
         }
     }
 
     /**
      * Gets the boost amount map
+     *
      * @return boost amount map
      */
     public Map<Integer, List<BoostDTO>> getBoostAmountMap() {
-        LOG.trace("Called - boost amount calculate");
-        //TODO map component to car first
-        Map<Integer, List<BoostDTO>> boostAmounts = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : carInformationParser.getPlayerCarMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
-            if (boostAmounts.containsKey(entry.getValue())) {
-                if(boostAmountMap.containsKey(entry.getKey())) {
-                    boostAmounts.get(entry.getValue()).addAll(boostAmountMap.get(entry.getKey()));
-                }
+        LOG.trace("Called - getBoostAmountMap");
+
+        Map<Integer, List<BoostDTO>> carBoostAmounts = new HashMap<>();
+        for (Map.Entry<Integer, List<BoostDTO>> entry : componentBoostAmountMap.entrySet()) {
+            if (carComponentToCarId.containsKey(entry.getKey())) {
+                int carID = carComponentToCarId.get(entry.getKey());
+                carBoostAmounts.putIfAbsent(carID, new ArrayList<>());
+                carBoostAmounts.get(carID).addAll(entry.getValue());
             } else {
-                if(boostAmountMap.containsKey(entry.getKey())) {
-                    boostAmounts.put(entry.getValue(), boostAmountMap.get(entry.getKey()));
+                LOG.error("No car found for component {} with {} entries", entry.getKey(), entry.getValue().size());
+            }
+        }
+
+        Map<Integer, List<BoostDTO>> boostAmounts = new HashMap<>();
+
+        for (Map.Entry<Integer, List<Pair<Integer, Double>>> entry : carInformationParser.getCarToPlayerAndFrameMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
+            if (carBoostAmounts.containsKey(entry.getKey())) {
+                List<BoostDTO> boost = carBoostAmounts.get(entry.getKey());
+                for (BoostDTO boostDTO : boost) {
+                    double frameTime = boostDTO.getFrameTime();
+                    double playerTime = 0.0;
+                    for (Pair<Integer, Double> pair : entry.getValue()) {
+                        if (frameTime > pair.getValue()) {
+                            if (pair.getValue() > playerTime) {
+                                playerTime = pair.getValue();
+                                boostAmounts.putIfAbsent(pair.getKey(), new ArrayList<>());
+                                boostAmounts.get(pair.getKey()).add(boostDTO);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -282,22 +303,14 @@ public class BoostInformationParser {
 
     /**
      * Gets the boost pad map
+     *
      * @return boost pad map
      */
     Map<Integer, Map<Integer, List<BoostPadDTO>>> getBoostPadMap() {
-        // swap carID as keys and playerID as keys.
-        LOG.trace("Called - boost pads calculate");
-        Map<Integer, Map<Integer, List<BoostPadDTO>>> padMap = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : carInformationParser.getPlayerCarMap().entrySet()) { // getValue() = playerKey, getKey() = carKey
-            if(boostPadMap.containsKey(entry.getKey())) {
-                padMap.putIfAbsent(entry.getValue(), new HashMap<>());
 
-                for(int i=0; i<=33; i++) {
-                    padMap.get(entry.getValue()).putIfAbsent(i, new LinkedList<>());
-                    padMap.get(entry.getValue()).get(i).addAll(boostPadMap.get(entry.getKey()).get(i));
-                }
-            }
-        }
-        return padMap;
+        LOG.trace("Called - getBoostPadMap");
+
+
+        return boostPadMap;
     }
 }

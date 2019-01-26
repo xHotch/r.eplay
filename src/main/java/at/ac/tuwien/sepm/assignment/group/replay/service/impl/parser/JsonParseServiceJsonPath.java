@@ -148,7 +148,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
             videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
             videoDTO.setCarActorIds(carInformationParser.getPlayerCarMap());
-            videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMap());
+            videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMultiMap());
             videoDTO.setGoals(getGoals());
 
             return videoDTO;
