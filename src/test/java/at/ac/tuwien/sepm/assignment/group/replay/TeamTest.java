@@ -172,11 +172,12 @@ public class TeamTest {
 
         //check if team was saved correctly
         Assert.assertEquals(validTeamDTO1.getName(),retrievedTeams.get(0).getName());
+        Assert.assertTrue(retrievedTeams.contains(validTeamDTO1));
 
         //delete team
         teamService.deleteTeam(validTeamDTO1);
         retrievedTeams = teamDAO.readTeams();
-        Assert.assertTrue(retrievedTeams.isEmpty());
+        Assert.assertFalse(retrievedTeams.contains(validTeamDTO1));
     }
 
     /**

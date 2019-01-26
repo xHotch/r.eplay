@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -195,5 +196,18 @@ public class MatchDTO {
 
     public String getMatchType(){
         return "" + teamSize + " vs " + teamSize;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MatchDTO matchDTO = (MatchDTO) o;
+        return getTeamSize() == matchDTO.getTeamSize() && Double.compare(matchDTO.getTimeBallInBlueSide(), getTimeBallInBlueSide()) == 0 && Double.compare(matchDTO.getTimeBallInRedSide(), getTimeBallInRedSide()) == 0 && getPossessionBlue() == matchDTO.getPossessionBlue() && getPossessionRed() == matchDTO.getPossessionRed() && Double.compare(matchDTO.getMatchTime(), getMatchTime()) == 0 && Objects.equals(getDateTime(), matchDTO.getDateTime()) && Objects.equals(getReadId(), matchDTO.getReadId()) && Objects.equals(getPlayerData(), matchDTO.getPlayerData()) && Objects.equals(getBallHeatmapImage(), matchDTO.getBallHeatmapImage()) && Objects.equals(getBallHeatmapFilename(), matchDTO.getBallHeatmapFilename());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDateTime(), getTeamSize(), getReadId(), getPlayerData(), getTimeBallInBlueSide(), getTimeBallInRedSide(), getPossessionBlue(), getPossessionRed(), getBallHeatmapImage(), getBallHeatmapFilename(), getMatchTime());
     }
 }

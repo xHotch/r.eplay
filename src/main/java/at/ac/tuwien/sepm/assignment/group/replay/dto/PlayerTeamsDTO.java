@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerTeamsDTO {
     private PlayerDTO playerDTO;
@@ -32,5 +33,18 @@ public class PlayerTeamsDTO {
             ret += teamDTO.getName() + "; ";
         }
         return ret;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerTeamsDTO that = (PlayerTeamsDTO) o;
+        return Objects.equals(getPlayerDTO(), that.getPlayerDTO()) && Objects.equals(getTeams(), that.getTeams());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPlayerDTO(), getTeams());
     }
 }

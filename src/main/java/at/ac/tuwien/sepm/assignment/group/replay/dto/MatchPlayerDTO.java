@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Daniel Klampfl
@@ -206,5 +207,18 @@ public class MatchPlayerDTO {
 
     public void setTeamActorId(int teamActorId) {
         this.teamActorId = teamActorId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MatchPlayerDTO that = (MatchPlayerDTO) o;
+        return getScore() == that.getScore() && getGoals() == that.getGoals() && getAssists() == that.getAssists() && getShots() == that.getShots() && getSaves() == that.getSaves() && Double.compare(that.getHomeSideTime(), getHomeSideTime()) == 0 && Double.compare(that.getEnemySideTime(), getEnemySideTime()) == 0 && Double.compare(that.getAverageSpeed(), getAverageSpeed()) == 0 && Double.compare(that.getAverageDistanceToBall(), getAverageDistanceToBall()) == 0 && Double.compare(that.getAirTime(), getAirTime()) == 0 && Double.compare(that.getGroundTime(), getGroundTime()) == 0 && getActorId() == that.getActorId() && getTeamActorId() == that.getTeamActorId() && Objects.equals(getMatchDTO(), that.getMatchDTO()) && Objects.equals(getPlayerDTO(), that.getPlayerDTO()) && getTeam() == that.getTeam() && Objects.equals(getHeatmapImage(), that.getHeatmapImage()) && Objects.equals(getHeatmapFilename(), that.getHeatmapFilename()) && Objects.equals(getBoostPadMap(), that.getBoostPadMap()) && Objects.equals(dbBoostPadMap, that.dbBoostPadMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMatchDTO(), getPlayerDTO(), getTeam(), getScore(), getGoals(), getAssists(), getShots(), getSaves(), getHomeSideTime(), getEnemySideTime(), getAverageSpeed(), getAverageDistanceToBall(), getAirTime(), getGroundTime(), getHeatmapImage(), getHeatmapFilename(), getBoostPadMap(), dbBoostPadMap, getActorId(), getTeamActorId());
     }
 }
