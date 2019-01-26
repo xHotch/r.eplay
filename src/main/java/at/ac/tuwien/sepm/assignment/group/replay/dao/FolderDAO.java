@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.CouldNotCreateFolderException;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 
 import java.io.File;

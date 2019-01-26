@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
+import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostIDs;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostDTO;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.math3.util.Pair;

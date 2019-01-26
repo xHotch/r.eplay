@@ -17,7 +17,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -30,9 +30,9 @@ import org.springframework.util.MultiValueMap;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.List;
 
 /**
  * Match Animation Controller.

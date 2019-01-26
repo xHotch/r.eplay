@@ -21,12 +21,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimplePlayerServic
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleTeamService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

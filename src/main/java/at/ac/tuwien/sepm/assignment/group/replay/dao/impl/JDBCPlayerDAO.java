@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
+import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.AvgStatsDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

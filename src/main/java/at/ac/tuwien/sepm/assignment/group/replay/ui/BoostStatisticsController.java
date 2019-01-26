@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

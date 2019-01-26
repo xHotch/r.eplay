@@ -1,11 +1,18 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamCompareDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
-import javafx.scene.control.*;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
