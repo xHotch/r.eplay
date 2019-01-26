@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service Class that parses .json files using JsonPath
@@ -162,7 +163,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - parseFrames");
         //Map that contains the ids and Classnames from actors.
         //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
-        HashMap<Integer, String> actors = new HashMap<>();
+        Map<Integer, String> actors = new HashMap<>();
 
         //list that stores time when goals were scored, in order to pause the game afterwards
         gameInformationParser.setTimeOfGoals();
@@ -197,7 +198,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         actors.put(actorId, newActor);
                         LOG.debug("New Actor found at frame {}, actorupdate {}", currentFrame, currentActorUpdateNr);
                     }
-
 
                     String className = actors.get(actorId);
 
@@ -261,7 +261,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         //Map that contains the ids and Classnames from actors.
         //Actors can referene each other, e.g. a car references a player by setting ['Engine.Pawn:PlayerReplicationInfo'] to the ActorID of the player
-        HashMap<Integer, String> actors = new HashMap<>();
+        Map<Integer, String> actors = new HashMap<>();
 
         //pause game at the beginning
         boolean gamePaused = true;

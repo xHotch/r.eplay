@@ -16,11 +16,11 @@ public class BallInformationParser {
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private EnumMap<TeamSide, Integer> hitCount;
+    private Map<TeamSide, Integer> hitCount;
 
-    private SortedMap<Double, TeamSide> hitTimes;
+    private Map<Double, TeamSide> hitTimes;
 
-    private ArrayList<RigidBodyInformation> rigidBodyInformations = new ArrayList<>();
+    private List<RigidBodyInformation> rigidBodyInformations = new ArrayList<>();
 
     private RigidBodyParser rigidBodyParser;
     private ReadContext ctx;
@@ -30,7 +30,7 @@ public class BallInformationParser {
         this.rigidBodyParser = rigidBodyParser;
     }
 
-    ArrayList<RigidBodyInformation> getRigidBodyInformations() {
+    List<RigidBodyInformation> getRigidBodyInformations() {
         return rigidBodyInformations;
     }
 

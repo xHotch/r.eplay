@@ -51,8 +51,6 @@ public class ReplayServiceRLRP implements ReplayService {
                 throw new FileServiceException("Wrong file type: " + extension);
             }
 
-
-
             String[] cmd = {replayToJsonParser.getAbsolutePath(), replayFile.getAbsolutePath()};
             Process proc = new ProcessBuilder(cmd).start();
 

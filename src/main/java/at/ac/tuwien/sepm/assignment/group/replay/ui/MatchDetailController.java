@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import org.springframework.stereotype.Component;
@@ -19,17 +18,7 @@ public class MatchDetailController {
     }
 
     // Inject tab content.
-    @FXML private Tab matchStatsOverviewTab;
-
-    // Inject tab content.
-    @FXML private Tab ballStatisticsTab;
-
-    @FXML private Tab playerPositionTab;
-
     @FXML private Tab matchAnimationTab;
-
-    // Inject tab content.
-    @FXML private Tab boostStatisticsTab;
 
     @FXML
     private void initialize(){

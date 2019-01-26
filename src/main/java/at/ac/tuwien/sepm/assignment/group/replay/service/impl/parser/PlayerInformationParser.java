@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -114,8 +115,8 @@ public class PlayerInformationParser {
         }
     }
 
-    ArrayList<MatchPlayerDTO> getMatchPlayer() {
-        ArrayList<MatchPlayerDTO> list = new ArrayList<>();
+    List<MatchPlayerDTO> getMatchPlayer() {
+        List<MatchPlayerDTO> list = new ArrayList<>();
         for (MatchPlayerDTO matchPlayerDTO : matchPlayers.values()) {
             matchPlayerDTO.setTeam(actorIdToTeam.get(matchPlayerDTO.getTeamActorId()));
             list.add(matchPlayerDTO);

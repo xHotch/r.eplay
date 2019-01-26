@@ -4,13 +4,14 @@ import com.jayway.jsonpath.ReadContext;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GameInformationParser {
 
     private ReadContext ctx;
 
-    private ArrayList<Double> timeOfGoals;
+    private List<Double> timeOfGoals;
 
     /**
      * reads the time of each goal out of the json file and sets it in the timeOfGoals list
@@ -26,14 +27,12 @@ public class GameInformationParser {
         String eventType;
 
         for (int i = 0; i < numberOfGoals; i++) {
-
             eventType = ctx.read("$.TickMarks[" + i + "].Type", String.class);
             if (eventType.equals("Team0Goal") || eventType.equals("Team1Goal")) {
                 goalTime = ctx.read("$.TickMarks[" + i + "].Time", Double.class);
                 timeOfGoals.add(goalTime);
             }
         }
-
     }
 
     /**
@@ -50,11 +49,9 @@ public class GameInformationParser {
                     return true;
                 }
             }
-
         }
         return false;
     }
-
 
     boolean resumeGameIfCountdownIsZero(String frame, int currentActorUpdateNr) {
         Integer countdown = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].['TAGame.GameEvent_TA:ReplicatedRoundCountDownNumber']", Integer.class);

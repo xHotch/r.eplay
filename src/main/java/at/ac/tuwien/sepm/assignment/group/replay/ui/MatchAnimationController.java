@@ -251,7 +251,7 @@ public class MatchAnimationController {
      * @return The List of Keyvalues, containing a Value for the X and Y Position
      */
     private List<KeyValue> mapCarToKayValue(Rectangle carShape, double frameTime) {
-        LinkedList<KeyValue> keyValues = new LinkedList<>();
+        List<KeyValue> keyValues = new LinkedList<>();
         Vector3D position;
         int carActorId = carShapes.get(carShape);
 
@@ -287,7 +287,7 @@ public class MatchAnimationController {
      * @return The List of Keyvalues, containing a Value for the X and Y Position
      */
     private List<KeyValue> mapBallToKayValue(Circle ballShape) {
-        LinkedList<KeyValue> keyValues = new LinkedList<>();
+        List<KeyValue> keyValues = new LinkedList<>();
         if (ballInformation != null && ballInformation.getPosition() != null) {
             KeyValue width = new KeyValue(ballShape.centerXProperty(), ballInformation.getPosition().getY() * SCALE_FACTOR);
             KeyValue length = new KeyValue(ballShape.centerYProperty(), ballInformation.getPosition().getX() * SCALE_FACTOR);

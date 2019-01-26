@@ -20,13 +20,13 @@ public class CarInformationParser {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     //Map that maps ActorID from a car to a player. Key = CarActorId, Value = playerActorId
-    private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
+    private Map<Integer, Integer> playerCarMap = new LinkedHashMap<>();
 
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndFrameTimeMultiMap = new LinkedMultiValueMap<>();
 
     private Map<Integer, List<Pair<Integer, Double>>> carToPlayerAndFrameMap = new HashMap<>();
     //Map that maps ActorID from a Player to a list of RigidBodyInformation
-    private LinkedHashMap<Integer, List<RigidBodyInformation>> playerToRigidBodyMap = new LinkedHashMap<>();
+    private Map<Integer, List<RigidBodyInformation>> playerToRigidBodyMap = new LinkedHashMap<>();
 
     private RigidBodyParser rigidBodyParser;
     private ReadContext ctx;
@@ -145,7 +145,6 @@ public class CarInformationParser {
         }
     }
 
-
     /**
      * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
      */
@@ -161,7 +160,6 @@ public class CarInformationParser {
         }
     }
 
-
     /**
      * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
      */
@@ -175,20 +173,17 @@ public class CarInformationParser {
         } 
     }
 
-
     Map<Integer, List<RigidBodyInformation>> getRigidBodyListPlayer() {
         return playerToRigidBodyMap;
     }
 
-    LinkedHashMap<Integer, Integer> getPlayerCarMap() {
+    Map<Integer, Integer> getPlayerCarMap() {
         return playerCarMap;
     }
-
 
     void setCtx(ReadContext ctx) {
         this.ctx = ctx;
     }
-
 
     MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndFrameTimeMultiMap() {
         return playerToCarAndFrameTimeMultiMap;
