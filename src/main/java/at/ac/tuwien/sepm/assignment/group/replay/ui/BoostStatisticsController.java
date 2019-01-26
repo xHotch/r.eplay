@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.BoostInform
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -58,6 +59,12 @@ public class BoostStatisticsController {
     void initialize() {
         setUpPlayerTable();
         mapImage.setPreserveRatio(true);
+        tableTeamBlue.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldPlayer, newPlayer) -> onBlueTableSelection(newPlayer)
+        );
+        tableTeamRed.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldPlayer, newPlayer) -> onRedTableSelection(newPlayer)
+        );
     }
 
     void loadBoostStatistics(MatchDTO match) {
@@ -77,9 +84,9 @@ public class BoostStatisticsController {
                 playerListRed.add(player);
             }
         }
-
         tableTeamBlue.setItems(playerListBlue);
         tableTeamRed.setItems(playerListRed);
+        tableTeamBlue.getSelectionModel().select(0);
         LOG.debug("successfully loaded boost pad statistics");
     }
 
@@ -134,17 +141,17 @@ public class BoostStatisticsController {
 
     }
 
-    public void onBlueTableSelection() {
-        if(tableTeamBlue.getSelectionModel().getSelectedItem() != null){
-            MatchPlayerDTO player = tableTeamBlue.getSelectionModel().getSelectedItem();
-            loadBoostPadValues(player);
+    private void onBlueTableSelection(MatchPlayerDTO matchPlayerDTO) {
+        if(matchPlayerDTO != null){
+            tableTeamRed.getSelectionModel().clearSelection();
+            loadBoostPadValues(matchPlayerDTO);
         }
     }
 
-    public void onRedTableSelection() {
-        if(tableTeamRed.getSelectionModel().getSelectedItem() != null){
-            MatchPlayerDTO player = tableTeamRed.getSelectionModel().getSelectedItem();
-            loadBoostPadValues(player);
+    private void onRedTableSelection(MatchPlayerDTO matchPlayerDTO) {
+        if(matchPlayerDTO != null){
+            tableTeamBlue.getSelectionModel().clearSelection();
+            loadBoostPadValues(matchPlayerDTO);
         }
     }
 

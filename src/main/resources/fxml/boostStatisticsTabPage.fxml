@@ -185,7 +185,7 @@
                 <Font size="20.0" />
             </font>
         </Text>
-        <TableView fx:id="tableTeamRed" layoutX="534.0" layoutY="36.0" onMouseClicked="#onRedTableSelection" prefHeight="133.0" prefWidth="467.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="36.0">
+        <TableView fx:id="tableTeamRed" layoutX="534.0" layoutY="36.0" prefHeight="133.0" prefWidth="467.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="36.0">
             <columns>
                 <TableColumn fx:id="playerNameRed" prefWidth="423.0" text="Spieler" />
             </columns>
@@ -193,7 +193,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
         </TableView>
-        <TableView fx:id="tableTeamBlue" layoutX="23.0" layoutY="36.0" onMouseClicked="#onBlueTableSelection" prefHeight="133.0" prefWidth="467.0" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="36.0">
+        <TableView fx:id="tableTeamBlue" layoutX="23.0" layoutY="36.0" prefHeight="133.0" prefWidth="467.0" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="36.0">
             <columns>
                 <TableColumn fx:id="playerNameBlue" prefWidth="439.0" text="Spieler" />
             </columns>
