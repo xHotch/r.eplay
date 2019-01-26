@@ -302,7 +302,7 @@ public class MatchController {
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Replay existiert bereits"));
             } catch (FileServiceException e) {
                 LOG.error("Caught File Service Exception", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Löschen der JSON Datei"));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays"));
             } catch (Exception e){
                 LOG.error("Caught Exception ##############", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));

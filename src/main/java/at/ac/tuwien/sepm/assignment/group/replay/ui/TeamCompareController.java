@@ -94,7 +94,7 @@ public class TeamCompareController {
     }
 
     private void showMatchValue(int itemIndex) {
-        LOG.info("Show match Value: {}", matchValueChoiceBox.getSelectionModel().getSelectedItem());
+        LOG.info("Show match Value: {}", matchValueChoiceBox.getItems().get(itemIndex));
         teamBarChart.getData().clear();
 
         XYChart.Series<String,Double> team1 = new XYChart.Series<>();
