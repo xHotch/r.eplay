@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.Date;
 
 @Component
@@ -139,8 +140,11 @@ public class UserFolderDAO implements FolderDAO {
     public void deleteFile(File file) throws  FilePersistenceException{
         String extension = FilenameUtils.getExtension(file.getName());
         if ((extension.equals("json")) || (extension.equals("replay"))){
-            boolean deleted = file.delete();
-            if (!deleted){
+            try {
+                Files.delete(file.toPath());
+            } catch (NoSuchFileException e){
+                throw new FilePersistenceException("No such File " + file.getName() +  " found.");
+            } catch (IOException e) {
                 throw new FilePersistenceException("File " + file.getName() +  " could not be deleted");
             }
         } else {
