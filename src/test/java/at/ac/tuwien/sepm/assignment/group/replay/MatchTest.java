@@ -153,17 +153,17 @@ public class MatchTest {
 
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED, 10, 2,3, 5,1);
-        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED, 10, 2,3, 5,1);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
 
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
-        ps.setInt(1,1);
+        ps.setInt(1,7);
         ps.setString(2,"Player red");
         ps.setInt(3,345456);
         ps.setBoolean(4,true);
         ps.executeUpdate();
-        ps.setInt(1,2);
+        ps.setInt(1,8);
         ps.setString(2,"Player blue");
         ps.setInt(3,345333);
         ps.setBoolean(4,true);
@@ -211,8 +211,8 @@ public class MatchTest {
         PlayerDTO playerR = new PlayerDTO();
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED,3, 10, 2,3, 5);
-        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED,3, 10, 2,3, 5);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
 
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
@@ -304,8 +304,8 @@ public class MatchTest {
         PlayerDTO playerB = new PlayerDTO();
         PlayerDTO playerR = new PlayerDTO();
 
-        setPlayerVariables(playerRed,match,playerR,"",1,TeamSide.BLUE,-1,-1,-1,-1,-1);
-        setPlayerVariables(playerBlue,match, playerB,"",2,TeamSide.BLUE,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerRed,match,playerR,"",7,TeamSide.BLUE,-1,-1,-1,-1,-1);
+        setPlayerVariables(playerBlue,match, playerB,"",8,TeamSide.BLUE,-1,-1,-1,-1,-1);
 
         List<MatchPlayerDTO> players = new LinkedList<>();
         players.add(playerBlue);
@@ -358,8 +358,8 @@ public class MatchTest {
         PlayerDTO playerR = new PlayerDTO();
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED,3, 10, 2,3, 5);
-        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED,3, 10, 2,3, 5);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
 
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
@@ -441,8 +441,8 @@ public class MatchTest {
         PlayerDTO playerR = new PlayerDTO();
 
         // helper method to fill the player fields
-        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   1,TeamSide.RED,3, 10, 2,3, 5);
-        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 2,TeamSide.BLUE, 15, 4,2, 3, 7);
+        setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED,3, 10, 2,3, 5);
+        setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
 
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
