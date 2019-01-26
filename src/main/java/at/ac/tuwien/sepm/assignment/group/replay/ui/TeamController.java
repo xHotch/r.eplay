@@ -91,6 +91,7 @@ public class TeamController {
             newTeamStage.setScene(new Scene(springFXMLLoader.load("/fxml/newTeam.fxml", Parent.class)));
         } catch (IOException e) {
             LOG.error("Loading New Team fxml failed", e);
+            AlertHelper.showErrorMessage("Fenster zum Team anlegen konnte nicht geöffnet werden.");
         }
         newTeamStage.toFront();
         newTeamStage.showAndWait();
@@ -115,6 +116,7 @@ public class TeamController {
                     newTeamStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamMatchesPage.fxml", Parent.class)));
                 } catch (IOException e) {
                     LOG.error("Loading teamMatches fxml failed", e);
+                    AlertHelper.showErrorMessage("Fenster für die Match Auswahl konnte nicht geöffnet werden.");
                 }
                 teamMatchesController.loadMatches(selectedTeams.get(0), selectedTeams.get(1));
                 newTeamStage.toFront();
@@ -159,7 +161,7 @@ public class TeamController {
                 deleteTeamTexts();
             } catch (TeamValidationException e) {
                 LOG.error("caught TeamValidationException", e);
-                AlertHelper.showErrorMessage("Fehler beim Löschen des Teams: Ungültiges Team");
+                AlertHelper.showErrorMessage("Fehler beim Löschen des Teams: Ungültiges Team: " + e.getMessage());
             } catch (TeamServiceException e) {
                 LOG.error("caught TeamServiceException", e);
                 AlertHelper.showErrorMessage("Fehler beim Löschen des Teams: Team konnte nicht gelöscht werden");

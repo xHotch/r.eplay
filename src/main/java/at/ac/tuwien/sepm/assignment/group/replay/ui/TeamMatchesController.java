@@ -109,7 +109,7 @@ public class TeamMatchesController {
 
                 Stage teamCompareStage = new Stage();
                 // setup application
-                teamCompareStage.setTitle("Compare Teams");
+                teamCompareStage.setTitle("Teamvergleich");
                 teamCompareStage.setWidth(1024);
                 teamCompareStage.setHeight(768);
                 teamCompareStage.centerOnScreen();

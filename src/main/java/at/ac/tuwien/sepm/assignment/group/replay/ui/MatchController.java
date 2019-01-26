@@ -163,7 +163,8 @@ public class MatchController {
         try {
             matchdetailsStage.setScene(new Scene(springFXMLLoader.load("/fxml/matchdetail.fxml", Parent.class)));
         } catch (IOException e) {
-            LOG.error("Loading Match Details fxml failed: " + e.getMessage());
+            LOG.error("Loading Match Details fxml failed", e);
+            AlertHelper.showErrorMessage("Fenster mit den Match Details konnte nicht geöffnet werden.");
         }
 
         // load match details for the new window
@@ -229,6 +230,7 @@ public class MatchController {
                 matchCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/matchComparePage.fxml", Parent.class)));
             } catch (IOException e) {
                 LOG.error("Loading compareMatches fxml failed", e);
+                AlertHelper.showErrorMessage("Fenster zum Vergleichen der Matches konnte nicht geöffnet werden.");
             }
             matchCompareController.setUp(selectedMatches.get(0), selectedMatches.get(1));
             matchCompareStage.toFront();
@@ -298,13 +300,13 @@ public class MatchController {
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Speichern der Spieler"));
             } catch (PlayerValidationException e) {
                 LOG.error("Caught PlayerValidationException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültige Spieler"));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültige Spieler: " + e.getMessage()));
             } catch (MatchServiceException e) {
                 LOG.error("Caught MatchServiceException", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Fehler beim Speichern des Matches"));
             } catch (MatchValidationException e) {
                 LOG.error("Caught MatchValidationException", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültiges Match"));
+                Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays: Ungültiges Match: " + e.getMessage()));
             } catch (ReplayAlreadyExistsException e) {
                 try {
                     matchService.deleteFile(replayFile);

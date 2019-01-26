@@ -110,7 +110,7 @@ public class MatchPlayerStatisticsController {
             }
         };
         cbMatchPlayer.getSelectionModel().selectedItemProperty().addListener(changeListener);
-
+        cbMatchPlayer.getSelectionModel().select(0);
     }
 
 

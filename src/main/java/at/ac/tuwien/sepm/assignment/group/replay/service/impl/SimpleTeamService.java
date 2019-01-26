@@ -119,16 +119,16 @@ public class SimpleTeamService implements TeamService {
         LOG.trace("Called - teamDTOValidator");
         String errMsg = "";
         if (teamDTO.getName() == null || teamDTO.getName().equals("")) {
-            errMsg += "No name\n";
+            errMsg += "Kein Name\n";
         }
         if (teamDTO.getTeamSize() <= 0) {
-            errMsg += "TeamSize is smaller or equal to zero\n";
+            errMsg += "Teamgröße ist kleiner oder gleich null\n";
         }
         if (teamDTO.getTeamSize() > 3) {
-            errMsg += "TeamSize is bigger as 3\n";
+            errMsg += "Teamgröße ist größer als 3\n";
         }
         if (teamDTO.getPlayers().size() != teamDTO.getTeamSize()) {
-            errMsg += "Amount of selected players must fit team size\n";
+            errMsg += "Menge der ausgewählten Spieler muss gleich der Teamgröße sein\n";
         }
         if (!errMsg.equals("")) {
             throw new TeamValidationException(errMsg);
