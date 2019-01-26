@@ -24,7 +24,7 @@ public interface MatchService {
      * @param matchDTO the match to validate and create.
      * @throws MatchValidationException if there is invalid data in the match.
      * @throws MatchServiceException    if the dao method throws an error.
-     * @throws MatchAlreadyExistsException if the match already exists
+     * @throws ReplayAlreadyExistsException if the match already exists
      */
     void createMatch(MatchDTO matchDTO) throws MatchValidationException, MatchServiceException, ReplayAlreadyExistsException;
 

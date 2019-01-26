@@ -54,7 +54,7 @@ public class MatchAnimationController {
     private BoostInformationParser boostInformationParser;
     private ExecutorService executorService;
 
-    private HashMap<Rectangle, Integer> carShapes = new HashMap<>();
+    private HashMap<Rectangle, Integer> carShapes;
     private Map<Integer, Integer> carToPlayerMap;
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndTimeMap;
     private HashMap<Integer, RigidBodyInformation> rigidBodyInformationHashMap;
@@ -187,6 +187,7 @@ public class MatchAnimationController {
             //animation data
             double minFrameTime = Double.MIN_VALUE;
             double maxFrameTime = 0;
+
 
             for (FrameDTO frameDTO : videoDTO.getFrames()) {
 
@@ -328,7 +329,7 @@ public class MatchAnimationController {
         Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
         carToPlayerMap = videoDTO.getCarActorIds();
         playerToCarAndTimeMap = videoDTO.getPlayerToCarAndTimeMap();
-
+        carShapes = new HashMap<>();
 
         int countRed = 0;
         int countBlue = 0;

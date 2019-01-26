@@ -28,7 +28,7 @@
         <logback.version>1.2.3</logback.version>
         <!-- test dependencies -->
         <junit.version>4.12</junit.version>
-        <mockito-all.version>1.10.19</mockito-all.version>
+        <mockito-core.version>2.23.4</mockito-core.version>
         <!-- plugins -->
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.2.0</maven-shade-plugin.version>
@@ -125,8 +125,8 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>${mockito-all.version}</version>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
         </dependency>
     </dependencies>
 
