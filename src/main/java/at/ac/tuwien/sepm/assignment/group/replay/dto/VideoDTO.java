@@ -27,6 +27,8 @@ public class VideoDTO {
 
     private List<FrameDTO> frames;
 
+    private List<GoalDTO> goals;
+
 
 
 
@@ -62,6 +64,14 @@ public class VideoDTO {
 
     public void setFrames(List<FrameDTO> frames) {
         this.frames = frames;
+    }
+
+    public List<GoalDTO> getGoals() {
+        return goals;
+    }
+
+    public void setGoals(List<GoalDTO> goals) {
+        this.goals = goals;
     }
 
 

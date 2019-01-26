@@ -149,6 +149,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             videoDTO.setActorIds(playerInformationParser.getPlatformIdToActorId());
             videoDTO.setCarActorIds(carInformationParser.getPlayerCarMap());
             videoDTO.setPlayerToCarAndTimeMap(carInformationParser.getPlayerToCarAndFrameTimeMap());
+            videoDTO.setGoals(getGoals());
 
             return videoDTO;
         } finally {
@@ -390,6 +391,29 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             throw new FileServiceException(e.getMessage(), e);
         }
         return match;
+    }
+
+    /**
+     * Reads the goals and saves them in a List
+     * @return a List of goals
+     */
+    private List<GoalDTO> getGoals(){
+        LOG.trace("Called - getGoals");
+
+        List<GoalDTO> goalList = new ArrayList<>();
+
+        int length = ctx.read("$.Properties.Goals.length()");
+
+        for(int i = 0; i < length; i++){
+            GoalDTO goalDTO = new GoalDTO();
+            goalDTO.setFrameTime(ctx.read("$.Properties.Goals["+i+"].Time"));
+            goalDTO.setPlayerName(ctx.read("$.Properties.Goals["+i+"].PlayerName"));
+            goalDTO.setTeamSide(ctx.read("$.Properties.Goals["+i+"].PlayerTeam"));
+
+            goalList.add(goalDTO);
+        }
+
+        return goalList;
     }
 
 

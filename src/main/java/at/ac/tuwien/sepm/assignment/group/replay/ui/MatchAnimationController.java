@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
@@ -115,6 +117,8 @@ public class MatchAnimationController {
     private Label player5boost_label;
     @FXML
     private Label player6boost_label;
+    @FXML
+    private ImageView goalImage;
 
     private Color white = Color.rgb(255, 255, 255); // Color White
 
@@ -205,6 +209,7 @@ public class MatchAnimationController {
             }
 
             generateBoostTimeline(maxFrameTime);
+            showGoals(maxFrameTime);
 
             //slider settings
             timelineSlider.setMin(minFrameTime);
@@ -364,6 +369,10 @@ public class MatchAnimationController {
         }
     }
 
+    /**
+     * Generates a boost timeline for each player
+     * @param imagelength the maximum frameTime from the replay, which is used as the timeline width
+     */
     private void generateBoostTimeline(double imagelength) {
 
         Map<Integer, List<BoostDTO>> boostAmount = boostInformationParser.getBoostAmountMap();
@@ -455,42 +464,36 @@ public class MatchAnimationController {
             if (isTeamBluePlayer1) {
                 Platform.runLater(() -> {
                     player1boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player1boost.setScaleY(player1boost.getFitHeight());
                     player1boost_label.setText(player.getName());
                 });
                 isTeamBluePlayer1 = false;
             } else if (isTeamBluePlayer2) {
                 Platform.runLater(() -> {
                     player2boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player2boost.setScaleY(player2boost.getFitHeight());
                     player2boost_label.setText(player.getName());
                 });
                 isTeamBluePlayer2 = false;
             } else if (isTeamBluePlayer3) {
                 Platform.runLater(() -> {
                     player3boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player3boost.setScaleY(player3boost.getFitHeight());
                     player3boost_label.setText(player.getName());
                 });
                 isTeamBluePlayer3 = false;
             } else if (isTeamRedPlayer1) {
                 Platform.runLater(() -> {
                     player4boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player4boost.setScaleY(player4boost.getFitHeight());
                     player4boost_label.setText(player.getName());
                 });
                 isTeamRedPlayer1 = false;
             } else if (isTeamRedPlayer2) {
                 Platform.runLater(() -> {
                     player5boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player5boost.setScaleY(player5boost.getFitHeight());
                     player5boost_label.setText(player.getName());
                 });
                 isTeamRedPlayer2 = false;
             } else if (isTeamRedPlayer3) {
                 Platform.runLater(() -> {
                     player6boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player6boost.setScaleY(player6boost.getFitHeight());
                     player6boost_label.setText(player.getName());
                 });
                 isTeamRedPlayer3 = false;
@@ -530,6 +533,57 @@ public class MatchAnimationController {
         B = B & 0x000000FF;
 
         return 0xFF000000 | R | G | B;
+    }
+
+    private void showGoals(double imagelength){
+        List<GoalDTO> goalList = videoDTO.getGoals();
+        BufferedImage goalsImage = new BufferedImage((int) imagelength, 20, BufferedImage.TYPE_INT_ARGB);
+        Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
+
+        for(GoalDTO goal : goalList){
+
+            Color currentColor = Color.rgb(255, 255, 255);
+
+            //get correct color for player name
+            for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
+                if(player.getPlayerDTO().getName().equals(goal.getPlayerName())) {
+                    Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
+
+                    for (Map.Entry<Rectangle, Integer> carShape : carShapes.entrySet()) {
+                        if (carShape.getValue() == actorId) {
+                            currentColor = (Color) carShape.getKey().getFill();
+                        }
+                    }
+                }
+            }
+
+            //Draw a circle
+            for(int i = 0; i <= 9; i++){
+                goalsImage.setRGB(isInBoundsX(goalsImage,(int) Math.floor(goal.getFrameTime())), i, getIntFromColor(currentColor));
+            }
+
+            Graphics2D graphic = (Graphics2D) goalsImage.getGraphics();
+
+            int cirecleSize = 12;
+            graphic.setColor(new java.awt.Color(getIntFromColor(currentColor)));
+            graphic.fillOval((int) Math.floor(goal.getFrameTime()-(((imagelength/goalImage.getFitWidth())*cirecleSize)/2)),8,(int)((imagelength/goalImage.getFitWidth())*cirecleSize),cirecleSize);
+        }
+
+        Platform.runLater(() -> {
+            goalImage.setImage(SwingFXUtils.toFXImage(goalsImage, null));
+        });
+    }
+
+    private int isInBoundsX(BufferedImage goalsImage, int position){
+
+        if(position < 0){
+            return 0;
+        } else if (position > goalsImage.getWidth()-1){
+            return goalsImage.getWidth()-1;
+        } else {
+            return position;
+        }
+
     }
 
 }
