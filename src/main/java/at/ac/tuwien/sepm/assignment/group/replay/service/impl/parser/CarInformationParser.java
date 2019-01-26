@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.FrameDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
@@ -20,25 +19,17 @@ public class CarInformationParser {
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-
-
     //Map that maps ActorID from a car to a player. Key = CarActorId, Value = playerActorId
     private LinkedHashMap<Integer, Integer> playerCarMap = new LinkedHashMap<>();
 
-
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndFrameTimeMap = new LinkedMultiValueMap<>();
 
-
-
     private Map<Integer, List<Pair<Integer, Double>>> carToPlayerAndFrameListMap = new HashMap<>();
-
     //Map that maps ActorID from a Player to a list of RigidBodyInformation
     private LinkedHashMap<Integer, List<RigidBodyInformation>> playerToRigidBodyMap = new LinkedHashMap<>();
 
-
     private RigidBodyParser rigidBodyParser;
     private ReadContext ctx;
-
 
     public CarInformationParser(RigidBodyParser rigidBodyParser) {
         this.rigidBodyParser = rigidBodyParser;
@@ -52,9 +43,8 @@ public class CarInformationParser {
      * @param frameTime            frameTime of the frame
      * @param frameDelta           deltaTime of the frame
      * @param gamePaused           boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
-     * @throws FileServiceException if the file couldn't be parsed
      */
-    void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+    void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) {
         LOG.trace("Called - parse");
 
         parseRigidBodyInformation(getPlayerIDfromCar(currentFrame, currentActorUpdateNr, actorId, frameTime),currentFrame,currentActorUpdateNr,frameTime,gamePaused);
@@ -62,7 +52,7 @@ public class CarInformationParser {
     }
 
 
-    void parseVideoFrame(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) throws FileServiceException {
+    void parseVideoFrame(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) {
         LOG.trace("Called - parse");
 
         mapPlayerIDtoCarAndTime(actorId, currentFrame, currentActorUpdateNr, frameTime);
@@ -107,17 +97,13 @@ public class CarInformationParser {
 
         double compareTime = 0.0;
         int playerid = -1;
-        for (Pair<Integer, Double> playerAndTime : playerAndTimeList){
-            if (playerAndTime.getValue() < frameTime){
-                if(playerAndTime.getValue()>compareTime){
-                    playerid = playerAndTime.getKey();
-                    compareTime=playerAndTime.getValue();
-                }
+        for (Pair<Integer, Double> playerAndTime : playerAndTimeList) {
+            if (playerAndTime.getValue() < frameTime && playerAndTime.getValue() > compareTime) {
+                playerid = playerAndTime.getKey();
+                compareTime = playerAndTime.getValue();
             }
         }
-
         return playerid;
-
     }
 
     /**
@@ -144,7 +130,7 @@ public class CarInformationParser {
     /**
      * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
      */
-    private void parseRigidBodyInformation(int playerID, int currentFrame, int currentActorUpdateNr, double frameTime, boolean gamePaused) throws FileServiceException {
+    private void parseRigidBodyInformation(int playerID, int currentFrame, int currentActorUpdateNr, double frameTime, boolean gamePaused) {
         LOG.trace("Called - parseRigidBodyInformation");
 
         playerToRigidBodyMap.putIfAbsent(playerID, new ArrayList<>());
@@ -160,7 +146,7 @@ public class CarInformationParser {
     /**
      * Reads the RigidBodyInformation from a car and stores it in a map with Key = CarActorId, Value = List of Ballinformation for that car
      */
-    private void parseFrameRigidBodyInformation(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) throws FileServiceException {
+    private void parseFrameRigidBodyInformation(int actorId, int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime)  {
         LOG.trace("Called - parseRigidBodyInformation");
 
         try {

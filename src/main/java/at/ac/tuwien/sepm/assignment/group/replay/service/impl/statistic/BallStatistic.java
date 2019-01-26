@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.SortedMap;
+import java.util.Map;
 
 /**
  * @author Markus Kogelbauer
@@ -27,7 +27,7 @@ public class BallStatistic {
         this.rigidBodyStatistic = rigidBodyStatistic;
     }
 
-    public void calculate(MatchDTO match, List<RigidBodyInformation> rigidBodyBall, SortedMap<Double, TeamSide> hitTimes) {
+    public void calculate(MatchDTO match, List<RigidBodyInformation> rigidBodyBall, Map<Double, TeamSide> hitTimes) {
         LOG.trace("Called - calculate");
         rigidBodyStatistic.calculate(rigidBodyBall);
         match.setBallHeatmapImage(rigidBodyStatistic.calculateHeatmap(rigidBodyBall));
@@ -36,7 +36,7 @@ public class BallStatistic {
         calculatePossession(match, rigidBodyBall, hitTimes);
     }
 
-    private void calculatePossession(MatchDTO match, List<RigidBodyInformation> rigidBodyBall, SortedMap<Double, TeamSide> hitTimes) {
+    private void calculatePossession(MatchDTO match, List<RigidBodyInformation> rigidBodyBall, Map<Double, TeamSide> hitTimes) {
         possessionRed = 0.0;
         possessionBlue = 0.0;
         TeamSide inPossession = null;

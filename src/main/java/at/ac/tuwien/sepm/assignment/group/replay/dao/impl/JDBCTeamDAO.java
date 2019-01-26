@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.assignment.group.replay.dao.impl;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.TeamDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceException;
@@ -34,24 +33,19 @@ public class JDBCTeamDAO implements TeamDAO {
     private static final String READ_TEAMS_FROM_PLAYER = "Select t.id, t.name, t.teamsize from team t join " +
         "teamplayer tp on t.id = tp.teamid where tp.playerid = ?";
 
-    private static final String READ_MATCHES_FROM_TEAMS = "Select *" +
-        "from MATCH_ where ID = any( " +
-        "SELECT mp.MATCHID " +
+    private static final String READ_MATCHID_FROM_TEAMS = "SELECT mp.MATCHID " +
         "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " +
         "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) " +
         "INTERSECT SELECT mp.MATCHID " +
         "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " +
-        "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) )";
+        "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE)";
+
+    private static final String READ_MATCHES_FROM_TEAMS = "Select *" +
+        "from MATCH_ where ID = any( " + READ_MATCHID_FROM_TEAMS + " )";
 
     private static final String READ_STATS_FROM_TEAMS = "Select sum(SCORE) AS score,sum(GOALS) as goals, " +
         "sum(SHOTS) as shots,sum(ASSISTS) as assists,sum(SAVES) as saves,avg(AVERAGESPEED) as averagespeed, team, MATCHID " +
-        "from MATCHPLAYER where MATCHID = any( " +
-        "SELECT mp.MATCHID " +
-        "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " +
-        "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) " +
-        "INTERSECT SELECT mp.MATCHID " +
-        "from MATCHPLAYER mp join TEAMPLAYER tp join team t on tp.TEAMID = t.ID on mp.PLAYERID = tp.PLAYERID " +
-        "where t.ID = ? group by mp.MATCHID having count(mp.PLAYERID) = t.TEAMSIZE and sum(mp.TEAM) in (0 ,t.TEAMSIZE) ) " +
+        "from MATCHPLAYER where MATCHID = any( " + READ_MATCHID_FROM_TEAMS + " ) " +
         "GROUP BY TEAM,MATCHID";
 
     private final Connection connection;
@@ -153,8 +147,8 @@ public class JDBCTeamDAO implements TeamDAO {
         try (PreparedStatement ps = connection.prepareStatement(READ_MATCHES_FROM_TEAMS)) {
             ps.setLong(1, teamDTO1.getId());
             ps.setLong(2, teamDTO2.getId());
-            matchDAO.setMatchDTO(result,ps,false);
-        } catch (SQLException | MatchPersistenceException | FilePersistenceException e) {
+            matchDAO.setMatchDTO(result,ps);
+        } catch (SQLException | MatchPersistenceException e) {
             throw new TeamPersistenceException("could not read team Matches", e);
         }
         return result;

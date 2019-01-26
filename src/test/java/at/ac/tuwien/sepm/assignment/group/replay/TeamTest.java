@@ -136,7 +136,7 @@ public class TeamTest {
      * The DAO should save it without an error.
      **/
     @Test
-    public void createWithValidParametersShouldPersist() throws TeamServiceException, TeamValidationException, TeamPersistenceException, PlayerServiceException, PlayerValidationException {
+    public void createWithValidParametersShouldPersist() throws TeamServiceException, TeamValidationException, TeamPersistenceException {
         teamService.createTeam(validTeamDTO1);
 
         // get all teams

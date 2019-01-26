@@ -5,13 +5,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.PlayerDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.PlayerPersistenceException;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,8 +94,7 @@ public class JDBCMatchDAO implements MatchDAO {
                 matchDTO.setId(rs.getInt("id"));
             }
         } catch (SQLException | FilePersistenceException e) {
-            String msg = "Could not create match";
-            throw new MatchPersistenceException(msg, e);
+            throw new MatchPersistenceException("Could not create match", e);
         }
         for (MatchPlayerDTO matchPlayerDTO : matchDTO.getPlayerData()) {
 
@@ -158,8 +153,7 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            String msg = "Could not record boost pad information";
-            throw new MatchPersistenceException(msg, e);
+            throw new MatchPersistenceException("Could not record boost pad information", e);
         }
     }
 
@@ -169,10 +163,9 @@ public class JDBCMatchDAO implements MatchDAO {
         List<MatchDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_ALL_MATCHES, Statement.RETURN_GENERATED_KEYS)) {
 
-            setMatchDTO(result, ps,true);
-        } catch (SQLException | FilePersistenceException e) {
-            String msg = "Could not read match";
-            throw new MatchPersistenceException(msg, e);
+            setMatchDTO(result, ps);
+        } catch (SQLException e) {
+            throw new MatchPersistenceException("Could not read matches", e);
         }
         return result;
     }
@@ -189,12 +182,7 @@ public class JDBCMatchDAO implements MatchDAO {
 
                     matchPlayer.setMatchDTO(match);
                     int id = rs.getInt("playerId");
-                    try {
-                        matchPlayer.setPlayerDTO(playerDAO.get(id));
-                    } catch (PlayerPersistenceException e){
-                        String msg = "Could not read Player with id: " + id;
-                        throw new MatchPersistenceException(msg, e);
-                    }
+                    matchPlayer.setPlayerDTO(playerDAO.get(id));
 
                     matchPlayer.setTeam(TeamSide.getById(rs.getInt("team")).get());
                     matchPlayer.setScore(rs.getInt("score"));
@@ -213,9 +201,10 @@ public class JDBCMatchDAO implements MatchDAO {
                     result.add(matchPlayer);
                 }
             }
+        } catch (PlayerPersistenceException e){
+            throw new MatchPersistenceException("Could not read Player", e);
         } catch (SQLException e) {
-            String msg = "Could not read match players";
-            throw new MatchPersistenceException(msg, e);
+            throw new MatchPersistenceException("Could not read match players", e);
         }
 
         for (MatchPlayerDTO matchPlayer:result) {
@@ -251,8 +240,7 @@ public class JDBCMatchDAO implements MatchDAO {
             }
 
         } catch (SQLException e) {
-            String msg = "Could not read boost pads";
-            throw new MatchPersistenceException(msg, e);
+            throw new MatchPersistenceException("Could not read boost pads", e);
         }
         return boostPadList;
     }
@@ -282,11 +270,8 @@ public class JDBCMatchDAO implements MatchDAO {
                 ps.setBoolean(2, false);
             }
             ps.setInt(3, teamSize);
-            if (teamSize > 0 && teamSize <= 3) {
-                ps.setBoolean(4, false);
-            } else {
-                ps.setBoolean(4, true);
-            }
+            ps.setBoolean(4, (teamSize > 0 && teamSize <= 3));
+
             if (end == null) {
                 ps.setTimestamp(5, null);
                 ps.setBoolean(6, true);
@@ -302,15 +287,14 @@ public class JDBCMatchDAO implements MatchDAO {
                 ps.setTimestamp(7, Timestamp.valueOf(begin));
                 ps.setBoolean(8, false);
             }
-            setMatchDTO(result, ps,true);
-        } catch (SQLException | FilePersistenceException e) {
-            String msg = "Could not read match";
-            throw new MatchPersistenceException(msg, e);
+            setMatchDTO(result, ps);
+        } catch (SQLException e) {
+            throw new MatchPersistenceException("Could not read match with search", e);
         }
         return result;
     }
 
-    void setMatchDTO(List<MatchDTO> result, PreparedStatement ps,boolean files) throws SQLException, MatchPersistenceException, FilePersistenceException {
+    void setMatchDTO(List<MatchDTO> result, PreparedStatement ps) throws SQLException, MatchPersistenceException {
         try (ResultSet rs = ps.executeQuery()) {
             while(rs.next()) {
 
@@ -342,10 +326,9 @@ public class JDBCMatchDAO implements MatchDAO {
         List<MatchDTO> result = new LinkedList<>();
         try (PreparedStatement ps = connection.prepareStatement(READ_MATCHES_FROM_PLAYER, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, playerDTO.getId());
-            setMatchDTO(result,ps,false);
-        } catch (SQLException | FilePersistenceException e) {
-            String msg = "Could not read match";
-            throw new MatchPersistenceException(msg, e);
+            setMatchDTO(result,ps);
+        } catch (SQLException e) {
+            throw new MatchPersistenceException("Could not read matches from player", e);
         }
         return result;
     }

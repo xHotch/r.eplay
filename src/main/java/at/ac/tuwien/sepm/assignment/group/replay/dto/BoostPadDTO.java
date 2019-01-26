@@ -46,7 +46,7 @@ public class BoostPadDTO {
     }
 
     public void setBoostPadId(int boostPad) {
-        this.boostPadId = boostPadId;
+        this.boostPadId = boostPad;
     }
 
     public int getFrame() {

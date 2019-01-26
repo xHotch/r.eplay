@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.ReadContext;
 import org.apache.commons.math3.complex.Quaternion;
@@ -39,9 +38,8 @@ public class RigidBodyParser {
      * @param frameTime     frameTime of the frame
      * @param gamePaused    boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
      * @return RigidBodyInformation Containing rotation, velocity and position information, as well as frame and delta time values.
-     * @throws FileServiceException if the file couldn't be parsed
      */
-    RigidBodyInformation parseRigidBodyInformation(int frameId, int actorUpdateId, double frameTime, boolean gamePaused) throws FileServiceException {
+    RigidBodyInformation parseRigidBodyInformation(int frameId, int actorUpdateId, double frameTime, boolean gamePaused) {
         LOG.trace("Called - parseRigidBodyInformation");
 
         LinkedHashMap<String, Object> position = ctx.read("$.Frames[" + frameId + "].ActorUpdates[" + actorUpdateId + "]." + rigidBodyPosition);
@@ -71,10 +69,10 @@ public class RigidBodyParser {
      * <p>
      * Velocities and Positions are stored as 3 dimensional Vectors
      *
-     * @param map LinkedHashMap parsed by JsonPath, containing 3 dimensional Vector values
+     * @param map Map parsed by JsonPath, containing 3 dimensional Vector values
      * @return Vector3D containing the x,y,z values from the map
      */
-    private Vector3D getVectorFromMap(LinkedHashMap<String, Object> map) {
+    private Vector3D getVectorFromMap(Map<String, Object> map) {
         int i = 0;
         double x = 0.0;
         double y = 0.0;
@@ -114,10 +112,10 @@ public class RigidBodyParser {
      * <p>
      * Rotations are stored as Quaternions
      *
-     * @param map LinkedHashMap parsed by JsonPath, containing Quaternion values
+     * @param map Map parsed by JsonPath, containing Quaternion values
      * @return Quaternion containing the x,x,y,z values from the map
      */
-    private Quaternion getQuaternionFromMap(LinkedHashMap<String, Object> map) {
+    private Quaternion getQuaternionFromMap(Map<String, Object> map) {
         int i = 0;
         double x = 0.0;
         double y = 0.0;
@@ -156,7 +154,6 @@ public class RigidBodyParser {
 
         }
 
-        //return new Quaternion(x,y,z,w);
         return new Quaternion(w, x, y, z);
     }
 }

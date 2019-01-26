@@ -22,7 +22,6 @@ import java.lang.invoke.MethodHandles;
 import static org.junit.Assert.fail;
 
 public class ReplayServiceTest {
-
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     /**

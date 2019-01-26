@@ -3,11 +3,7 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.lang.invoke.MethodHandles;
 
 /**
  * Controller for the Match Detail window
@@ -15,12 +11,12 @@ import java.lang.invoke.MethodHandles;
  */
 @Component
 public class MatchDetailController {
+
+    private MatchAnimationController matchAnimationController;
+
     public MatchDetailController(MatchAnimationController matchAnimationController) {
         this.matchAnimationController = matchAnimationController;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private MatchAnimationController matchAnimationController;
 
     // Inject tab content.
     @FXML private Tab matchStatsOverviewTab;
@@ -38,7 +34,7 @@ public class MatchDetailController {
     @FXML
     private void initialize(){
         matchAnimationTab.setOnSelectionChanged (e -> {
-            if (!matchAnimationTab.isSelected())matchAnimationController.pauseAnimation();
+            if (!matchAnimationTab.isSelected()) matchAnimationController.pauseAnimation();
         }
         );
     }

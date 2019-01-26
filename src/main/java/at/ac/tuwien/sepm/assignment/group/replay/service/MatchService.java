@@ -1,11 +1,8 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service;
 
-import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchStatsDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.VideoDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 
 import java.io.File;

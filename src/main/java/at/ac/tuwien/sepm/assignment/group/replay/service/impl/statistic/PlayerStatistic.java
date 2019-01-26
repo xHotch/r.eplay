@@ -26,9 +26,7 @@ public class PlayerStatistic {
 
     public void calculate(List<MatchPlayerDTO> matchPlayerDTOList,Map<Integer,List<RigidBodyInformation>> rigidBodyPlayers, List<RigidBodyInformation> rigidBodyBall) {
         LOG.trace("Called - calculate");
-        matchPlayerDTOList.forEach(dto -> {
-            setMatchPlayerData(dto, rigidBodyPlayers.get(dto.getActorId()), rigidBodyBall);
-        });
+        matchPlayerDTOList.forEach(dto -> setMatchPlayerData(dto, rigidBodyPlayers.get(dto.getActorId()), rigidBodyBall));
     }
 
     private void setMatchPlayerData(MatchPlayerDTO matchPlayerDTO, List<RigidBodyInformation> rigidBodyPlayer, List<RigidBodyInformation> rigidBodyBall){

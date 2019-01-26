@@ -1,11 +1,9 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.BoostInformationParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Boost Statistics Tab Page Controller
@@ -45,11 +40,6 @@ public class BoostStatisticsController {
 
     @FXML
     private ImageView mapImage;
-
-
-
-    public BoostStatisticsController() {
-    }
 
     /**
      * FXML Initialize method.

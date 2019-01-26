@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.BoostPadDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import org.slf4j.Logger;

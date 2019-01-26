@@ -32,7 +32,7 @@ public class MainWindowController {
 
     // Inject tab content.
     @FXML private Tab playerTab;
-    // Inject controller
+    // Inject controller TODO knotrolle
     //@FXML private PlayerController playerTabPageController;
 
     @FXML private Tab teamTab;
@@ -40,15 +40,6 @@ public class MainWindowController {
     public MainWindowController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService) {
         this.springFXMLLoader = springFXMLLoader;
         this.executorService = executorService;
-    }
-
-    /**
-     * FXML Initialize method.
-     * Calls methods to setup and update table;
-     */
-    @FXML
-    private void initialize() {
-
     }
 
 }

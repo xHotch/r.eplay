@@ -37,9 +37,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
     //Logger
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-
     private ReadContext ctx;
-    private MatchDTO matchDTO;
 
     private RigidBodyParser rigidBodyParser;
     private PlayerInformationParser playerInformationParser;
@@ -78,10 +76,9 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         setupParsers(jsonFile);
 
         LOG.debug("Start Parse");
-        matchDTO = readProperties();
+        MatchDTO matchDTO = readProperties();
         parseFrames();
         LOG.debug("End Parse");
-        //playerInformationParser.setActorId(matchDTO.getPlayerData());
         List<MatchPlayerDTO> players = playerInformationParser.getMatchPlayer();
         if (matchDTO.getTeamSize() * 2 != players.size()) {
             throw new FileServiceException("Wrong number of players in the game");
@@ -265,7 +262,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
      */
     private List<FrameDTO> parseVideoFrames() throws FileServiceException {
 
-        ArrayList<FrameDTO> frameDTOS = new ArrayList<>();
+        List<FrameDTO> frameDTOS = new ArrayList<>();
         LOG.trace("Called - parseVideoFrames");
 
         //Map that contains the ids and Classnames from actors.
@@ -275,9 +272,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
 
         //pause game at the beginning
         boolean gamePaused = true;
-
-        //Frames for video
-        VideoDTO videoDTO = new VideoDTO();
 
         try {
 
@@ -290,18 +284,10 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                 int actorUpdateCount = ctx.read(frame + ".ActorUpdates.length()");
                 LOG.debug("Frame {} has {} ActorUpdates", currentFrame, actorUpdateCount);
 
-
-
                 double frameTime = ctx.read(frame + ".Time", Double.class);
                 double frameDelta = ctx.read(frame + ".Delta", Double.class);
-
-
-
-
                 //Frames for video
-                //videoDTO.addFrame(frameTime);
                 FrameDTO frameDTO = new FrameDTO(frameTime);
-
 
                 int i = 0;
                 for (int currentActorUpdateNr = 0; currentActorUpdateNr < actorUpdateCount; currentActorUpdateNr++) {
@@ -315,9 +301,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         LOG.debug("New Actor found at frame {}, actorupdate {}", currentFrame, currentActorUpdateNr);
                     }
 
-
                     String className = actors.get(actorId);
-
 
                     switch (className) {
                         case "TAGame.Ball_TA":
@@ -341,7 +325,6 @@ public class JsonParseServiceJsonPath implements JsonParseService {
                         default:
                             break;
                     }
-
 
                     LOG.debug(className);
                 }

@@ -17,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -155,15 +154,13 @@ public class MatchController {
         matchdetailsStage.setWidth(1024);
         matchdetailsStage.setHeight(1024);
         matchdetailsStage.centerOnScreen();
-        matchdetailsStage.setOnCloseRequest(event -> {
-            LOG.debug("Match Details window closed");
-        });
+        matchdetailsStage.setOnCloseRequest(event -> LOG.debug("Match Details window closed"));
 
 
         try {
             matchdetailsStage.setScene(new Scene(springFXMLLoader.load("/fxml/matchdetail.fxml", Parent.class)));
         } catch (IOException e) {
-            LOG.error("Loading Match Details fxml failed: " + e.getMessage());
+            LOG.error("Loading Match Details fxml failed",e);
         }
 
         // load match details for the new window
@@ -278,7 +275,6 @@ public class MatchController {
                 } finally {
                     matchService.deleteFile(json);
                 }
-                //jsonParseService.getVideo(matchDto);
                 LOG.debug("jsonParseFinished");
                 for (MatchPlayerDTO mpdto : matchDto.getPlayerData()) {
                     playerService.createPlayer(mpdto.getPlayerDTO());

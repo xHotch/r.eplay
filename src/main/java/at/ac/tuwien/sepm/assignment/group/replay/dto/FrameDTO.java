@@ -3,18 +3,19 @@ package at.ac.tuwien.sepm.assignment.group.replay.dto;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class FrameDTO {
 
   private double frameTime;
 
   public FrameDTO(double frameTime){
-      this.frameTime=frameTime;
-      this.carRigidBodyInformations=new HashMap<>();
+      this.frameTime = frameTime;
+      this.carRigidBodyInformations = new HashMap<>();
   }
 
   //actorid to RBI
-  private HashMap<Integer, RigidBodyInformation> carRigidBodyInformations;
+  private Map<Integer, RigidBodyInformation> carRigidBodyInformations;
   private RigidBodyInformation ballRigidBodyInformation;
 
     public double getFrameTime() {
@@ -25,11 +26,11 @@ public class FrameDTO {
         this.frameTime = frameTime;
     }
 
-    public HashMap<Integer, RigidBodyInformation> getCarRigidBodyInformations() {
+    public Map<Integer, RigidBodyInformation> getCarRigidBodyInformations() {
         return carRigidBodyInformations;
     }
 
-    public void setCarRigidBodyInformations(HashMap<Integer, RigidBodyInformation> carRigidBodyInformations) {
+    public void setCarRigidBodyInformations(Map<Integer, RigidBodyInformation> carRigidBodyInformations) {
         this.carRigidBodyInformations = carRigidBodyInformations;
     }
 

@@ -15,23 +15,14 @@ import java.util.*;
 
 @Service
 public class BoostInformationParser {
+    //Logger
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private ReadContext ctx;
     private CarInformationParser carInformationParser;
 
     private static final String FRAMESTRING = "$.Frames[";
     private static final String ACTORUPDATESTRING = "].ActorUpdates[";
-
-    //Logger
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    void setCtx(ReadContext ctx) {
-        this.ctx = ctx;
-    }
-
-    public BoostInformationParser(CarInformationParser carInformationParser) {
-        this.carInformationParser = carInformationParser;
-    }
 
     //Map that maps car component to car id. Key = componentId, Value = carActorId
     private Map<Integer, Integer> carComponentToCarId;
@@ -40,6 +31,9 @@ public class BoostInformationParser {
     //Map that maps ActorID from a Car to a list of BoostPadDTO. Key = playerId, Value = Boost pad information
     private Map<Integer, Map<Integer, List<BoostPadDTO>>> boostPadMap;
 
+    public BoostInformationParser(CarInformationParser carInformationParser) {
+        this.carInformationParser = carInformationParser;
+    }
     /**
      * Setup the maps each time a replay gets uploaded
      */
@@ -47,6 +41,10 @@ public class BoostInformationParser {
         carComponentToCarId = new HashMap<>();
         boostAmountMap = new HashMap<>();
         boostPadMap = new HashMap<>();
+    }
+
+    void setCtx(ReadContext ctx) {
+        this.ctx = ctx;
     }
 
     /**
@@ -59,7 +57,7 @@ public class BoostInformationParser {
      * @param gamePaused           boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
      * @throws FileServiceException if the file couldn't be parsed
      */
-    void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+    void parse(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) {
 
         getCarIDFromCarComponent(currentFrame, currentActorUpdateNr);
         //parse the amount of boost, check if the classname is not 'TAGame.CarComponent_TA:ReplicatedActive' since this indicates active boosting, will be done later.
@@ -77,7 +75,7 @@ public class BoostInformationParser {
      * @param gamePaused           boolean to indicate if the game is paused (at the Start, at a goal etc.) so we can calculate statistics properly from the returned values
      * @throws FileServiceException if the file couldn't be parsed
      */
-    void parseBoostPad(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused, int actorUpdateCount) throws FileServiceException {
+    void parseBoostPad(int actorId, int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused, int actorUpdateCount) {
         //parse the boost pads information, if big or little pad was picked up and where.
         parseBoostPadInformation(currentFrame, currentActorUpdateNr, actorUpdateCount, frameTime, frameDelta, gamePaused);
     }

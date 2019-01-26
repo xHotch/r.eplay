@@ -14,7 +14,6 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.ReplayServiceRLRP;
-import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimpleMatchService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser.*;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.statistic.BallStatistic;
@@ -35,8 +34,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -67,10 +64,6 @@ public class JsonParseServiceTest {
     private FolderDAO folderDAO;
     private PlayerDAO playerDAO;
     private MatchDAO matchDAO;
-
-
-
-
 
     @Before
     public void setUp() throws CouldNotCreateFolderException, SQLException {
@@ -103,7 +96,6 @@ public class JsonParseServiceTest {
         boostStatistic = new BoostStatistic();
 
         jsonParseService = new JsonParseServiceJsonPath(rigidBodyParser,playerInformationParser,gameInformationParser,carInformationParser,ballInformationParser,boostInformationParser,playerStatistic,ballStatistic,boostStatistic,replayService, matchService, folderDAO);
-
     }
 
     @After
@@ -113,34 +105,23 @@ public class JsonParseServiceTest {
         FileUtils.deleteDirectory(folderDAO.getHeatmapDirectory());
     }
 
-
-
     @Test
-    public void testParseMatchReturnsCorrectMatchDto() {
-        try {
-            MatchDTO match = jsonParseService.parseMatch(goodReplay);
-            Assert.assertThat(match.getTeamSize(), is(3));
-            Assert.assertThat(match.getReadId(), is("2F2200D4435F2EF5691E298320832A4B"));
-            Assert.assertThat(match.getDateTime(), is(LocalDateTime.of(2018, 12, 2, 17, 7, 28)));
+    public void testParseMatchReturnsCorrectMatchDto() throws FileServiceException {
+        MatchDTO match = jsonParseService.parseMatch(goodReplay);
+        Assert.assertThat(match.getTeamSize(), is(3));
+        Assert.assertThat(match.getReadId(), is("2F2200D4435F2EF5691E298320832A4B"));
+        Assert.assertThat(match.getDateTime(), is(LocalDateTime.of(2018, 12, 2, 17, 7, 28)));
 
-            List<MatchPlayerDTO> matchPlayerDTOS = match.getPlayerData();
+        List<MatchPlayerDTO> matchPlayerDTOS = match.getPlayerData();
 
-            boolean playerFound = false;
-            for (MatchPlayerDTO matchPlayerDTO : matchPlayerDTOS){
-                if (matchPlayerDTO.getPlayerDTO().getPlatformID()==(3533021571419362446L)) {
-                    playerFound=true;
-                    Assert.assertThat(matchPlayerDTO.getGoals(),is(1));
-                }
+        boolean playerFound = false;
+        for (MatchPlayerDTO matchPlayerDTO : matchPlayerDTOS) {
+            if (matchPlayerDTO.getPlayerDTO().getPlatformID() == (3533021571419362446L)) {
+                playerFound = true;
+                Assert.assertThat(matchPlayerDTO.getGoals(), is(1));
             }
-
-            Assert.assertThat(playerFound,is(true));
-
-
-
-
-        } catch (FileServiceException e) {
-            fail();
         }
+        Assert.assertThat(playerFound, is(true));
     }
 
     @Test(expected = FileServiceException.class)

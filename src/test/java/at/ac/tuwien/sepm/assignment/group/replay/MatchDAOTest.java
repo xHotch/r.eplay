@@ -17,7 +17,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -78,12 +77,6 @@ public class MatchDAOTest {
 
         folderDAOMock = mock(FolderDAO.class);
         matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, folderDAOMock);
-
-
-
-
-
-
     }
 
     @After
@@ -113,23 +106,17 @@ public class MatchDAOTest {
 
         }
 
-
-
         try {
             FileUtils.deleteDirectory(folderDAO.getFileDirectory());
             FileUtils.deleteDirectory(folderDAO.getParserDirectory());
             FileUtils.deleteDirectory(folderDAO.getHeatmapDirectory());
-        } catch (
-            IOException e) {
+        } catch (IOException e) {
             //LOG.error("Exception while tearing Down Replay Service test", e);
         }
     }
 
     @Test
     public void readMatchesTest() throws MatchPersistenceException {
-
-
-
         List<MatchDTO> matches = matchDAO.readMatches();
         Assert.assertThat(matches.size(), is(2));
 
@@ -166,8 +153,6 @@ public class MatchDAOTest {
         Assert.assertThat(matchPlayerDTO.getGroundTime(), is(195.0));
         Assert.assertThat(matchPlayerDTO.getHeatmapFilename(), is("11.png"));
         Assert.assertThat(matchPlayerDTO.getHomeSideTime(), is(205.0));
-
-
     }
 
     @Test

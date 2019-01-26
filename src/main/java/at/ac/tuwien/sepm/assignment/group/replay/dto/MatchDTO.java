@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
-import at.ac.tuwien.sepm.assignment.group.replay.ui.MainWindowController;
-
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -137,17 +135,10 @@ public class MatchDTO {
         this.matchTime = matchTime;
     }
 
-    /**
-     * Method that is used by FXML to gather Information for the {@link MainWindowController#tableColumnPlayersRed} recursively
-     */
     public String getTeamRedPlayers(){
         return getTeamPlayers(TeamSide.RED);
     }
 
-
-    /**
-     * Method that is used by FXML to gather Information for the {@link MainWindowController#tableColumnPlayersBlue} recursively
-     */
     public String getTeamBluePlayers(){
         return getTeamPlayers(TeamSide.BLUE);
     }

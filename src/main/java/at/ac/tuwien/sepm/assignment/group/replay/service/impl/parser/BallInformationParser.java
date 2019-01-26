@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.assignment.group.replay.service.impl.parser;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.FrameDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
-import at.ac.tuwien.sepm.assignment.group.replay.service.exception.FileServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.RigidBodyInformation;
 import com.jayway.jsonpath.ReadContext;
 import org.slf4j.Logger;
@@ -14,10 +13,8 @@ import java.util.*;
 
 @Service
 public class BallInformationParser {
-
-
-
-
+    //Logger
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private EnumMap<TeamSide, Integer> hitCount;
 
@@ -25,24 +22,21 @@ public class BallInformationParser {
 
     private ArrayList<RigidBodyInformation> rigidBodyInformations = new ArrayList<>();
 
-    ArrayList<RigidBodyInformation> getRigidBodyInformations() {
-        return rigidBodyInformations;
-    }
-
     private RigidBodyParser rigidBodyParser;
     private ReadContext ctx;
 
-    void setCtx(ReadContext ctx) {
-        this.ctx = ctx;
-    }
 
     public BallInformationParser(RigidBodyParser rigidBodyParser) {
         this.rigidBodyParser = rigidBodyParser;
     }
 
-    //Logger
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    ArrayList<RigidBodyInformation> getRigidBodyInformations() {
+        return rigidBodyInformations;
+    }
 
+    void setCtx(ReadContext ctx) {
+        this.ctx = ctx;
+    }
 
     void setup(){
         rigidBodyInformations=new ArrayList<>();
@@ -50,7 +44,7 @@ public class BallInformationParser {
         hitTimes = new TreeMap<>();
     }
 
-    void parse(int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) throws FileServiceException {
+    void parse(int currentFrame, int currentActorUpdateNr, double frameTime, double frameDelta, boolean gamePaused) {
         LOG.trace("Called - parse");
 
 
@@ -58,14 +52,12 @@ public class BallInformationParser {
         parseHitInformation(currentFrame, currentActorUpdateNr, frameTime);
     }
 
-    void parseVideoFrame(int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) throws FileServiceException {
+    void parseVideoFrame(int currentFrame, int currentActorUpdateNr, FrameDTO frameDTO, boolean gamePaused, double frameTime) {
         LOG.trace("Called - parse");
 
 
         frameDTO.setBallRigidBodyInformation(rigidBodyParser.parseRigidBodyInformation(currentFrame, currentActorUpdateNr, frameTime,  gamePaused));
     }
-
-
 
     private void parseHitInformation(int currentFrame, int currentActorUpdateNr, double frameTime){
         try {
@@ -78,14 +70,13 @@ public class BallInformationParser {
         } catch (NullPointerException e){
             LOG.debug("No Hit Information found");
         }
-
     }
 
-    public EnumMap<TeamSide, Integer> getHitCount() {
+    public Map<TeamSide, Integer> getHitCount() {
         return hitCount;
     }
 
-    SortedMap<Double, TeamSide> getHitTimes() {
+    Map<Double, TeamSide> getHitTimes() {
         return hitTimes;
     }
 }

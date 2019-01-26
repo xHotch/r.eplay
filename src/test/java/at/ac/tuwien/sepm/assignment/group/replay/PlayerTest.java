@@ -14,7 +14,6 @@ import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerValidat
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.impl.SimplePlayerService;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
-import com.jayway.jsonpath.internal.function.numeric.Average;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;

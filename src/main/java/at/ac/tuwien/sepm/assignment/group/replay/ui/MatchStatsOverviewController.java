@@ -103,12 +103,6 @@ public class MatchStatsOverviewController {
 
         List<MatchPlayerDTO> matchPlayers = match.getPlayerData();
 
-        int redShots = 0;
-        int blueShots = 0;
-
-        int redAssists = 0;
-        int blueAssists = 0;
-
         int redGoals = 0;
         int blueGoals = 0;
 

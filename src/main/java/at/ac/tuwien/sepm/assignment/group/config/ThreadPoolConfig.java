@@ -15,6 +15,6 @@ public class ThreadPoolConfig {
 
     @Bean
     public ExecutorService getExecutorService() {
-        return Executors.newFixedThreadPool(5);
+        return Executors.newFixedThreadPool(poolSize);
     }
 }

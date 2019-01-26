@@ -32,7 +32,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -58,7 +57,6 @@ public class MatchTest {
     private FolderDAO folderDAO;
     private PlayerDAO playerDAO;
 
-
     private MatchDTO matchDTO;
 
     private MatchService matchService;
@@ -67,33 +65,25 @@ public class MatchTest {
 
     private List<MatchDTO> retrievedMatches;
 
-
-
     @Before
     public void setUp() throws CouldNotCreateFolderException, SQLException{
 
         jdbcConnectionManager = MockDatabase.getJDBCConnectionManager();
 
-
         playerDAO = new JDBCPlayerDAO(jdbcConnectionManager);
-
         // create UserFolderDAO
         folderDAO = new UserFolderDAO("testParserDir", "testFileDir", "testHeatmapDir");
 
         matchDAO = new JDBCMatchDAO(jdbcConnectionManager, playerDAO, folderDAO);
 
         matchService = new SimpleMatchService(matchDAO, folderDAO);
-
-
     }
 
     @After
     public void tearDown() {
-
         // drop the table after the test runs
         Connection connection = null;
         try {
-
             // get the connection manager component
             connection = jdbcConnectionManager.getConnection();
             // drop all the tables for clean tests
@@ -110,8 +100,6 @@ public class MatchTest {
 
         }
 
-
-
         try {
             FileUtils.deleteDirectory(folderDAO.getFileDirectory());
             FileUtils.deleteDirectory(folderDAO.getParserDirectory());
@@ -119,35 +107,27 @@ public class MatchTest {
         } catch (IOException e) {
             LOG.error("Exception while tearing Down Replay Service test", e);
         }
-
     }
 
     @Test(expected = MatchAlreadyExistsException.class)
     public void sameMatchTest() throws SQLException, MatchPersistenceException, MatchAlreadyExistsException {
         // set up a match entity and define the object variables
         matchDTO = new MatchDTO();
-
         // set the time
         matchDTO.setDateTime(LocalDate.now().atStartOfDay());
-
         // set fileName
         matchDTO.setReplayFilename("TestFile");
-
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
-
         // create 2 players
         playerRED = new MatchPlayerDTO();
         playerBLUE = new MatchPlayerDTO();
 
         PlayerDTO playerB = new PlayerDTO();
         PlayerDTO playerR = new PlayerDTO();
-
-
         // helper method to fill the player fields
         setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED, 10, 2,3, 5,1);
         setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
-
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setInt(1,7);
@@ -161,8 +141,6 @@ public class MatchTest {
         ps.setBoolean(4,true);
         ps.executeUpdate();
         if (!ps.isClosed()) ps.close();
-
-
 
         playerMatchList.add(playerRED);
         playerMatchList.add(playerBLUE);
@@ -189,28 +167,21 @@ public class MatchTest {
     public void matchCreateAndReadTest() throws MatchPersistenceException, SQLException, MatchAlreadyExistsException {
         // set up a match entity and define the object variables
         matchDTO = new MatchDTO();
-
         // set the time
         matchDTO.setDateTime(LocalDate.now().atStartOfDay());
-
         // set fileName
         matchDTO.setReplayFilename("TestFile");
-
         // add 2 players to the match list ... simulating a 1v1 match
         List<MatchPlayerDTO> playerMatchList = new LinkedList<>();
-
         // create 2 players
         playerRED = new MatchPlayerDTO();
         playerBLUE = new MatchPlayerDTO();
-
         // create 2 players
         PlayerDTO playerB = new PlayerDTO();
         PlayerDTO playerR = new PlayerDTO();
-
         // helper method to fill the player fields
         setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED,3, 10, 2,3, 5);
         setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
-
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setLong(1,playerB.getId());
@@ -235,9 +206,7 @@ public class MatchTest {
 
         // set the remaining match variables
         matchDTO.setTeamSize(1);
-
         matchDTO.setReadId("Test");
-
         matchDTO.setMatchTime(400);
 
         // will be used as container for the results from the db.
@@ -358,7 +327,6 @@ public class MatchTest {
         setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED,3, 10, 2,3, 5);
         setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
 
-
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setLong(1,playerB.getId());
         ps.setString(2,playerB.getName());
@@ -440,7 +408,6 @@ public class MatchTest {
         // helper method to fill the player fields
         setPlayerVariables(playerRED,matchDTO,playerR,"Player red",   7,TeamSide.RED,3, 10, 2,3, 5);
         setPlayerVariables(playerBLUE, matchDTO,playerB,"Player blue", 8,TeamSide.BLUE, 15, 4,2, 3, 7);
-
 
         PreparedStatement ps = jdbcConnectionManager.getConnection().prepareStatement("INSERT INTO player SET id = ?, name = ?, plattformid = ?, shown = ?");
         ps.setLong(1,playerB.getId());

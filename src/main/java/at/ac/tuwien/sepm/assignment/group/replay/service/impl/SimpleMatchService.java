@@ -5,12 +5,9 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.MatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.FilePersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchAlreadyExistsException;
-import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
-import at.ac.tuwien.sepm.assignment.group.replay.service.ReplayService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.MatchPersistenceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.MatchService;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -170,10 +167,8 @@ public class SimpleMatchService implements MatchService {
         if ((begin == null && end != null) || (end == null && begin != null)) {
             errMsg += "begin and end must be set both or none of them\n";
         }
-        if (begin != null && end != null) {
-            if (begin.isAfter(end)) {
-                errMsg += "begin must be before end\n";
-            }
+        if (begin != null && end != null && begin.isAfter(end)) {
+            errMsg += "begin must be before end\n";
         }
         if (teamSize < 0 || teamSize > 3) {
             errMsg += "teamSize must be between 0 and 3\n";

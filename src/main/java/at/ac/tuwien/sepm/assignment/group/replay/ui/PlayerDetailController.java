@@ -1,13 +1,11 @@
 package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.AvgStatsDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchType;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.PlayerServiceException;
 import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -103,9 +101,7 @@ public class PlayerDetailController {
         lossesLabel.setText("");
 
         showCurrentTypStatistics(typChoiceBox.getSelectionModel().getSelectedItem());
-        ChangeListener<MatchType> changeListener = (observable, oldType, newType) -> {
-            showCurrentTypStatistics(newType);
-        };
+        ChangeListener<MatchType> changeListener = (observable, oldType, newType) -> showCurrentTypStatistics(newType);
         typChoiceBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
     }
 

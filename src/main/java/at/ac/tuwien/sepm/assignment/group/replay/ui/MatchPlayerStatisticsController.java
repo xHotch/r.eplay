@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.MatchPlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamSide;
-import at.ac.tuwien.sepm.assignment.group.replay.service.JsonParseService;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,8 +27,6 @@ public class MatchPlayerStatisticsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private JsonParseService jsonParseService;
-
     private MatchDTO matchDTO;
 
     @FXML
@@ -46,10 +43,6 @@ public class MatchPlayerStatisticsController {
     private CategoryAxis bcXAxis;
     @FXML
     private ImageView heatmapView;
-
-    public MatchPlayerStatisticsController(JsonParseService jsonParseService) {
-        this.jsonParseService = jsonParseService;
-    }
 
     /**
      * Adds match player names to the choice box. Creates bar chart for average distance to ball for all players.

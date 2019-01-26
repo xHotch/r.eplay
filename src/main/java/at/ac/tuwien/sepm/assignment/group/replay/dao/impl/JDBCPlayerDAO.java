@@ -67,8 +67,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 return playerDTO.getId();
             }
         } catch (SQLException e) {
-            String msg = "Could not create player";
-            throw new PlayerPersistenceException(msg, e);
+            throw new PlayerPersistenceException("Could not create player", e);
         }
 
     }
@@ -93,8 +92,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 }
             }
         } catch (SQLException e) {
-            String msg = "Could not read player";
-            throw new PlayerPersistenceException(msg, e);
+            throw new PlayerPersistenceException("Could not read player", e);
         }
         return result;
     }
@@ -111,8 +109,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            String msg = "Could not delete player";
-            throw new PlayerPersistenceException(msg, e);
+            throw new PlayerPersistenceException("Could not delete player", e);
         }
     }
 
@@ -128,8 +125,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            String msg = "Could not update player to add it to the list of shown players";
-            throw new PlayerPersistenceException(msg, e);
+            throw new PlayerPersistenceException("Could not update player to add it to the list of shown players", e);
         }
 
     }
@@ -156,8 +152,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 return player;
             }
         } catch (SQLException e) {
-            String msg = "Could not get player";
-            throw new PlayerPersistenceException(msg, e);
+            throw new PlayerPersistenceException("Could not get player", e);
         }
 
     }
@@ -186,8 +181,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 avgStatsDTO.setSpeed(rs.getDouble(6));
             }
         } catch (SQLException e) {
-            String msg = "Could not get avg statistics for player";
-            throw new PlayerPersistenceException(msg, e);
+            throw new PlayerPersistenceException("Could not get avg statistics for player", e);
         }
 
         return avgStatsDTO;

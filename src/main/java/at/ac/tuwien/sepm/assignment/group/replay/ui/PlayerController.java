@@ -6,27 +6,21 @@ import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.*;
 import at.ac.tuwien.sepm.assignment.group.util.AlertHelper;
-import at.ac.tuwien.sepm.assignment.group.util.SpringFXMLLoader;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Player Tab Page Controller.
@@ -38,10 +32,7 @@ public class PlayerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private SpringFXMLLoader springFXMLLoader;
-    private ExecutorService executorService;
     private PlayerService playerService;
-    private PlayerDetailController playerDetailController;
 
     @FXML
     private TableView<PlayerDTO> tableViewPlayers;
@@ -71,11 +62,8 @@ public class PlayerController {
     @FXML
     private Text txtBoost;
 
-    public PlayerController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, PlayerService playerService, PlayerDetailController playerDetailController) {
-        this.springFXMLLoader = springFXMLLoader;
-        this.executorService = executorService;
+    public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
-        this.playerDetailController = playerDetailController;
     }
 
     /**
@@ -84,13 +72,11 @@ public class PlayerController {
      */
     @FXML
     private void initialize() {
-
         setupPlayerTable();
         updatePlayerTable();
 
         typChoiceBox.getItems().addAll(MatchType.RANKED1V1, MatchType.RANKED2V2, MatchType.RANKED3V3);
         typChoiceBox.getSelectionModel().selectLast();
-
     }
 
     /**
@@ -151,7 +137,7 @@ public class PlayerController {
 
             tableViewPlayers.setItems(observablePlayers);
         } catch (PlayerServiceException e) {
-            LOG.error("Caught PlayerServiceException {} ", e.getMessage());
+            LOG.error("Caught PlayerServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim Laden der Spieler");
         }
     }
@@ -176,9 +162,7 @@ public class PlayerController {
         LOG.trace("called - onShowPlayerDetailsButtonClicked");
         if (selectedPlayer != null) {
             updatePlayerDetails(selectedPlayer, typChoiceBox.getSelectionModel().getSelectedItem());
-            ChangeListener<MatchType> changeListener = (observable, oldType, newType) -> {
-                updatePlayerDetails(selectedPlayer, newType);
-            };
+            ChangeListener<MatchType> changeListener = (observable, oldType, newType) -> updatePlayerDetails(selectedPlayer, newType);
             typChoiceBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
         }
     }

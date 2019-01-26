@@ -24,10 +24,10 @@ public class JDBCConnectionManager {
     public Connection getConnection() throws SQLException {
         LOG.debug("Get database connection");
         if (connection == null) {
-            LOG.debug("try to get new database connection with: " + connectionString);
+            LOG.debug("try to get new database connection with: {}", connectionString);
             connection = DriverManager.getConnection(connectionString);
         }
-        LOG.debug("Database connection status:" + connection.isClosed());
+        LOG.debug("Database connection status: {}" ,!connection.isClosed());
 
         return connection;
     }

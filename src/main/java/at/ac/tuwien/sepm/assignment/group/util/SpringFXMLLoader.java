@@ -19,7 +19,7 @@ import java.io.InputStream;
 @Component
 public class SpringFXMLLoader {
 
-    private Logger LOG = LoggerFactory.getLogger(SpringFXMLLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpringFXMLLoader.class);
 
     private ApplicationContext applicationContext;
 

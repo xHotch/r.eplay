@@ -10,15 +10,6 @@ import java.util.Map;
 
 public class VideoDTO {
 
-    /**
-     * @author Philipp Hochhauser
-     */
-    public VideoDTO(){
-        this.frames=new ArrayList<>();
-    }
-
-    private MatchDTO matchDTO;
-
     private Map<Long, Integer> actorIds;
 
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndTimeMap;
@@ -30,7 +21,9 @@ public class VideoDTO {
     private List<GoalDTO> goals;
 
 
-
+    public VideoDTO(){
+        this.frames=new ArrayList<>();
+    }
 
     public MultiValueMap<Integer, Pair<Integer, Double>> getPlayerToCarAndTimeMap() {
         return playerToCarAndTimeMap;
@@ -73,7 +66,5 @@ public class VideoDTO {
     public void setGoals(List<GoalDTO> goals) {
         this.goals = goals;
     }
-
-
 
 }

@@ -12,17 +12,14 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import org.apache.commons.math3.complex.Quaternion;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.Pair;
 import org.slf4j.Logger;
@@ -31,14 +28,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.List;
-
-import static javafx.scene.paint.Color.color;
 
 /**
  * Match Animation Controller.
@@ -54,32 +48,28 @@ public class MatchAnimationController {
     private BoostInformationParser boostInformationParser;
     private ExecutorService executorService;
 
-    private HashMap<Rectangle, Integer> carShapes;
-    private Map<Integer, Integer> carToPlayerMap;
+    private Map<Rectangle, Integer> carShapes;
     private MultiValueMap<Integer, Pair<Integer, Double>> playerToCarAndTimeMap;
-    private HashMap<Integer, RigidBodyInformation> rigidBodyInformationHashMap;
+    private Map<Integer, RigidBodyInformation> rigidBodyInformationHashMap;
     private RigidBodyInformation ballInformation;
 
-    private final int fieldWidth = 8192;
-    private final int fieldLength = 10240;
-
-    private final float scaleFactor = 0.075f;
-    private static double MIN_SLIDER_CHANGE = 0.5;
+    private static final float SCALE_FACTOR = 0.075f;
+    private static final double MIN_SLIDER_CHANGE = 0.5;
 
     @FXML
-    private Circle shape_ball;
+    private Circle shapeBall;
     @FXML
-    private Rectangle shape_car_blue_1;
+    private Rectangle shapeCarBlue1;
     @FXML
-    private Rectangle shape_car_blue_2;
+    private Rectangle shapeCarBlue2;
     @FXML
-    private Rectangle shape_car_blue_3;
+    private Rectangle shapeCarBlue3;
     @FXML
-    private Rectangle shape_car_red_1;
+    private Rectangle shapeCarRed1;
     @FXML
-    private Rectangle shape_car_red_2;
+    private Rectangle shapeCarRed2;
     @FXML
-    private Rectangle shape_car_red_3;
+    private Rectangle shapeCarRed3;
 
     @FXML
     private Slider timelineSlider;
@@ -106,17 +96,17 @@ public class MatchAnimationController {
     @FXML
     private ImageView player6boost;
     @FXML
-    private Label player1boost_label;
+    private Label player1BoostLabel;
     @FXML
-    private Label player2boost_label;
+    private Label player2BoostLabel;
     @FXML
-    private Label player3boost_label;
+    private Label player3BoostLabel;
     @FXML
-    private Label player4boost_label;
+    private Label player4BoostLabel;
     @FXML
-    private Label player5boost_label;
+    private Label player5BoostLabel;
     @FXML
-    private Label player6boost_label;
+    private Label player6BoostLabel;
     @FXML
     private ImageView goalImage;
 
@@ -191,11 +181,9 @@ public class MatchAnimationController {
 
             for (FrameDTO frameDTO : videoDTO.getFrames()) {
 
-                //List of Keyvalues
-                List<KeyValue> values = new LinkedList<>();
-
                 ballInformation = frameDTO.getBallRigidBodyInformation();
-                values.addAll(mapBallToKayValue(shape_ball));
+                //List of Keyvalues
+                List<KeyValue> values = new LinkedList<>(mapBallToKayValue(shapeBall));
 
                 rigidBodyInformationHashMap = frameDTO.getCarRigidBodyInformations();
                 for (Rectangle car : carShapes.keySet()) {
@@ -216,9 +204,7 @@ public class MatchAnimationController {
             timelineSlider.setMax(maxFrameTime);
 
             stopped = true;
-            Platform.runLater(() -> {
-                playAnimation();
-            });
+            Platform.runLater(this::playAnimation);
         });
     }
 
@@ -269,7 +255,6 @@ public class MatchAnimationController {
         Vector3D position;
         int carActorId = carShapes.get(carShape);
 
-
         int actorId = -1;
         double oldFrameTime = 0.0f;
 
@@ -282,16 +267,12 @@ public class MatchAnimationController {
             }
         }
 
-
-        if (rigidBodyInformationHashMap.get(actorId) != null) {
-            if ((rigidBodyInformationHashMap.get(actorId).getPosition()) != null) {
-                position = rigidBodyInformationHashMap.get(actorId).getPosition();
-                KeyValue width = new KeyValue(carShape.xProperty(), position.getY() * scaleFactor);
-                KeyValue length = new KeyValue(carShape.yProperty(), position.getX() * scaleFactor);
-                keyValues.add(width);
-                keyValues.add(length);
-            }
-
+        if (rigidBodyInformationHashMap.get(actorId) != null && (rigidBodyInformationHashMap.get(actorId).getPosition()) != null) {
+            position = rigidBodyInformationHashMap.get(actorId).getPosition();
+            KeyValue width = new KeyValue(carShape.xProperty(), position.getY() * SCALE_FACTOR);
+            KeyValue length = new KeyValue(carShape.yProperty(), position.getX() * SCALE_FACTOR);
+            keyValues.add(width);
+            keyValues.add(length);
         }
 
         return keyValues;
@@ -308,26 +289,22 @@ public class MatchAnimationController {
     private List<KeyValue> mapBallToKayValue(Circle ballShape) {
         LinkedList<KeyValue> keyValues = new LinkedList<>();
         if (ballInformation != null && ballInformation.getPosition() != null) {
-            KeyValue width = new KeyValue(ballShape.centerXProperty(), ballInformation.getPosition().getY() * scaleFactor);
-            KeyValue length = new KeyValue(ballShape.centerYProperty(), ballInformation.getPosition().getX() * scaleFactor);
+            KeyValue width = new KeyValue(ballShape.centerXProperty(), ballInformation.getPosition().getY() * SCALE_FACTOR);
+            KeyValue length = new KeyValue(ballShape.centerYProperty(), ballInformation.getPosition().getX() * SCALE_FACTOR);
             keyValues.add(width);
             keyValues.add(length);
         }
         return keyValues;
     }
 
-
     /**
      * Sets up the Animation. Spawns a Car for each player
      * Parses VideoDTO from the replay file
      */
     private void setupAnimation() throws FileServiceException {
-
         videoDTO = jsonParseService.getVideo(matchDTO);
 
-
         Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
-        carToPlayerMap = videoDTO.getCarActorIds();
         playerToCarAndTimeMap = videoDTO.getPlayerToCarAndTimeMap();
         carShapes = new HashMap<>();
 
@@ -337,32 +314,32 @@ public class MatchAnimationController {
             Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
             if (player.getTeam() == TeamSide.RED) {
                 if (countRed == 0) {
-                    carShapes.put(shape_car_red_1, actorId);
-                    shape_car_red_1.setVisible(true);
-                    shape_car_red_1.setFill(teamRedPlayer1);
+                    carShapes.put(shapeCarRed1, actorId);
+                    shapeCarRed1.setVisible(true);
+                    shapeCarRed1.setFill(teamRedPlayer1);
                 } else if (countRed == 1) {
-                    carShapes.put(shape_car_red_2, actorId);
-                    shape_car_red_2.setVisible(true);
-                    shape_car_red_2.setFill(teamRedPlayer2);
+                    carShapes.put(shapeCarRed2, actorId);
+                    shapeCarRed2.setVisible(true);
+                    shapeCarRed2.setFill(teamRedPlayer2);
                 } else if (countRed == 2) {
-                    carShapes.put(shape_car_red_3, actorId);
-                    shape_car_red_3.setVisible(true);
-                    shape_car_red_3.setFill(teamRedPlayer3);
+                    carShapes.put(shapeCarRed3, actorId);
+                    shapeCarRed3.setVisible(true);
+                    shapeCarRed3.setFill(teamRedPlayer3);
                 }
                 countRed++;
             } else {
                 if (countBlue == 0) {
-                    carShapes.put(shape_car_blue_1, actorId);
-                    shape_car_blue_1.setVisible(true);
-                    shape_car_blue_1.setFill(teamBluePlayer1);
+                    carShapes.put(shapeCarBlue1, actorId);
+                    shapeCarBlue1.setVisible(true);
+                    shapeCarBlue1.setFill(teamBluePlayer1);
                 } else if (countBlue == 1) {
-                    carShapes.put(shape_car_blue_2, actorId);
-                    shape_car_blue_2.setFill(teamBluePlayer2);
-                    shape_car_blue_2.setVisible(true);
+                    carShapes.put(shapeCarBlue2, actorId);
+                    shapeCarBlue2.setFill(teamBluePlayer2);
+                    shapeCarBlue2.setVisible(true);
                 } else if (countBlue == 2) {
-                    carShapes.put(shape_car_blue_3, actorId);
-                    shape_car_blue_3.setVisible(true);
-                    shape_car_blue_3.setFill(teamBluePlayer3);
+                    carShapes.put(shapeCarBlue3, actorId);
+                    shapeCarBlue3.setVisible(true);
+                    shapeCarBlue3.setFill(teamBluePlayer3);
                 }
                 countBlue++;
             }
@@ -374,9 +351,7 @@ public class MatchAnimationController {
      * @param imagelength the maximum frameTime from the replay, which is used as the timeline width
      */
     private void generateBoostTimeline(double imagelength) {
-
         Map<Integer, List<BoostDTO>> boostAmount = boostInformationParser.getBoostAmountMap();
-
         Map<Long, Integer> actorToPlatformId = videoDTO.getActorIds();
 
         int countBlue = 0;
@@ -389,17 +364,11 @@ public class MatchAnimationController {
         boolean isTeamRedPlayer3 = false;
 
         for (MatchPlayerDTO player : matchDTO.getPlayerData()) {
-
             BufferedImage boostPlayer = new BufferedImage((int) imagelength, 1, BufferedImage.TYPE_INT_ARGB);
-
 
             Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
 
             Color currentColor = Color.rgb(255, 255, 255);
-
-
-
-
             //Select Color for Player
             if (player.getTeam() == TeamSide.BLUE) {
                 if (countBlue == 0) {
@@ -422,11 +391,10 @@ public class MatchAnimationController {
             }
 
             for(Map.Entry<Rectangle, Integer> carShape : carShapes.entrySet()){
-                if (carShape.getValue() == actorId){
+                if (carShape.getValue().intValue() == actorId){
                     currentColor = (Color)carShape.getKey().getFill();
                 }
             }
-
 
             if (boostAmount.containsKey(actorId)) {
                 List<BoostDTO> boost = boostAmount.get(actorId);
@@ -447,7 +415,6 @@ public class MatchAnimationController {
                             boostPlayer.setRGB(i, 0, getIntFromColor(color));
                         }
                     }
-
                     //Calculate new color with boost as opacity
                     int boostValue = entry.getBoostAmount();
                     int opacity = scaleBoostOpacity(boostValue, 0, 100, 0, 255);
@@ -464,43 +431,41 @@ public class MatchAnimationController {
             if (isTeamBluePlayer1) {
                 Platform.runLater(() -> {
                     player1boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player1boost_label.setText(player.getName());
+                    player1BoostLabel.setText(player.getName());
                 });
                 isTeamBluePlayer1 = false;
             } else if (isTeamBluePlayer2) {
                 Platform.runLater(() -> {
                     player2boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player2boost_label.setText(player.getName());
+                    player2BoostLabel.setText(player.getName());
                 });
                 isTeamBluePlayer2 = false;
             } else if (isTeamBluePlayer3) {
                 Platform.runLater(() -> {
                     player3boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player3boost_label.setText(player.getName());
+                    player3BoostLabel.setText(player.getName());
                 });
                 isTeamBluePlayer3 = false;
             } else if (isTeamRedPlayer1) {
                 Platform.runLater(() -> {
                     player4boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player4boost_label.setText(player.getName());
+                    player4BoostLabel.setText(player.getName());
                 });
                 isTeamRedPlayer1 = false;
             } else if (isTeamRedPlayer2) {
                 Platform.runLater(() -> {
                     player5boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player5boost_label.setText(player.getName());
+                    player5BoostLabel.setText(player.getName());
                 });
                 isTeamRedPlayer2 = false;
             } else if (isTeamRedPlayer3) {
                 Platform.runLater(() -> {
                     player6boost.setImage(SwingFXUtils.toFXImage(boostPlayer, null));
-                    player6boost_label.setText(player.getName());
+                    player6BoostLabel.setText(player.getName());
                 });
                 isTeamRedPlayer3 = false;
             }
-
         }
-
     }
 
     private Color mixColorsWithAlpha(Color color1, Color color2, int alpha) {
@@ -523,16 +488,16 @@ public class MatchAnimationController {
         this.matchDTO = matchDTO;
     }
 
-    public int getIntFromColor(Color color) {
-        int R = Math.round(255 * (float) color.getRed());
-        int G = Math.round(255 * (float) color.getGreen());
-        int B = Math.round(255 * (float) color.getBlue());
+    private int getIntFromColor(Color color) {
+        int r = Math.round(255 * (float) color.getRed());
+        int g = Math.round(255 * (float) color.getGreen());
+        int b = Math.round(255 * (float) color.getBlue());
 
-        R = (R << 16) & 0x00FF0000;
-        G = (G << 8) & 0x0000FF00;
-        B = B & 0x000000FF;
+        r = (r << 16) & 0x00FF0000;
+        g = (g << 8) & 0x0000FF00;
+        b = b & 0x000000FF;
 
-        return 0xFF000000 | R | G | B;
+        return 0xFF000000 | r | g | b;
     }
 
     private void showGoals(double imagelength){
@@ -550,13 +515,12 @@ public class MatchAnimationController {
                     Integer actorId = actorToPlatformId.get(player.getPlayerDTO().getPlatformID());
 
                     for (Map.Entry<Rectangle, Integer> carShape : carShapes.entrySet()) {
-                        if (carShape.getValue() == actorId) {
+                        if (carShape.getValue().intValue() == actorId) {
                             currentColor = (Color) carShape.getKey().getFill();
                         }
                     }
                 }
             }
-
             //Draw a circle
             for(int i = 0; i <= 9; i++){
                 goalsImage.setRGB(isInBoundsX(goalsImage,(int) Math.floor(goal.getFrameTime())), i, getIntFromColor(currentColor));
@@ -568,14 +532,10 @@ public class MatchAnimationController {
             graphic.setColor(new java.awt.Color(getIntFromColor(currentColor)));
             graphic.fillOval((int) Math.floor(goal.getFrameTime()-(((imagelength/goalImage.getFitWidth())*cirecleSize)/2)),8,(int)((imagelength/goalImage.getFitWidth())*cirecleSize),cirecleSize);
         }
-
-        Platform.runLater(() -> {
-            goalImage.setImage(SwingFXUtils.toFXImage(goalsImage, null));
-        });
+        Platform.runLater(() -> goalImage.setImage(SwingFXUtils.toFXImage(goalsImage, null)));
     }
 
     private int isInBoundsX(BufferedImage goalsImage, int position){
-
         if(position < 0){
             return 0;
         } else if (position > goalsImage.getWidth()-1){
@@ -583,7 +543,5 @@ public class MatchAnimationController {
         } else {
             return position;
         }
-
     }
-
 }

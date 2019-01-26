@@ -12,10 +12,6 @@ public class GameInformationParser {
 
     private ArrayList<Double> timeOfGoals;
 
-    void setCtx(ReadContext ctx) {
-        this.ctx = ctx;
-    }
-
     /**
      * reads the time of each goal out of the json file and sets it in the timeOfGoals list
      *
@@ -64,5 +60,9 @@ public class GameInformationParser {
         Integer countdown = ctx.read(frame + ".ActorUpdates[" + currentActorUpdateNr + "].['TAGame.GameEvent_TA:ReplicatedRoundCountDownNumber']", Integer.class);
 
         return (countdown == null) || (countdown != 0);
+    }
+
+    void setCtx(ReadContext ctx) {
+        this.ctx = ctx;
     }
 }

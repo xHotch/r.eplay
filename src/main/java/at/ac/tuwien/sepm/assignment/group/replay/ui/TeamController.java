@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.assignment.group.replay.ui;
 
 import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
 import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.service.PlayerService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.TeamService;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamServiceException;
 import at.ac.tuwien.sepm.assignment.group.replay.service.exception.TeamValidationException;
@@ -27,16 +26,13 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 @Component
 public class TeamController {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private SpringFXMLLoader springFXMLLoader;
-    private ExecutorService executorService;
     private TeamService teamService;
-    private PlayerService playerService;
     private TeamMatchesController teamMatchesController;
 
     @FXML
@@ -54,11 +50,9 @@ public class TeamController {
     @FXML
     private Text txtPlayer3;
 
-    public TeamController(SpringFXMLLoader springFXMLLoader, ExecutorService executorService, TeamService teamService, PlayerService playerService, TeamMatchesController teamMatchesController) {
+    public TeamController(SpringFXMLLoader springFXMLLoader, TeamService teamService, TeamMatchesController teamMatchesController) {
         this.springFXMLLoader = springFXMLLoader;
-        this.executorService = executorService;
         this.teamService = teamService;
-        this.playerService = playerService;
         this.teamMatchesController = teamMatchesController;
     }
 
