@@ -74,7 +74,7 @@ public class MatchController {
     @FXML
     private Button uploadReplayButton;
     @FXML
-    private ChoiceBox<Integer> choiceBoxMatchtyp;
+    private ChoiceBox<String> choiceBoxMatchtyp;
     @FXML
     private TextField nameTextField;
     @FXML
@@ -112,7 +112,7 @@ public class MatchController {
     @FXML
     private void initialize() {
         tableViewMatches.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        choiceBoxMatchtyp.getItems().addAll(1,2,3);
+        choiceBoxMatchtyp.getItems().addAll("1 vs 1", "2 vs 2", "3 vs 3");
         setupMatchTable();
         updateMatchTable();
     }
@@ -362,7 +362,7 @@ public class MatchController {
                     if (choiceBoxMatchtyp.getValue() == null) {
                         throw new FilterValidationException("Kein Matchtyp ausgewählt");
                     }
-                    teamSize = choiceBoxMatchtyp.getValue();
+                    teamSize = getMatchtypeByChoiceBoxValue();
                 }
                 observableMatches = FXCollections.observableArrayList(matchService.searchMatches(name, begin, end, teamSize));
             }
@@ -378,6 +378,24 @@ public class MatchController {
             LOG.error("Caught FilterValidationException", e);
             AlertHelper.showErrorMessage(e.getMessage());
         }
+    }
+
+    private int getMatchtypeByChoiceBoxValue() {
+        String matchtype = choiceBoxMatchtyp.getValue();
+        int matchtypeInt = 0;
+
+        switch (matchtype) {
+            case "1 vs 1":
+                matchtypeInt = 1;
+                break;
+            case "2 vs 2":
+                matchtypeInt = 2;
+                break;
+            case "3 vs 3":
+                matchtypeInt = 3;
+                break;
+        }
+        return matchtypeInt;
     }
 
     /**

@@ -95,7 +95,7 @@ public class MatchStatsOverviewController {
     void loadBasicMatchData(MatchDTO match) {
 
         int mode = match.getTeamSize();
-        this.labelGameMode.setText(mode + "vs" + mode);
+        this.labelGameMode.setText(mode + " vs " + mode);
 
         this.labelDate.setText(match.getFormattedDateTime());
 
