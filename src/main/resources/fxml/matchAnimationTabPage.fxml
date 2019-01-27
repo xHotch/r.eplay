@@ -16,7 +16,7 @@
       <Button layoutX="462.0" layoutY="8.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Animation laden" />
       <ImageView fx:id="image_field" depthTest="ENABLE" fitHeight="635.0" fitWidth="912.0" layoutX="52.0" layoutY="39.0" preserveRatio="true">
          <image>
-            <Image url="@../images/rocketLeageField.png" />
+            <Image url="@../images/rocketLeageField2.png" />
          </image>
       </ImageView>
       <Circle fx:id="shapeBall" fill="#a8b4bf" layoutX="512.0" layoutY="356.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />

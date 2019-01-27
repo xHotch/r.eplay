@@ -1,0 +1,29 @@
+.root {
+    -fx-background-color: #2a2a2a;
+}
+
+.tableView {
+    -fx-background-color: #353535;
+    -fx-text-fill: lightgrey;
+}
+
+//default classes
+
+.column-header {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: lightgrey;
+}
+
+.table-cell {
+    -fx-background-color: #353535;
+    -fx-text-fill: lightgrey;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-background-color: grey;
+    -fx-text-fill: lightgrey;
+}
+
+.label {
+    -fx-text-fill: lightgrey;
+}
