@@ -12,8 +12,8 @@
          <columns>
             <TableColumn fx:id="tableColumnMatchDate" prefWidth="128.0" text="Datum" />
             <TableColumn fx:id="tableColumnMatchResult" prefWidth="89.0" text="Ergebnis" />
-            <TableColumn fx:id="tableColumnPlayersBlue" prefWidth="286.0" text="Spieler Team Blau" />
-            <TableColumn fx:id="tableColumnPlayersRed" prefWidth="288.0" text="Spieler Team Rot" />
+            <TableColumn fx:id="tableColumnPlayersBlue" prefWidth="286.0" text="Spieler Team Rot" />
+            <TableColumn fx:id="tableColumnPlayersRed" prefWidth="288.0" text="Spieler Team Blau" />
          </columns>
       </TableView>
     </children>
