@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public final class MainApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         // setup application
         primaryStage.setTitle("R.EPLAY");
+        primaryStage.getIcons().add(new Image("/images/ballIcon.png"));
         primaryStage.setWidth(1024);
         primaryStage.setHeight(768);
         primaryStage.centerOnScreen();

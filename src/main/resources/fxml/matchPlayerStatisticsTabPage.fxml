@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchPlayerStatisticsController">
    <children>
       <Label layoutX="512.0" layoutY="460.0" text="Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="24.0" />
       <ChoiceBox fx:id="cbMatchPlayer" layoutX="47.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="20.0" />
@@ -35,11 +35,11 @@
           <NumberAxis fx:id="bcYAxis" autoRanging="false" />
         </yAxis>
       </BarChart>
-      <ImageView fx:id="heatmapView" fitHeight="250.0" fitWidth="350.0" layoutX="674.0" layoutY="429.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="674.0" AnchorPane.topAnchor="429.0" />
       <ImageView fx:id="fieldView" fitHeight="277.0" fitWidth="404.0" layoutX="569.0" layoutY="417.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/rocketLeageField.png" />
+            <Image url="@../images/rocketLeageFieldopaque.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="heatmapView" fitHeight="250.0" fitWidth="350.0" layoutX="674.0" layoutY="429.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="674.0" AnchorPane.topAnchor="429.0" />
    </children>
 </AnchorPane>

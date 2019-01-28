@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamMatchesController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamMatchesController">
     <children>
       <Button fx:id="compareSelectedMatchesButton" layoutX="415.0" layoutY="679.0" mnemonicParsing="false" onAction="#onCompareMatchesButtonClicked" text="ausgewählte Matches vergleichen" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="415.0" />
       <TableView fx:id="tableViewMatches" layoutX="115.0" layoutY="37.0" prefHeight="619.0" prefWidth="794.0">

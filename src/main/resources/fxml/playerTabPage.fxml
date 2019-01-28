@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.PlayerController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.PlayerController">
    <children>
       <TableView fx:id="tableViewPlayers" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
          <columns>
@@ -19,113 +19,113 @@
          </columnResizePolicy>
       </TableView>
       <Button layoutX="244.0" layoutY="684.0" mnemonicParsing="false" onAction="#onDeletePlayerButtonClicked" text="Spieler löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="236.0" />
-      <Text layoutX="752.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Details" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="63.0">
+      <Text layoutX="752.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Details" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="63.0">
          <font>
             <Font size="19.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Matchtyp" AnchorPane.rightAnchor="335.6865234375" AnchorPane.topAnchor="129.576171875">
+      <Text layoutX="613.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Matchtyp" AnchorPane.rightAnchor="335.6865234375" AnchorPane.topAnchor="129.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
       <ChoiceBox fx:id="typChoiceBox" layoutX="840.0" layoutY="130.0" prefWidth="150.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="130.0" />
-      <Text layoutX="613.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Siege" AnchorPane.rightAnchor="367.65234375" AnchorPane.topAnchor="174.576171875">
+      <Text layoutX="613.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Siege" AnchorPane.rightAnchor="367.65234375" AnchorPane.topAnchor="174.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtWins" layoutX="870.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="176.0">
+      <Text fx:id="txtWins" layoutX="870.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="176.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Niederlagen" AnchorPane.rightAnchor="313.775390625" AnchorPane.topAnchor="219.576171875">
+      <Text layoutX="613.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Niederlagen" AnchorPane.rightAnchor="313.775390625" AnchorPane.topAnchor="219.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtLosses" layoutX="870.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="221.0">
+      <Text fx:id="txtLosses" layoutX="870.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="221.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="284.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Tore" AnchorPane.rightAnchor="355.2509765625" AnchorPane.topAnchor="264.576171875">
+      <Text layoutX="613.0" layoutY="284.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Tore" AnchorPane.rightAnchor="355.2509765625" AnchorPane.topAnchor="264.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtGoals" layoutX="870.0" layoutY="285.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="266.0">
+      <Text fx:id="txtGoals" layoutX="870.0" layoutY="285.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="266.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="329.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Vorlagen" AnchorPane.rightAnchor="319.1982421875" AnchorPane.topAnchor="309.576171875">
+      <Text layoutX="613.0" layoutY="329.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Vorlagen" AnchorPane.rightAnchor="319.1982421875" AnchorPane.topAnchor="309.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtAssists" layoutX="870.0" layoutY="330.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="311.0">
+      <Text fx:id="txtAssists" layoutX="870.0" layoutY="330.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="311.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="374.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Paraden" AnchorPane.rightAnchor="326.044921875" AnchorPane.topAnchor="354.576171875">
+      <Text layoutX="613.0" layoutY="374.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Paraden" AnchorPane.rightAnchor="326.044921875" AnchorPane.topAnchor="354.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtSaves" layoutX="870.0" layoutY="375.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="356.0">
+      <Text fx:id="txtSaves" layoutX="870.0" layoutY="375.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="356.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="419.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Schüsse" AnchorPane.rightAnchor="327.9609375" AnchorPane.topAnchor="399.576171875">
+      <Text layoutX="613.0" layoutY="419.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Schüsse" AnchorPane.rightAnchor="327.9609375" AnchorPane.topAnchor="399.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtShots" layoutX="870.0" layoutY="420.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="401.0">
+      <Text fx:id="txtShots" layoutX="870.0" layoutY="420.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="401.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="464.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Punkte" AnchorPane.rightAnchor="335.9853515625" AnchorPane.topAnchor="444.576171875">
+      <Text layoutX="613.0" layoutY="464.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Punkte" AnchorPane.rightAnchor="335.9853515625" AnchorPane.topAnchor="444.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtScore" layoutX="870.0" layoutY="465.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="446.0">
+      <Text fx:id="txtScore" layoutX="870.0" layoutY="465.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="446.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Geschwindigkeit" AnchorPane.rightAnchor="261.0673828125" AnchorPane.topAnchor="489.576171875">
+      <Text layoutX="613.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Geschwindigkeit" AnchorPane.rightAnchor="261.0673828125" AnchorPane.topAnchor="489.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtSpeed" layoutX="870.0" layoutY="510.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="491.0">
+      <Text fx:id="txtSpeed" layoutX="870.0" layoutY="510.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="491.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="554.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Boostpads gesammelt" AnchorPane.rightAnchor="215.1533203125" AnchorPane.topAnchor="534.576171875">
+      <Text layoutX="613.0" layoutY="554.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Boostpads gesammelt" AnchorPane.rightAnchor="215.1533203125" AnchorPane.topAnchor="534.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtBoostpad" layoutX="870.0" layoutY="555.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="536.0">
+      <Text fx:id="txtBoostpad" layoutX="870.0" layoutY="555.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="536.0">
          <font>
             <Font size="17.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⌀ Boost pro Minute" AnchorPane.rightAnchor="252.09375" AnchorPane.topAnchor="579.576171875">
+      <Text layoutX="613.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="⌀ Boost pro Minute" AnchorPane.rightAnchor="252.09375" AnchorPane.topAnchor="579.576171875">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="txtBoost" layoutX="870.0" layoutY="600.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="581.0">
+      <Text fx:id="txtBoost" layoutX="870.0" layoutY="600.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="581.0">
          <font>
             <Font size="17.0" />
          </font>
