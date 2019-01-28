@@ -31,6 +31,7 @@ public class AlertHelper {
         alert.setTitle("Eingabefehler"/*"Wrong input error"*/);
         alert.setHeaderText("Fehler");
         alert.setContentText(errorMessage);
+        alert.getDialogPane().getStylesheets().add("/css/mainTemplate.css");
 
         alert.showAndWait();
     }
@@ -50,6 +51,7 @@ public class AlertHelper {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(context);
+        alert.getDialogPane().getStylesheets().add("/css/mainTemplate.css");
 
         return alert.showAndWait();
     }
