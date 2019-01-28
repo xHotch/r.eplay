@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -58,6 +59,7 @@ public class MatchController {
     private MatchCompareController matchCompareController;
 
     private boolean filter = false;
+    private boolean filterError = false;
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -120,6 +122,7 @@ public class MatchController {
     @FXML
     private void onSearchButtonClicked() {
         LOG.info("Search button clicked");
+        filterError = false;
         filter = true;
         updateMatchTable();
     }
@@ -128,6 +131,7 @@ public class MatchController {
     private void onRevertSearchButtonClicked() {
         LOG.info("Revert Search button clicked");
         filter = false;
+        filterError = false;
         nameTextField.setText("");
         fromDatePicker.setValue(null);
         toDatePicker.setValue(null);
@@ -153,6 +157,7 @@ public class MatchController {
         matchdetailsStage.setTitle("Matchdetails");
         matchdetailsStage.setWidth(1024);
         matchdetailsStage.setHeight(1024);
+        matchdetailsStage.getIcons().add(new Image("/images/ballIcon.png"));
         matchdetailsStage.centerOnScreen();
         matchdetailsStage.setOnCloseRequest(event -> LOG.debug("Match Details window closed"));
 
@@ -221,6 +226,7 @@ public class MatchController {
             matchCompareStage.setTitle("Matchvergleich");
             matchCompareStage.setWidth(1024);
             matchCompareStage.setHeight(768);
+            matchCompareStage.getIcons().add(new Image("/images/ballIcon.png"));
             matchCompareStage.centerOnScreen();
             matchCompareStage.setOnCloseRequest(event -> LOG.debug("Select team matches window closed"));
             try {
@@ -337,7 +343,7 @@ public class MatchController {
     private void updateMatchTable() {
         try {
             ObservableList<MatchDTO> observableMatches;
-            if (!filter) {
+            if (!filter || filterError) {
                 observableMatches = FXCollections.observableArrayList(matchService.getMatches());
             } else {
                 String name = null;
@@ -364,6 +370,7 @@ public class MatchController {
                     teamSize = getMatchtypeByChoiceBoxValue();
                 }
                 observableMatches = FXCollections.observableArrayList(matchService.searchMatches(name, begin, end, teamSize));
+                filterError = false;
             }
 
             SortedList<MatchDTO> sortedMatches = new SortedList<>(observableMatches);
@@ -374,6 +381,7 @@ public class MatchController {
             LOG.error("Caught MatchServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim laden der Matches");
         } catch (FilterValidationException e) {
+            filterError = true;
             LOG.error("Caught FilterValidationException", e);
             AlertHelper.showErrorMessage(e.getMessage());
         }

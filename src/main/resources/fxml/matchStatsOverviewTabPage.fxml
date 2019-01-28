@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchStatsOverviewController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchStatsOverviewController">
    <children>
       <Label layoutX="36.0" layoutY="33.0" text="Spielmodus:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
       <Label layoutX="104.0" layoutY="25.0" text="Datum:" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="20.0" />
@@ -24,7 +24,7 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <TableView fx:id="tableTeamBlue" layoutX="14.0" layoutY="191.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
+      <TableView fx:id="tableTeamBlue" layoutX="14.0" layoutY="191.0" prefHeight="200.0" prefWidth="909.0" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
          <columns>
             <TableColumn fx:id="playerNameBlue" prefWidth="160.0" text="Spieler" />
             <TableColumn fx:id="playerGoalsBlue" prefWidth="75.0" text="Tore" />
@@ -39,7 +39,7 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <TableView fx:id="tableTeamRed" layoutX="20.0" layoutY="449.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+      <TableView fx:id="tableTeamRed" layoutX="20.0" layoutY="449.0" prefHeight="200.0" prefWidth="200.0" styleClass="tableView" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
          <columns>
             <TableColumn fx:id="playerNameRed" prefWidth="160.0" text="Spieler" />
             <TableColumn fx:id="playerGoalsRed" prefWidth="75.0" text="Tore" />

@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
+<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
    <children>
       <Button layoutX="462.0" layoutY="8.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Animation laden" />
       <ImageView fx:id="image_field" depthTest="ENABLE" fitHeight="635.0" fitWidth="912.0" layoutX="52.0" layoutY="39.0" preserveRatio="true">

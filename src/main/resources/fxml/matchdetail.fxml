@@ -3,22 +3,22 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchDetailController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchDetailController">
   <tabs>
       <Tab fx:id="matchStatsOverviewTab" text="Grunddaten">
-          <fx:include fx:id="matchStatsOverviewTabPage" source="/fxml/matchStatsOverviewTabPage.fxml"/>
+          <fx:include fx:id="matchStatsOverviewTabPage" source="/fxml/matchStatsOverviewTabPage.fxml" />
       </Tab>
       <Tab fx:id="ballStatisticsTab" text="Ball Statistik">
-          <fx:include fx:id="ballStatisticsTabPage" source="/fxml/ballStatisticsTabPage.fxml"/>
+          <fx:include fx:id="ballStatisticsTabPage" source="/fxml/ballStatisticsTabPage.fxml" />
       </Tab>
       <Tab fx:id="playerPositionTab" text="Spieler Position">
-          <fx:include fx:id="matchPlayerStatisticsTabPage" source="/fxml/matchPlayerStatisticsTabPage.fxml"/>
+          <fx:include fx:id="matchPlayerStatisticsTabPage" source="/fxml/matchPlayerStatisticsTabPage.fxml" />
       </Tab>
       <Tab fx:id="boostStatisticsTab" text="Boost Statistik">
-          <fx:include fx:id="boostStatisticsTabPage" source="/fxml/boostStatisticsTabPage.fxml"/>
+          <fx:include fx:id="boostStatisticsTabPage" source="/fxml/boostStatisticsTabPage.fxml" />
       </Tab>
       <Tab fx:id="matchAnimationTab" text="Match Animation">
-          <fx:include fx:id="matchAnimationTabPage" source="/fxml/matchAnimationTabPage.fxml"/>
+          <fx:include fx:id="matchAnimationTabPage" source="/fxml/matchAnimationTabPage.fxml" />
       </Tab>
   </tabs>
 </TabPane>

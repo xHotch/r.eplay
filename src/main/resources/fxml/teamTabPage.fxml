@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.TeamController">
     <children>
         <TableView fx:id="tableViewTeams" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="460.0" AnchorPane.topAnchor="20.0">
             <columns>
@@ -19,50 +19,50 @@
         </TableView>
         <Button layoutX="82.0" layoutY="684.0" mnemonicParsing="false" onAction="#onNewTeamButtonClicked" text="Neues Team" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="82.0" />
         <Button layoutX="421.0" layoutY="684.0" mnemonicParsing="false" onAction="#onDeleteTeamsButtonClicked" text="Team löschen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="421.0" />
-      <Text layoutX="752.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Details" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="63.0">
+      <Text layoutX="752.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Details" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="63.0">
          <font>
             <Font size="19.0" />
          </font>
       </Text>
       <Button layoutX="236.0" layoutY="684.0" mnemonicParsing="false" onAction="#onTeamCompareButtonClicked" text="Teams vergeichen" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="236.0" />
-      <Text layoutX="612.767578125" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teamname" AnchorPane.rightAnchor="323.46484375" AnchorPane.topAnchor="130.0">
+      <Text layoutX="612.767578125" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Teamname" AnchorPane.rightAnchor="323.46484375" AnchorPane.topAnchor="130.0">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teamgröße" AnchorPane.rightAnchor="320.8857421875" AnchorPane.topAnchor="175.0">
+      <Text layoutX="613.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Teamgröße" AnchorPane.rightAnchor="320.8857421875" AnchorPane.topAnchor="175.0">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text layoutX="613.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spieler" AnchorPane.rightAnchor="357.052734375" AnchorPane.topAnchor="220.0">
+      <Text layoutX="613.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Spieler" AnchorPane.rightAnchor="357.052734375" AnchorPane.topAnchor="220.0">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <AnchorPane layoutX="732.0" prefHeight="496.0" prefWidth="293.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="732.0" prefHeight="496.0" prefWidth="293.0" stylesheets="@../css/mainTemplate.css" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Text fx:id="txtTeamName" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.topAnchor="130.0">
+            <Text fx:id="txtTeamName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.topAnchor="130.0">
                <font>
                   <Font size="17.0" />
                </font>
             </Text>
-            <Text fx:id="txtTeamSize" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.topAnchor="175.0">
+            <Text fx:id="txtTeamSize" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.topAnchor="175.0">
                <font>
                   <Font size="17.0" />
                </font>
             </Text>
-            <Text fx:id="txtPlayer1" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.topAnchor="220.0">
+            <Text fx:id="txtPlayer1" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.topAnchor="220.0">
                <font>
                   <Font size="17.0" />
                </font>
             </Text>
-            <Text fx:id="txtPlayer2" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.topAnchor="265.0">
+            <Text fx:id="txtPlayer2" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.topAnchor="265.0">
                <font>
                   <Font size="17.0" />
                </font>
             </Text>
-            <Text fx:id="txtPlayer3" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.topAnchor="310.0">
+            <Text fx:id="txtPlayer3" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" AnchorPane.topAnchor="310.0">
                <font>
                   <Font size="17.0" />
                </font>

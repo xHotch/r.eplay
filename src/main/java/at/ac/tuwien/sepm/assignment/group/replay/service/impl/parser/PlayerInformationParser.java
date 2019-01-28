@@ -76,7 +76,8 @@ public class PlayerInformationParser {
                 matchPlayer.setActorId(actorId);
                 matchPlayers.put(actorId, matchPlayer);
             } catch (PathNotFoundException e){
-                LOG.debug("No Path found while parsing PlayerInformation");
+                throw new FileServiceException("Replay with reconnected player");
+                //LOG.debug("No Path found while parsing PlayerInformation");
             }
         } else {
             MatchPlayerDTO matchPlayer = matchPlayers.get(actorId);

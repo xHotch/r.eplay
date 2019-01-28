@@ -1,29 +1,112 @@
+//CUSTOM CLASSES
 .root {
     -fx-background-color: #2a2a2a;
 }
 
-.tableView {
-    -fx-background-color: #353535;
-    -fx-text-fill: lightgrey;
-}
 
-//default classes
-
-.column-header {
+.button{
     -fx-background-color: #4a4a4a;
     -fx-text-fill: lightgrey;
 }
 
-.table-cell {
-    -fx-background-color: #353535;
-    -fx-text-fill: lightgrey;
+.text {
+    -fx-fill: lightgrey;
 }
 
-.table-row-cell:selected .table-cell {
-    -fx-background-color: grey;
-    -fx-text-fill: lightgrey;
-}
+//DEFAULT CLASSES
 
 .label {
     -fx-text-fill: lightgrey;
 }
+
+.table-view {
+    -fx-border-color: grey;
+    -fx-background-color: transparent;
+    -fx-base: transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent;
+}
+
+.table-view .filler {
+    -fx-background-color: #353535;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: lightgrey;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 35;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent grey transparent transparent;
+}
+
+
+.table-cell {
+    -fx-background-color: #353535;
+    -fx-text-fill: lightgrey;
+    -fx-border-color: transparent grey transparent transparent;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: lightgrey;
+    -fx-border-color: grey grey grey grey;
+}
+
+//TEXT FIELD
+.text-field {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: lightgrey;
+}
+
+//DATE PICKER
+.date-picker {
+    -fx-background-color: #4a4a4a;
+    -fx-base: #4a4a4a;
+}
+
+.date-picker-popup > * > .week-number-header-cell, .date-picker-popup > * > .day-name-cell {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+//CHECK BOX
+.check-box {
+}
+
+//CHOICE BOX
+.choice-box {
+    -fx-background-color: #4a4a4a;
+}
+
+.context-menu {
+    -fx-background-color: #4a4a4a;
+}
+
+//TAB PANES
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: white;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #4a4a4a;
+}
+
+
+//CHARTS
+.axis  {
+    -fx-tick-label-fill: lightgrey;
+}
+
+.bar-chart {
+    -fx-background-color: transparent;
+}
+
+
+
+

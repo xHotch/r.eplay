@@ -17,6 +17,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -78,6 +79,7 @@ public class TeamController {
         newTeamStage.setTitle("New Team");
         newTeamStage.setWidth(1024);
         newTeamStage.setHeight(768);
+        newTeamStage.getIcons().add(new Image("/images/ballIcon.png"));
         newTeamStage.centerOnScreen();
         newTeamStage.setOnCloseRequest(event -> LOG.debug("New Team window closed"));
 
@@ -106,6 +108,7 @@ public class TeamController {
                 newTeamStage.setTitle("Matches auswählen");
                 newTeamStage.setWidth(1024);
                 newTeamStage.setHeight(768);
+                newTeamStage.getIcons().add(new Image("/images/ballIcon.png"));
                 newTeamStage.centerOnScreen();
                 newTeamStage.setOnCloseRequest(event -> LOG.debug("Select team matches window closed"));
                 try {
