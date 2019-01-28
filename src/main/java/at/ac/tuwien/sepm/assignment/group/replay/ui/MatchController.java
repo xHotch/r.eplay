@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -156,6 +157,7 @@ public class MatchController {
         matchdetailsStage.setTitle("Matchdetails");
         matchdetailsStage.setWidth(1024);
         matchdetailsStage.setHeight(1024);
+        matchdetailsStage.getIcons().add(new Image("/images/ballIcon.png"));
         matchdetailsStage.centerOnScreen();
         matchdetailsStage.setOnCloseRequest(event -> LOG.debug("Match Details window closed"));
 
@@ -224,6 +226,7 @@ public class MatchController {
             matchCompareStage.setTitle("Matchvergleich");
             matchCompareStage.setWidth(1024);
             matchCompareStage.setHeight(768);
+            matchCompareStage.getIcons().add(new Image("/images/ballIcon.png"));
             matchCompareStage.centerOnScreen();
             matchCompareStage.setOnCloseRequest(event -> LOG.debug("Select team matches window closed"));
             try {

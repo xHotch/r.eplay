@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +113,7 @@ public class TeamMatchesController {
                 teamCompareStage.setTitle("Teamvergleich");
                 teamCompareStage.setWidth(1024);
                 teamCompareStage.setHeight(768);
+                teamCompareStage.getIcons().add(new Image("/images/ballIcon.png"));
                 teamCompareStage.centerOnScreen();
                 teamCompareStage.setOnCloseRequest(event -> LOG.debug("Compare Teams window closed"));
                 teamCompareStage.setScene(new Scene(springFXMLLoader.load("/fxml/teamComparePage.fxml", Parent.class)));
