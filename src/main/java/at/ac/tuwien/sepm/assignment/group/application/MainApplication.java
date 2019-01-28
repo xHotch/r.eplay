@@ -55,7 +55,17 @@ public final class MainApplication extends Application {
 
     public static void main(String[] args) {
         LOG.debug("Application starting with arguments={}", (Object) args);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
         Application.launch(MainApplication.class, args);
+    }
+
+    private static class ExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+        private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+        public void uncaughtException(Thread t, Throwable e) {
+            LOG.warn("Unhandled exception caught!" ,e);
+        }
     }
 
 }
