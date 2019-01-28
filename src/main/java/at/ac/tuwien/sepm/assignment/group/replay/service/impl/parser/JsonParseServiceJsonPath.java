@@ -362,7 +362,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
             match.setMatchTime(ctx.read("$.Frames[-1].Time"));
 
         } catch (Exception e) {
-            throw new FileServiceException(e.getMessage(), e);
+            throw new FileServiceException("Exception while reading properties", e);
         }
         return match;
     }

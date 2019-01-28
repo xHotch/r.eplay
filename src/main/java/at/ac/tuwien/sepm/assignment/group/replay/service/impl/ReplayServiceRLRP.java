@@ -75,7 +75,7 @@ public class ReplayServiceRLRP implements ReplayService {
             } catch (FilePersistenceException e1) {
                 LOG.error("File error",e1);
             }
-            throw new FileServiceException(e.getMessage(), e);
+            throw new FileServiceException("Exception while parsing .replay to .json",e);
         }
 
         LOG.debug("Created JSON File at: {}", jsonFile.getAbsolutePath());
