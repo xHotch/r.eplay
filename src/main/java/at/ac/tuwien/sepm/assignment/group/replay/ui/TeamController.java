@@ -72,6 +72,7 @@ public class TeamController {
 
     @FXML
     private void onNewTeamButtonClicked() {
+        LOG.info("new team button clicked");
         Stage newTeamStage = new Stage();
         // setup application
         newTeamStage.setTitle("New Team");
@@ -93,6 +94,7 @@ public class TeamController {
 
     @FXML
     private void onTeamCompareButtonClicked() {
+        LOG.info("team compare burton clicked");
         if (!tableViewTeams.getSelectionModel().getSelectedItems().isEmpty() && tableViewTeams.getSelectionModel().getSelectedItems().size() == 2) {
             List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
 
@@ -131,7 +133,6 @@ public class TeamController {
             ObservableList<TeamDTO> observableTeams = FXCollections.observableArrayList(teamService.readTeams());
 
             tableViewTeams.setItems(observableTeams);
-            LOG.debug("");
         } catch (TeamServiceException e) {
             LOG.error("Caught TeamServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim Laden der Teams");
