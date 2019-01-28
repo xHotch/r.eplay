@@ -6,7 +6,7 @@
 
     <groupId>at.ac.tuwien.sepm.assignment.group</groupId>
     <artifactId>qse01</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
 
     <properties>
         <!-- build properties -->
@@ -137,9 +137,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <!-- enable parallel test runs -->
-                    <parallel>methods</parallel>
-                    <threadCount>10</threadCount>
                     <!-- discover all *.java files -->
                     <includes>
                         <include>*.java</include>
