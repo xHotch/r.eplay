@@ -58,6 +58,7 @@ public class MatchController {
     private MatchCompareController matchCompareController;
 
     private boolean filter = false;
+    private boolean filterError = false;
 
     @FXML
     private TableView<MatchDTO> tableViewMatches;
@@ -120,6 +121,7 @@ public class MatchController {
     @FXML
     private void onSearchButtonClicked() {
         LOG.info("Search button clicked");
+        filterError = false;
         filter = true;
         updateMatchTable();
     }
@@ -128,6 +130,7 @@ public class MatchController {
     private void onRevertSearchButtonClicked() {
         LOG.info("Revert Search button clicked");
         filter = false;
+        filterError = false;
         nameTextField.setText("");
         fromDatePicker.setValue(null);
         toDatePicker.setValue(null);
@@ -337,7 +340,7 @@ public class MatchController {
     private void updateMatchTable() {
         try {
             ObservableList<MatchDTO> observableMatches;
-            if (!filter) {
+            if (!filter || filterError) {
                 observableMatches = FXCollections.observableArrayList(matchService.getMatches());
             } else {
                 String name = null;
@@ -364,6 +367,7 @@ public class MatchController {
                     teamSize = getMatchtypeByChoiceBoxValue();
                 }
                 observableMatches = FXCollections.observableArrayList(matchService.searchMatches(name, begin, end, teamSize));
+                filterError = false;
             }
 
             SortedList<MatchDTO> sortedMatches = new SortedList<>(observableMatches);
@@ -374,6 +378,7 @@ public class MatchController {
             LOG.error("Caught MatchServiceException", e);
             AlertHelper.showErrorMessage("Fehler beim laden der Matches");
         } catch (FilterValidationException e) {
+            filterError = true;
             LOG.error("Caught FilterValidationException", e);
             AlertHelper.showErrorMessage(e.getMessage());
         }

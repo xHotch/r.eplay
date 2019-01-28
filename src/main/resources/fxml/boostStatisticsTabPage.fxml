@@ -203,9 +203,9 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
         </TableView>
-      <Label layoutX="23.0" layoutY="180.0" text="Time Low Boost (&lt;= 20) :" />
-      <Label layoutX="23.0" layoutY="208.0" text="Time Full Boost (&gt;= 80) :" />
-      <Label layoutX="23.0" layoutY="236.0" text="Boost per Minute :" />
+      <Label layoutX="23.0" layoutY="180.0" text="Zeit wenig Boost (&lt;= 20) :" />
+      <Label layoutX="23.0" layoutY="208.0" text="Zeit viel Boost (&gt;= 80) :" />
+      <Label layoutX="23.0" layoutY="236.0" text="Boost pro Minute :" />
       <TextField fx:id="tf_lowBoost" editable="false" layoutX="178.0" layoutY="176.0" />
       <TextField fx:id="tf_fullBoost" editable="false" layoutX="178.0" layoutY="204.0" />
       <TextField fx:id="tf_boostPerMinute" editable="false" layoutX="178.0" layoutY="232.0" />
