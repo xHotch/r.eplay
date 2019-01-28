@@ -9,8 +9,7 @@ import at.ac.tuwien.sepm.assignment.group.replay.dao.exception.TeamPersistenceEx
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCMatchDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.JDBCTeamDAO;
 import at.ac.tuwien.sepm.assignment.group.replay.dao.impl.UserFolderDAO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.PlayerDTO;
-import at.ac.tuwien.sepm.assignment.group.replay.dto.TeamDTO;
+import at.ac.tuwien.sepm.assignment.group.replay.dto.*;
 import at.ac.tuwien.sepm.assignment.group.util.JDBCConnectionManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -18,13 +17,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
@@ -207,5 +206,112 @@ public class TeamDAOTest {
         PlayerDTO player = new PlayerDTO();
         player.setId(1L);
         teamDAO.readPlayerTeams(player);
+    }
+    
+    @Test
+    public void readTeamMatchesTest() throws TeamPersistenceException {
+        TeamDTO teamDTO1 = new TeamDTO();
+        teamDTO1.setId(1L);
+        
+        TeamDTO teamDTO2 = new TeamDTO();
+        teamDTO2.setId(2L);
+        
+        List<MatchDTO> matchDTOS = teamDAO.readTeamMatches(teamDTO1,teamDTO2);
+
+        Assert.assertThat(matchDTOS.size(),is(2));
+    }
+
+    @Test(expected = TeamPersistenceException.class)
+    public void readTeamMatchesWithoutConnectionShouldThrowException() throws TeamPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        TeamDTO teamDTO1 = new TeamDTO();
+        teamDTO1.setId(1L);
+
+        TeamDTO teamDTO2 = new TeamDTO();
+        teamDTO2.setId(2L);
+        teamDAO.readTeamMatches(teamDTO1,teamDTO2);
+    }
+
+
+    @Test
+    public void readTeamStatsTest() throws TeamPersistenceException {
+        TeamDTO teamDTO1 = new TeamDTO();
+        teamDTO1.setId(1L);
+
+        TeamDTO teamDTO2 = new TeamDTO();
+        teamDTO2.setId(2L);
+
+        Map<Integer, List<MatchStatsDTO>> listMap = teamDAO.readTeamStats(teamDTO1,teamDTO2);
+
+        Assert.assertThat(listMap.size(),is(2));
+
+        List<MatchStatsDTO> matchStatsDTOS = listMap.get(1);
+        Assert.assertThat(matchStatsDTOS.size(), is(2));
+
+        MatchStatsDTO statsBlueTeam;
+        MatchStatsDTO statsRedTeam;
+        if (matchStatsDTOS.get(0).getTeam() == TeamSide.BLUE) {
+            statsBlueTeam = matchStatsDTOS.get(0);
+            statsRedTeam = matchStatsDTOS.get(1);
+        } else {
+            statsBlueTeam = matchStatsDTOS.get(1);
+            statsRedTeam = matchStatsDTOS.get(0);
+        }
+        Assert.assertThat(statsBlueTeam.getGoals(),is(2));
+        Assert.assertThat(statsBlueTeam.getAssists(),is(1));
+        Assert.assertThat(statsBlueTeam.getSaves(),is(0));
+        Assert.assertThat(statsBlueTeam.getShots(),is(4));
+        Assert.assertThat(statsBlueTeam.getScore(),is(300));
+        Assert.assertThat(statsBlueTeam.getAverageSpeed(),is(1325.0));
+        Assert.assertThat(statsBlueTeam.getBoostPadAmount(),is(105));
+        Assert.assertThat(statsBlueTeam.getBoostPerMinute(),is(270.0));
+
+        Assert.assertThat(statsRedTeam.getGoals(),is(1));
+        Assert.assertThat(statsRedTeam.getAssists(),is(1));
+        Assert.assertThat(statsRedTeam.getSaves(),is(1));
+        Assert.assertThat(statsRedTeam.getShots(),is(3));
+        Assert.assertThat(statsRedTeam.getScore(),is(220));
+        Assert.assertThat(statsRedTeam.getAverageSpeed(),is(1345.0));
+        Assert.assertThat(statsRedTeam.getBoostPadAmount(),is(125));
+        Assert.assertThat(statsRedTeam.getBoostPerMinute(),is(305.0));
+
+
+        matchStatsDTOS = listMap.get(2);
+        Assert.assertThat(matchStatsDTOS.size(), is(2));
+        if (matchStatsDTOS.get(0).getTeam() == TeamSide.BLUE) {
+            statsBlueTeam = matchStatsDTOS.get(0);
+            statsRedTeam = matchStatsDTOS.get(1);
+        } else {
+            statsBlueTeam = matchStatsDTOS.get(1);
+            statsRedTeam = matchStatsDTOS.get(0);
+        }
+        Assert.assertThat(statsBlueTeam.getGoals(),is(4));
+        Assert.assertThat(statsBlueTeam.getAssists(),is(2));
+        Assert.assertThat(statsBlueTeam.getSaves(),is(0));
+        Assert.assertThat(statsBlueTeam.getShots(),is(7));
+        Assert.assertThat(statsBlueTeam.getScore(),is(700));
+        Assert.assertThat(statsBlueTeam.getAverageSpeed(),is(1325.0));
+        Assert.assertThat(statsBlueTeam.getBoostPadAmount(),is(110));
+        Assert.assertThat(statsBlueTeam.getBoostPerMinute(),is(265.0));
+
+        Assert.assertThat(statsRedTeam.getGoals(),is(1));
+        Assert.assertThat(statsRedTeam.getAssists(),is(1));
+        Assert.assertThat(statsRedTeam.getSaves(),is(1));
+        Assert.assertThat(statsRedTeam.getShots(),is(3));
+        Assert.assertThat(statsRedTeam.getScore(),is(300));
+        Assert.assertThat(statsRedTeam.getAverageSpeed(),is(1345.0));
+        Assert.assertThat(statsRedTeam.getBoostPadAmount(),is(150));
+        Assert.assertThat(statsRedTeam.getBoostPerMinute(),is(285.0));
+    }
+
+    @Test(expected = TeamPersistenceException.class)
+    public void readTeamStatsWithoutConnectionShouldThrowException() throws TeamPersistenceException {
+        jdbcConnectionManager.closeConnection();
+        TeamDTO teamDTO1 = new TeamDTO();
+        teamDTO1.setId(1L);
+
+        TeamDTO teamDTO2 = new TeamDTO();
+        teamDTO2.setId(2L);
+        teamDAO.readTeamStats(teamDTO1,teamDTO2);
     }
 }
