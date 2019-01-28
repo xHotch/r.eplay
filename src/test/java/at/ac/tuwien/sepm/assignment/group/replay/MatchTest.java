@@ -46,6 +46,7 @@ import static org.junit.Assert.fail;
  *      - verify if the id's match with player and match.
  */
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class MatchTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

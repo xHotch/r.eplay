@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
  * @author Gabriel Aichinger
  */
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class PlayerTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class TeamTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
