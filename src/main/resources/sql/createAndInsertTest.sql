@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS match_
   timeBallInRedSide double,
   possessionBlue int,
   possessionRed int,
+
   fileName VARCHAR(100) NOT NULL UNIQUE,
   ballHeatmapFilename VARCHAR(80) NOT NULL,
   matchTime double
@@ -47,6 +48,10 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   enemySideTime double,
   averageSpeed double,
   averageDistanceToBall double,
+  boostPerMinute double,
+  boostPadAmount INT NOT NULL,
+  timeLowBoost double,
+  timeFullBoost double,
   heatmapFilename VARCHAR(80) NOT NULL,
   FOREIGN KEY (playerid) REFERENCES player(id),
   FOREIGN KEY (matchid) REFERENCES match_(id) on delete cascade,
@@ -101,10 +106,10 @@ insert into teamPlayer values(2,4);
 
 insert into match_ values(1, '2018-12-02 00:00:00', 2, '12345', 140.0, 150.0, 60, 40, 'match1.replay', 'match1.png', 350.0);
 
-insert into matchPlayer values(1, 1, 'Player 1', 0, 100, 1, 0, 0, 2, 110.0, 195.0, 205.0, 95.0, 1300.0, 2400.0, '11.png');
-insert into matchPlayer values(2, 1, 'Player 2', 0, 200, 1, 1, 0, 2, 115.0, 190.0, 200.0, 100.0, 1350.0, 2500.0, '21.png');
-insert into matchPlayer values(3, 1, 'Player 3', 1, 100, 0, 1, 0, 1, 112.0, 193.0, 200.0, 100.0, 1400.0, 2600.0, '31.png');
-insert into matchPlayer values(4, 1, 'Player 4', 1, 120, 1, 0, 1, 2, 110.0, 195.0, 190.0, 110.0, 1290.0, 2700.0, '41.png');
+insert into matchPlayer values(1, 1, 'Player 1', 0, 100, 1, 0, 0, 2, 110.0, 195.0, 205.0, 95.0, 1300.0, 2400.0, 260.0, 50, 30.0, 50.0, '11.png');
+insert into matchPlayer values(2, 1, 'Player 2', 0, 200, 1, 1, 0, 2, 115.0, 190.0, 200.0, 100.0, 1350.0, 2500.0,280.0, 55, 20.0, 60.0, '21.png');
+insert into matchPlayer values(3, 1, 'Player 3', 1, 100, 0, 1, 0, 1, 112.0, 193.0, 200.0, 100.0, 1400.0, 2600.0,300.0, 60, 40.0, 70.0, '31.png');
+insert into matchPlayer values(4, 1, 'Player 4', 1, 120, 1, 0, 1, 2, 110.0, 195.0, 190.0, 110.0, 1290.0, 2700.0, 310.0, 65, 35.0, 80.0, '41.png');
 
 insert into matchPlayerBoostPads values(1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3 ,3 ,3 , 3, 3, 3, 3);
 insert into matchPlayerBoostPads values(2, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3 ,3 ,3 , 3, 3, 3, 3);
@@ -115,10 +120,10 @@ insert into matchPlayerBoostPads values(4, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
 
 insert into match_ values(2, '2018-12-03 00:00:00', 2, '123456', 142.0, 148.0, 58, 42, 'match2.replay', 'match2.png', 350.0);
 
-insert into matchPlayer values(1, 2, 'Player 1', 0, 300, 3, 0, 0, 5, 108.0, 194.0, 205.0, 95.0, 1300.0, 2400.0, '12.png');
-insert into matchPlayer values(2, 2, 'Player 2', 0, 400, 1, 2, 0, 2, 112.0, 196.0, 200.0, 100.0, 1350.0, 2500.0, '22.png');
-insert into matchPlayer values(3, 2, 'Player 3', 1, 180, 0, 1, 0, 2, 116.0, 198.0, 200.0, 100.0, 1400.0, 2600.0, '32.png');
-insert into matchPlayer values(4, 2, 'Player 4', 1, 120, 1, 0, 1, 1, 111.0, 196.0, 190.0, 110.0, 1290.0, 2700.0, '42.png');
+insert into matchPlayer values(1, 2, 'Player 1', 0, 300, 3, 0, 0, 5, 108.0, 194.0, 205.0, 95.0, 1300.0, 2400.0,260.0, 50, 30.0, 50.0, '12.png');
+insert into matchPlayer values(2, 2, 'Player 2', 0, 400, 1, 2, 0, 2, 112.0, 196.0, 200.0, 100.0, 1350.0, 2500.0,270.0, 60, 25.0, 70.0, '22.png');
+insert into matchPlayer values(3, 2, 'Player 3', 1, 180, 0, 1, 0, 2, 116.0, 198.0, 200.0, 100.0, 1400.0, 2600.0,280.0, 70, 20.0, 55.0, '32.png');
+insert into matchPlayer values(4, 2, 'Player 4', 1, 120, 1, 0, 1, 1, 111.0, 196.0, 190.0, 110.0, 1290.0, 2700.0,290.0, 80, 40.0, 56.0, '42.png');
 
 insert into matchPlayerBoostPads values(1, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
 insert into matchPlayerBoostPads values(2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);

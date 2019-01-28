@@ -26,6 +26,12 @@ public class MatchPlayerDTO {
     private double averageDistanceToBall;
     private double airTime;
     private double groundTime;
+    private int boostPadAmount;
+    private double boostPerMinute;
+    private double timeFullBoost;
+    private double timeLowBoost;
+
+
     private BufferedImage heatmapImage;
     private String heatmapFilename;
     private Map<Integer, List<BoostPadDTO>> boostPadMap;
@@ -131,7 +137,9 @@ public class MatchPlayerDTO {
         return averageSpeed;
     }
 
-    public int getAverageSpeedAsInt() {return (int) averageSpeed;}
+    public int getAverageSpeedAsInt() {
+        return (int) averageSpeed;
+    }
 
     public void setAverageSpeed(double averageSpeed) {
         this.averageSpeed = averageSpeed;
@@ -143,6 +151,22 @@ public class MatchPlayerDTO {
 
     public void setAverageDistanceToBall(double averageDistanceToBall) {
         this.averageDistanceToBall = averageDistanceToBall;
+    }
+
+    public double getTimeFullBoost() {
+        return timeFullBoost;
+    }
+
+    public void setTimeFullBoost(double timeFullBoost) {
+        this.timeFullBoost = timeFullBoost;
+    }
+
+    public double getTimeLowBoost() {
+        return timeLowBoost;
+    }
+
+    public void setTimeLowBoost(double timeLowBoost) {
+        this.timeLowBoost = timeLowBoost;
     }
 
     public double getAirTime() {
@@ -207,6 +231,22 @@ public class MatchPlayerDTO {
 
     public void setTeamActorId(int teamActorId) {
         this.teamActorId = teamActorId;
+    }
+
+    public double getBoostPerMinute() {
+        return boostPerMinute;
+    }
+
+    public void setBoostPerMinute(double boostPerMinute) {
+        this.boostPerMinute = boostPerMinute;
+    }
+
+    public int getBoostPadAmount() {
+        return boostPadAmount;
+    }
+
+    public void setBoostPadAmount(int boostPadAmount) {
+        this.boostPadAmount = boostPadAmount;
     }
 
     @Override

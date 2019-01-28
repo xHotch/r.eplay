@@ -29,7 +29,7 @@ public class JDBCMatchDAO implements MatchDAO {
         " timeBallInBlueSide = ?, timeBallInRedSide = ?, possessionBlue = ?, possessionRed = ?, ballHeatmapFilename = ?, fileName = ?, matchTime = ?";
     private static final String INSERT_MATCH_PLAYER = "INSERT INTO matchPlayer SET  playerid = ?, matchid = ?, name = ?," +
         " team = ?, score = ?, goals = ?, assists = ?, saves = ?, shots = ?, airTime = ?, groundTime = ?, homeSideTime = ?, " +
-        "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, heatmapFilename = ?";
+        "enemySideTime = ?, averageSpeed = ?, averageDistanceToBall = ?, boostPerMinute = ?, boostPadAmount = ?, timeLowBoost = ?, timeFullBoost = ?, heatmapFilename = ?";
 
     private static final String INSERT_BOOSTPAD_INFO = "INSERT INTO matchPlayerBoostPads SET matchPlayerid = ?, matchid = ?," +
         "boostpad0 = ?, boostpad1 = ?, boostpad2 = ?, boostpad3 = ?, boostpad4 = ?, boostpad5 = ?," +
@@ -122,7 +122,12 @@ public class JDBCMatchDAO implements MatchDAO {
             ps.setDouble(13,matchPlayerDTO.getEnemySideTime());
             ps.setDouble(14,matchPlayerDTO.getAverageSpeed());
             ps.setDouble(15, matchPlayerDTO.getAverageDistanceToBall());
-            ps.setString(16, matchPlayerDTO.getHeatmapFilename());
+            ps.setDouble(16,matchPlayerDTO.getBoostPerMinute());
+            ps.setInt(17,matchPlayerDTO.getBoostPadAmount());
+            ps.setDouble(18,matchPlayerDTO.getTimeLowBoost());
+            ps.setDouble(19,matchPlayerDTO.getTimeFullBoost());
+
+            ps.setString(20, matchPlayerDTO.getHeatmapFilename());
 
             ps.executeUpdate();
 
@@ -196,6 +201,10 @@ public class JDBCMatchDAO implements MatchDAO {
                     matchPlayer.setEnemySideTime(rs.getDouble("enemySideTime"));
                     matchPlayer.setAverageSpeed(rs.getDouble("averageSpeed"));
                     matchPlayer.setAverageDistanceToBall(rs.getDouble("averageDistanceToBall"));
+                    matchPlayer.setBoostPerMinute(rs.getDouble("boostPerMinute"));
+                    matchPlayer.setBoostPadAmount(rs.getInt("boostPadAmount"));
+                    matchPlayer.setTimeLowBoost(rs.getDouble("timeLowBoost"));
+                    matchPlayer.setTimeFullBoost(rs.getDouble("timeFullBoost"));
                     matchPlayer.setHeatmapFilename(rs.getString("heatmapFilename"));
 
                     result.add(matchPlayer);

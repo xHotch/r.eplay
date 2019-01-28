@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS matchPlayer;
+DROP TABLE IF EXISTS matchPlayerBoostPads;
+DROP TABLE IF EXISTS teamPlayer;
+DROP TABLE IF EXISTS player;
+DROP TABLE IF EXISTS match_;
+DROP TABLE IF EXISTS team;
+
 CREATE TABLE IF NOT EXISTS match_
 (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -38,6 +45,10 @@ CREATE TABLE IF NOT EXISTS matchPlayer
   enemySideTime double,
   averageSpeed double,
   averageDistanceToBall double,
+  boostPerMinute double,
+  boostPadAmount INT NOT NULL,
+  timeLowBoost double,
+  timeFullBoost double,
   heatmapFilename VARCHAR(80) NOT NULL,
   FOREIGN KEY (playerid) REFERENCES player(id),
   FOREIGN KEY (matchid) REFERENCES match_(id) on delete cascade,

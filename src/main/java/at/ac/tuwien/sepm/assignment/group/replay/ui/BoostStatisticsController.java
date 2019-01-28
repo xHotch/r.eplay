@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -41,6 +42,15 @@ public class BoostStatisticsController {
     private TableColumn<MatchPlayerDTO, String> playerNameRed;
 
     @FXML
+    private TextField tf_lowBoost;
+
+    @FXML
+    private TextField tf_fullBoost;
+
+    @FXML
+    private TextField tf_boostPerMinute;
+
+    @FXML
     private ImageView mapImage;
 
     /**
@@ -67,12 +77,12 @@ public class BoostStatisticsController {
         ObservableList<MatchPlayerDTO> playerListBlue = FXCollections.observableArrayList();
         ObservableList<MatchPlayerDTO> playerListRed = FXCollections.observableArrayList();
 
-        for (MatchPlayerDTO player:matchPlayers) {
+        for (MatchPlayerDTO player : matchPlayers) {
             // team blue
-            if(player.getTeam() == TeamSide.BLUE){
+            if (player.getTeam() == TeamSide.BLUE) {
                 playerListBlue.add(player);
             }
-            if(player.getTeam() == TeamSide.RED){
+            if (player.getTeam() == TeamSide.RED) {
                 playerListRed.add(player);
             }
         }
@@ -82,9 +92,9 @@ public class BoostStatisticsController {
         LOG.debug("successfully loaded boost pad statistics");
     }
 
-    void loadBoostPadValues(MatchPlayerDTO player) {
+    private void loadBoostPadValues(MatchPlayerDTO player) {
 
-        List<Integer> boostPadList = player.getDBBoostPadMap().get((int)player.getPlayerId());
+        List<Integer> boostPadList = player.getDBBoostPadMap().get((int) player.getPlayerId());
 
         pad0.setText(boostPadList.get(0) + "");
         pad1.setText(boostPadList.get(1) + "");
@@ -134,16 +144,27 @@ public class BoostStatisticsController {
     }
 
     private void onBlueTableSelection(MatchPlayerDTO matchPlayerDTO) {
-        if(matchPlayerDTO != null){
+        if (matchPlayerDTO != null) {
             tableTeamRed.getSelectionModel().clearSelection();
             loadBoostPadValues(matchPlayerDTO);
+            loadPlayerStatistic(matchPlayerDTO);
         }
     }
 
+    /**
+     * Method that sets the Player's statistic in the textfields
+     */
+    private void loadPlayerStatistic(MatchPlayerDTO matchPlayerDTO) {
+        tf_boostPerMinute.setText("" + String.format("%.2f", matchPlayerDTO.getBoostPerMinute()));
+        tf_lowBoost.setText("" + String.format("%.2f", matchPlayerDTO.getTimeLowBoost()));
+        tf_fullBoost.setText("" + String.format("%.2f", matchPlayerDTO.getTimeFullBoost()));
+    }
+
     private void onRedTableSelection(MatchPlayerDTO matchPlayerDTO) {
-        if(matchPlayerDTO != null){
+        if (matchPlayerDTO != null) {
             tableTeamBlue.getSelectionModel().clearSelection();
             loadBoostPadValues(matchPlayerDTO);
+            loadPlayerStatistic(matchPlayerDTO);
         }
     }
 

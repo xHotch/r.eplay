@@ -33,7 +33,7 @@ public class JDBCPlayerDAO implements PlayerDAO {
     private static final String READ_PLAYER_BY_PLATFORMID = "Select id from player where plattformid = ?";
 
     private static final String GET_AVG_STATS = "Select avg(Cast(mp.score as float)), avg(Cast(mp.goals as float)), " +
-        "avg(Cast(mp.assists as float)), avg(cast(mp.saves as float)), avg(cast(mp.shots as float)), avg(mp.averageSpeed) " +
+        "avg(Cast(mp.assists as float)), avg(cast(mp.saves as float)), avg(cast(mp.shots as float)), avg(mp.averageSpeed), avg(mp.boostPerMinute), avg(cast(mp.boostPadAmount as float)) " +
         "from matchPlayer mp join match_ m on mp.matchid = m.id where mp.playerid = ? and m.teamSize = ?";
 
     private final Connection connection;
@@ -180,6 +180,9 @@ public class JDBCPlayerDAO implements PlayerDAO {
                 avgStatsDTO.setSaves(rs.getDouble(4));
                 avgStatsDTO.setShots(rs.getDouble(5));
                 avgStatsDTO.setSpeed(rs.getDouble(6));
+                avgStatsDTO.setBoost(rs.getDouble(7));
+                avgStatsDTO.setBoostpads(rs.getDouble(8));
+
             }
         } catch (SQLException e) {
             throw new PlayerPersistenceException("Could not get avg statistics for player", e);

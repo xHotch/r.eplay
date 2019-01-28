@@ -339,7 +339,7 @@ public class JsonParseServiceJsonPath implements JsonParseService {
         LOG.trace("Called - calculate");
         playerStatistic.calculate(matchDTO.getPlayerData(),carInformationParser.getRigidBodyListPlayer(),ballInformationParser.getRigidBodyInformations());
         ballStatistic.calculate(matchDTO, ballInformationParser.getRigidBodyInformations(), ballInformationParser.getHitTimes());
-        boostStatistic.calculate(matchDTO.getPlayerData(), ballInformationParser.getRigidBodyInformations(), boostInformationParser.getBoostPadMap());
+        boostStatistic.calculate(matchDTO.getPlayerData(), ballInformationParser.getRigidBodyInformations(), boostInformationParser.getBoostPadMap(), boostInformationParser.getBoostAmountMap());
     }
 
     /**

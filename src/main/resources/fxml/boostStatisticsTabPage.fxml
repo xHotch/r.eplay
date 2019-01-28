@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -201,5 +203,11 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
         </TableView>
+      <Label layoutX="23.0" layoutY="180.0" text="Time Low Boost (&lt;= 20) :" />
+      <Label layoutX="23.0" layoutY="208.0" text="Time Full Boost (&gt;= 80) :" />
+      <Label layoutX="23.0" layoutY="236.0" text="Boost per Minute :" />
+      <TextField fx:id="tf_lowBoost" editable="false" layoutX="178.0" layoutY="176.0" />
+      <TextField fx:id="tf_fullBoost" editable="false" layoutX="178.0" layoutY="204.0" />
+      <TextField fx:id="tf_boostPerMinute" editable="false" layoutX="178.0" layoutY="232.0" />
     </children>
 </AnchorPane>

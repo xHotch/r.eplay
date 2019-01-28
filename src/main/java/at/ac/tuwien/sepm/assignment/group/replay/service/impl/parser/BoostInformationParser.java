@@ -268,7 +268,7 @@ public class BoostInformationParser {
                 carBoostAmounts.putIfAbsent(carID, new ArrayList<>());
                 carBoostAmounts.get(carID).addAll(entry.getValue());
             } else {
-                LOG.error("No car found for component {} with {} entries", entry.getKey(), entry.getValue().size());
+                LOG.debug("No car found for component {} with {} entries", entry.getKey(), entry.getValue().size());
             }
         }
 
