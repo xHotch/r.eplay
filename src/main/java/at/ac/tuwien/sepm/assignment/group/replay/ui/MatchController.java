@@ -357,16 +357,14 @@ public class MatchController {
                     }
                 }
                 if (timeCheckBox.isSelected()) {
-                    if (fromDatePicker.getValue() == null || toDatePicker.getValue() == null) {
-                        throw new FilterValidationException("Bitte beide Daten auswählen");
+                    if (fromDatePicker.getValue() != null) {
+                        begin = fromDatePicker.getValue().atStartOfDay();
                     }
-                    begin = fromDatePicker.getValue().atStartOfDay();
-                    end = toDatePicker.getValue().atStartOfDay().plusDays(1).minusSeconds(1);
+                    if (toDatePicker.getValue() != null) {
+                        end = toDatePicker.getValue().atStartOfDay().plusDays(1).minusSeconds(1);
+                    }
                 }
-                if (typCheckBox.isSelected()) {
-                    if (choiceBoxMatchtyp.getValue() == null) {
-                        throw new FilterValidationException("Kein Matchtyp ausgewählt");
-                    }
+                if (typCheckBox.isSelected() && choiceBoxMatchtyp.getValue() != null) {
                     teamSize = getMatchtypeByChoiceBoxValue();
                 }
                 observableMatches = FXCollections.observableArrayList(matchService.searchMatches(name, begin, end, teamSize));
