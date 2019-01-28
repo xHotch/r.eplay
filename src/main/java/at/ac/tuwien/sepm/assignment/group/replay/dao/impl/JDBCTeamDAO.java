@@ -43,8 +43,9 @@ public class JDBCTeamDAO implements TeamDAO {
     private static final String READ_MATCHES_FROM_TEAMS = "Select *" +
         "from MATCH_ where ID = any( " + READ_MATCHID_FROM_TEAMS + " )";
 
-    private static final String READ_STATS_FROM_TEAMS = "Select sum(SCORE) AS score,sum(GOALS) as goals, " +
-        "sum(SHOTS) as shots,sum(ASSISTS) as assists,sum(SAVES) as saves,avg(AVERAGESPEED) as averagespeed, team, MATCHID " +
+    private static final String READ_STATS_FROM_TEAMS = "Select sum(SCORE) AS score,sum(GOALS) as goals,sum(SHOTS) as shots," +
+        "sum(ASSISTS) as assists,sum(SAVES) as saves,avg(AVERAGESPEED) as averagespeed,avg(BOOSTPERMINUTE) as boostPerMinute," +
+        "sum(BOOSTPADAMOUNT) as boostPadAmount, team, MATCHID " +
         "from MATCHPLAYER where MATCHID = any( " + READ_MATCHID_FROM_TEAMS + " ) " +
         "GROUP BY TEAM,MATCHID";
 
@@ -176,6 +177,8 @@ public class JDBCTeamDAO implements TeamDAO {
                     matchStatsDTO.setSaves(rs.getInt("saves"));
                     matchStatsDTO.setAssists(rs.getInt("assists"));
                     matchStatsDTO.setAverageSpeed(rs.getDouble("averageSpeed"));
+                    matchStatsDTO.setBoostPerMinute(rs.getDouble("boostPerMinute"));
+                    matchStatsDTO.setBoostPadAmount(rs.getInt("boostPadAmount"));
                     matchStatsDTO.setTeam(TeamSide.getById(rs.getInt("team")).get());
                     matchStatsDTO.setMatchId(rs.getInt("matchId"));
 

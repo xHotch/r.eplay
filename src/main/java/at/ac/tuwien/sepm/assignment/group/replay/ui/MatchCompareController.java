@@ -78,7 +78,7 @@ public class MatchCompareController {
 
     @FXML
     private void initialize() {
-        matchValueChoiceBox.getItems().addAll("Tore", "Paraden", "Vorlagen", "Schüsse", "Punkte", "⌀ Geschwindigkeit");
+        matchValueChoiceBox.getItems().addAll("Tore", "Paraden", "Vorlagen", "Schüsse", "Punkte", "⌀ Geschwindigkeit", "⌀ Boost pro Minute", "Boostpad Anzahl");
         matchValueChoiceBox.getSelectionModel().selectedIndexProperty().addListener((obs, oldValue, newValue) -> showMatchValue(newValue.intValue()));
         matchBarChart.setAnimated(false);
         matchBarChart.setLegendVisible(false);
@@ -147,7 +147,7 @@ public class MatchCompareController {
     }
 
     private void showMatchValue(int itemIndex) {
-        LOG.info("Show match Value: {}", matchValueChoiceBox.getSelectionModel().getSelectedItem());
+        LOG.info("Show match Value: {}", matchValueChoiceBox.getItems().get(itemIndex));
         matchBarChart.getData().clear();
 
         XYChart.Series<String,Double> team1 = new XYChart.Series<>();
@@ -196,6 +196,18 @@ public class MatchCompareController {
                 valueMatch1Red = match1red.getAverageSpeed();
                 valueMatch2Blue = match2blue.getAverageSpeed();
                 valueMatch2Red = match2red.getAverageSpeed();
+                break;
+            case 6:
+                valueMatch1Blue = match1blue.getBoostPerMinute();
+                valueMatch1Red = match1red.getBoostPerMinute();
+                valueMatch2Blue = match2blue.getBoostPerMinute();
+                valueMatch2Red = match2red.getBoostPerMinute();
+                break;
+            case 7:
+                valueMatch1Blue = match1blue.getBoostPadAmount();
+                valueMatch1Red = match1red.getBoostPadAmount();
+                valueMatch2Blue = match2blue.getBoostPadAmount();
+                valueMatch2Red = match2red.getBoostPadAmount();
                 break;
             default:
                 break;

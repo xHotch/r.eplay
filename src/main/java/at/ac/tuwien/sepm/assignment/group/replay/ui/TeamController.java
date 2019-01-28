@@ -94,7 +94,7 @@ public class TeamController {
 
     @FXML
     private void onTeamCompareButtonClicked() {
-        LOG.info("team compare burton clicked");
+        LOG.info("team compare button clicked");
         if (!tableViewTeams.getSelectionModel().getSelectedItems().isEmpty() && tableViewTeams.getSelectionModel().getSelectedItems().size() == 2) {
             List<TeamDTO> selectedTeams = tableViewTeams.getSelectionModel().getSelectedItems();
 

@@ -162,6 +162,8 @@ public class MatchServiceTest {
         player1.setAssists(0);
         player1.setSaves(0);
         player1.setAverageSpeed(1300);
+        player1.setBoostPadAmount(50);
+        player1.setBoostPerMinute(150);
 
         player2.setGoals(0);
         player2.setShots(1);
@@ -169,6 +171,8 @@ public class MatchServiceTest {
         player2.setAssists(1);
         player2.setSaves(1);
         player2.setAverageSpeed(1400);
+        player2.setBoostPadAmount(70);
+        player2.setBoostPerMinute(400);
 
         List<MatchPlayerDTO> players = new ArrayList<>();
         players.add(player1);
@@ -184,7 +188,9 @@ public class MatchServiceTest {
         assertThat(result.getShots(), is(3));
         assertThat(result.getScore(), is(340));
         assertThat(result.getSaves(), is(1));
+        assertThat(result.getBoostPadAmount(), is(120));
         assertThat(result.getAverageSpeed(), is(1350.0));
+        assertThat(result.getBoostPerMinute(), is(275.0));
     }
 
     @Test

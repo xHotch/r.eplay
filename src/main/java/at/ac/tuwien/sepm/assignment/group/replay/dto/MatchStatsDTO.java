@@ -10,6 +10,8 @@ public class MatchStatsDTO {
     private int shots;
     private int saves;
     private double averageSpeed;
+    private double boostPerMinute;
+    private int boostPadAmount;
     private int matchId;
     private long teamId;
 
@@ -67,6 +69,22 @@ public class MatchStatsDTO {
 
     public void setAverageSpeed(double averageSpeed) {
         this.averageSpeed = averageSpeed;
+    }
+
+    public double getBoostPerMinute() {
+        return boostPerMinute;
+    }
+
+    public void setBoostPerMinute(double boostPerMinute) {
+        this.boostPerMinute = boostPerMinute;
+    }
+
+    public int getBoostPadAmount() {
+        return boostPadAmount;
+    }
+
+    public void setBoostPadAmount(int boostPadAmount) {
+        this.boostPadAmount = boostPadAmount;
     }
 
     public int getMatchId() {

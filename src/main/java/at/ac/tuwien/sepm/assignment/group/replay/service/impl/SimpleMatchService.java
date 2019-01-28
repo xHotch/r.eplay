@@ -108,9 +108,12 @@ public class SimpleMatchService implements MatchService {
                 matchStatsDTO.setSaves(matchStatsDTO.getSaves() + matchPlayerDTO.getSaves());
                 matchStatsDTO.setScore(matchStatsDTO.getScore() + matchPlayerDTO.getScore());
                 matchStatsDTO.setShots(matchStatsDTO.getShots() + matchPlayerDTO.getShots());
+                matchStatsDTO.setBoostPadAmount(matchStatsDTO.getBoostPadAmount() + matchPlayerDTO.getBoostPadAmount());
+                matchStatsDTO.setBoostPerMinute(matchStatsDTO.getBoostPerMinute() + matchPlayerDTO.getBoostPerMinute());
             }
         }
         matchStatsDTO.setAverageSpeed(matchStatsDTO.getAverageSpeed() / (matchDTO.getPlayerData().size() / 2.0));
+        matchStatsDTO.setBoostPerMinute(matchStatsDTO.getBoostPerMinute() / (matchDTO.getPlayerData().size() / 2.0));
         return matchStatsDTO;
     }
 

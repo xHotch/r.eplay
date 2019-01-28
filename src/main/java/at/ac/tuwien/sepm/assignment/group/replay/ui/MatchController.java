@@ -320,8 +320,7 @@ public class MatchController {
                 LOG.error("Caught File Service Exception", e);
                 Platform.runLater(() -> AlertHelper.showErrorMessage("Fehler beim Speichern des Replays"));
             } catch (Exception e){
-                LOG.error("Caught Exception ##############", e);
-                Platform.runLater(() -> AlertHelper.showErrorMessage(e.getMessage()));
+                LOG.error("Caught Exception ", e);
             } finally {
                 Platform.runLater(() -> loadReplayProgressIndicator.setVisible(false));
                 Platform.runLater(() -> uploadReplayButton.setDisable(false));

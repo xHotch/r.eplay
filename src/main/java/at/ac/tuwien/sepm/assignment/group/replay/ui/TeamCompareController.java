@@ -57,7 +57,7 @@ public class TeamCompareController {
     @FXML
     private void initialize()
     {
-        matchValueChoiceBox.getItems().addAll("Tore","Paraden","Vorlagen","Schüsse","Punkte","⌀ Geschwindigkeit");
+        matchValueChoiceBox.getItems().addAll("Tore","Paraden","Vorlagen","Schüsse","Punkte","⌀ Geschwindigkeit", "⌀ Boost pro Minute", "Boostpad Anzahl");
         matchValueChoiceBox.getSelectionModel().selectedIndexProperty().addListener(
             (obs, oldValue, newValue) -> showMatchValue(newValue.intValue())
         );
@@ -132,6 +132,12 @@ public class TeamCompareController {
                         break;
                     case 5:
                         value = matchStatsDTO.getAverageSpeed();
+                        break;
+                    case 6:
+                        value = matchStatsDTO.getBoostPerMinute();
+                        break;
+                    case 7:
+                        value = matchStatsDTO.getBoostPadAmount();
                         break;
                     default:
                         value = 0;
