@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
+<AnchorPane fx:id="ap_MatchAnimation" minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" styleClass="root" stylesheets="@../css/mainTemplate.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchAnimationController">
    <children>
       <Button layoutX="462.0" layoutY="8.0" mnemonicParsing="false" onAction="#onLoadAnimationButtonClicked" text="Animation laden" />
       <ImageView fx:id="image_field" depthTest="ENABLE" fitHeight="635.0" fitWidth="912.0" layoutX="52.0" layoutY="39.0" preserveRatio="true">
@@ -19,13 +19,13 @@
             <Image url="@../images/rocketLeageField2.png" />
          </image>
       </ImageView>
-      <Circle fx:id="shapeBall" fill="#a8b4bf" layoutX="512.0" layoutY="356.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-      <Rectangle fx:id="shapeCarRed1" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
-      <Rectangle fx:id="shapeCarRed2" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
-      <Rectangle fx:id="shapeCarBlue1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
-      <Rectangle fx:id="shapeCarRed3" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
-      <Rectangle fx:id="shapeCarBlue2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
-      <Rectangle fx:id="shapeCarBlue3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="20.0" />
+      <Circle fx:id="shapeBall" fill="#a8b4bf" layoutX="512.0" layoutY="356.0" radius="7.0" stroke="WHITE" strokeType="INSIDE" />
+      <Rectangle fx:id="shapeCarRed1" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="WHITE" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shapeCarRed2" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="WHITE" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shapeCarBlue1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="WHITE" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shapeCarRed3" arcHeight="5.0" arcWidth="5.0" fill="#ff1f41" height="20.0" layoutX="502.0" layoutY="348.0" stroke="WHITE" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shapeCarBlue2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="WHITE" strokeType="INSIDE" visible="false" width="20.0" />
+      <Rectangle fx:id="shapeCarBlue3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="502.0" layoutY="348.0" stroke="WHITE" strokeType="INSIDE" visible="false" width="20.0" />
       <ImageView fx:id="goalImage" fitHeight="20.0" fitWidth="792.0" layoutX="161.0" layoutY="693.0" pickOnBounds="true" AnchorPane.leftAnchor="138.0" />
       <Slider fx:id="timelineSlider" layoutX="134.0" layoutY="684.0" prefHeight="14.0" prefWidth="800.0" />
       <FlowPane layoutX="30.0" layoutY="672.0" prefHeight="37.0" prefWidth="100.0">
