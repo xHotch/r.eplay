@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -150,6 +151,7 @@ public class TeamCompareController {
         }
         teamBarChart.getData().add(team1);
         teamBarChart.getData().add(team2);
+        teamBarChart.getData().sort(Comparator.comparing(XYChart.Series::getName));
 
         //set color for bars depending on team
         for (XYChart.Data data : team1.getData()) {
