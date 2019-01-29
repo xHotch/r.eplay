@@ -80,8 +80,7 @@ public class BoostStatistic {
         }
 
         double time = boostDTOS.get(boostDTOS.size() - 1).getFrameTime() - boostDTOS.get(0).getFrameTime();
-
-        LOG.error("Total boost : {}", totalBoost);
+        
         dto.setBoostPerMinute(totalBoost / ((time - timePaused) / 60));
         dto.setTimeFullBoost(timeFullBoost);
         dto.setTimeLowBoost(timeLowBoost);
