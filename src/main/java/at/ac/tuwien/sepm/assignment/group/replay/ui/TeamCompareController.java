@@ -119,13 +119,13 @@ public class TeamCompareController {
                         value = matchStatsDTO.getGoals();
                         break;
                     case 1:
-                        value = matchStatsDTO.getAssists();
+                        value = matchStatsDTO.getSaves();
                         break;
                     case 2:
-                        value = matchStatsDTO.getShots();
+                        value = matchStatsDTO.getAssists();
                         break;
                     case 3:
-                        value = matchStatsDTO.getSaves();
+                        value = matchStatsDTO.getShots();
                         break;
                     case 4:
                         value = matchStatsDTO.getScore();
