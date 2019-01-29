@@ -21,6 +21,6 @@
             <Image url="@../images/rocketLeageFieldopaque.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="heatmapView" fitHeight="246.0" fitWidth="349.0" layoutX="200.0" layoutY="410.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="410.0" />
+      <ImageView fx:id="heatmapView" fitHeight="238.0" fitWidth="340.0" layoutX="202.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="202.0" AnchorPane.topAnchor="415.0" />
    </children>
 </AnchorPane>

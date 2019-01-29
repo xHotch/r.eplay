@@ -29,9 +29,14 @@ public class PlayerTeamsDTO {
 
     public String getTeamNames() {
         String ret = "";
-        for (TeamDTO teamDTO: teams) {
-            ret += teamDTO.getName() + "; ";
-        }
+        int count = 0;
+        for (TeamDTO teamDTO: teams)
+            if (count == 0) {
+                ret += teamDTO.getName();
+                count++;
+            } else {
+                ret += ", " + teamDTO.getName();
+            }
         return ret;
     }
 
