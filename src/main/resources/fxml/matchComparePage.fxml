@@ -13,7 +13,7 @@
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1024.0" styleClass="root" stylesheets="/css/mainTemplate.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.assignment.group.replay.ui.MatchCompareController">
     <children>
         <ChoiceBox fx:id="matchValueChoiceBox" layoutX="16.0" layoutY="34.0" prefWidth="150.0" />
-        <BarChart fx:id="matchBarChart" layoutX="54.0" layoutY="313.0" prefHeight="358.0" prefWidth="916.0">
+        <BarChart fx:id="matchBarChart" layoutX="54.0" layoutY="335.0" prefHeight="358.0" prefWidth="916.0">
             <xAxis>
                 <CategoryAxis fx:id="matchCategoryAxis" side="BOTTOM" />
             </xAxis>
@@ -26,12 +26,18 @@
                 <TableColumn fx:id="playerName1ColumnRed" prefWidth="162.0" text="Spieler" />
             <TableColumn fx:id="team1ColumnRed" prefWidth="275.0" text="Teams" />
             </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
         </TableView>
         <TableView fx:id="match2TableRed" layoutX="530.0" layoutY="86.0" prefHeight="114.0" prefWidth="440.0">
             <columns>
                 <TableColumn fx:id="playerName2ColumnRed" prefWidth="162.0" text="Spieler" />
             <TableColumn fx:id="team2ColumnRed" prefWidth="275.0" text="Teams" />
             </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
         </TableView>
       <Label layoutX="246.0" layoutY="59.0" text="Match 1">
          <font>
@@ -48,12 +54,18 @@
           <TableColumn fx:id="playerName1ColumnBlue" prefWidth="162.0" text="Spieler" />
           <TableColumn fx:id="team1ColumnBlue" prefWidth="275.0" text="Teams" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
       <TableView fx:id="match2TableBlue" layoutX="530.0" layoutY="207.0" prefHeight="114.0" prefWidth="440.0">
         <columns>
           <TableColumn fx:id="playerName2ColumnBlue" prefWidth="162.0" text="Spieler" />
           <TableColumn fx:id="team2ColumnBlue" prefWidth="275.0" text="Teams" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
     </children>
 </AnchorPane>
