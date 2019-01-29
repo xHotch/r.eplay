@@ -78,7 +78,7 @@ public class MatchCompareController {
 
     @FXML
     private void initialize() {
-        matchValueChoiceBox.getItems().addAll("Tore", "Paraden", "Vorlagen", "Schüsse", "Punkte", "⌀ Geschwindigkeit", "⌀ Boost pro Minute", "Boostpad Anzahl");
+        matchValueChoiceBox.getItems().addAll("Tore", "Vorlagen", "Schüsse", "Paraden", "Punkte", "⌀ Geschwindigkeit", "⌀ Boost pro Minute", "Boostpad Anzahl");
         matchValueChoiceBox.getSelectionModel().selectedIndexProperty().addListener((obs, oldValue, newValue) -> showMatchValue(newValue.intValue()));
         matchBarChart.setAnimated(false);
         matchBarChart.setLegendVisible(false);
@@ -217,15 +217,15 @@ public class MatchCompareController {
         team2.getData().add(new XYChart.Data<>("Match 1" ,valueMatch1Red));
         team2.getData().add(new XYChart.Data<>("Match 2", valueMatch2Red));
 
-        matchBarChart.getData().add(team1);
         matchBarChart.getData().add(team2);
+        matchBarChart.getData().add(team1);
 
         //set color for bars depending on team
         for (XYChart.Data data : team1.getData()) {
-            data.getNode().setStyle("-fx-bar-fill: " + team1Color + ";");
+            data.getNode().setStyle("-fx-bar-fill: " + team2Color + ";");
         }
         for (XYChart.Data data : team2.getData()) {
-            data.getNode().setStyle("-fx-bar-fill:  " + team2Color + ";");
+            data.getNode().setStyle("-fx-bar-fill:  " + team1Color + ";");
         }
 
     }
