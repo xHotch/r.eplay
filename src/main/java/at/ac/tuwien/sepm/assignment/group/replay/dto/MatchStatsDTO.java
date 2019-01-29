@@ -1,6 +1,10 @@
 package at.ac.tuwien.sepm.assignment.group.replay.dto;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class MatchStatsDTO {
 
     private TeamSide team;
@@ -12,6 +16,7 @@ public class MatchStatsDTO {
     private double averageSpeed;
     private double boostPerMinute;
     private int boostPadAmount;
+    private LocalDateTime dateTime;
     private int matchId;
     private long teamId;
 
@@ -101,5 +106,19 @@ public class MatchStatsDTO {
 
     public void setTeamId(long teamId) {
         this.teamId = teamId;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public String getFormattedDateTime(){
+        String res;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(("dd-MM-yyyy   HH:mm"));
+        res = this.dateTime.format(formatter);
+        return res;}
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }

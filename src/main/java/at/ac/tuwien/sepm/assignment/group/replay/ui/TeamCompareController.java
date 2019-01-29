@@ -143,8 +143,8 @@ public class TeamCompareController {
                         value = 0;
                         break;
                 }
-                if(matchStatsDTO.getTeamId() == teamDTO1.getId()) team1.getData().add(new XYChart.Data<>("Match " + i,value));
-                else team2.getData().add(new XYChart.Data<>("Match " + i,value));
+                if(matchStatsDTO.getTeamId() == teamDTO1.getId()) team1.getData().add(new XYChart.Data<>(matchStatsDTO.getFormattedDateTime(),value));
+                else team2.getData().add(new XYChart.Data<>(matchStatsDTO.getFormattedDateTime(),value));
             }
             i++;
         }

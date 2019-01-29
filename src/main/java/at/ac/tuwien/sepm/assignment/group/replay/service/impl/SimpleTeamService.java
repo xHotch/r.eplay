@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,10 @@ public class SimpleTeamService implements TeamService {
             TeamCompareDTO teamCompareDTO = new TeamCompareDTO();
             teamCompareDTO.setMatchDTOList(teamDAO.readTeamMatches(teamDTO1, teamDTO2));
             teamCompareDTO.setMatchStatsDTOList(teamDAO.readTeamStats(teamDTO1, teamDTO2));
+            //Map Date to matchstatsDTO
+            Map<Integer, LocalDateTime> mapIDToDate = new HashMap<>();
+            teamCompareDTO.getMatchDTOList().forEach(match -> mapIDToDate.put(match.getId(),match.getDateTime()));
+            teamCompareDTO.getMatchStatsDTOList().forEach((k ,v) -> v.forEach(matchStats -> matchStats.setDateTime(mapIDToDate.get(k))));
             //Map<MatchId,Map<TeamSide,TeamId>>
             Map<Integer, Map<TeamSide, Long>> teamSideToTeamId = new HashMap<>();
             teamCompareDTO.getMatchDTOList().forEach(match -> teamSideToTeamId.put(match.getId(), mapTeamSideToTeamID(match, teamDTO1, teamDTO2)));
