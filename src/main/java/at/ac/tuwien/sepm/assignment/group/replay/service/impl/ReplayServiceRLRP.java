@@ -43,7 +43,7 @@ public class ReplayServiceRLRP implements ReplayService {
         try {
             if (replayToJsonParser == null || !replayToJsonParser.exists()) {
                 //Last File (.exe) is returned
-                String[] necessaryFiles = new String[]{"CommandLine.dll", "KellermanSoftware.Compare-NET-Objects.dll", "Newtonsoft.Json.dll", "RocketLeagueReplayParser.dll", "RocketLeagueReplayParser.exe"};
+                String[] necessaryFiles = new String[]{"CommandLine.dll", "KellermanSoftware.Compare-NET-Objects.dll", "Newtonsoft.Json.dll", "RocketLeagueReplayParser.dll", "RocketLeagueReplayParser.Console.exe"};
                 replayToJsonParser = folderDAO.getParser(necessaryFiles);
             }
             String extension = FilenameUtils.getExtension(replayFile.getName());
