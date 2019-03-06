@@ -27,13 +27,9 @@ mvnw clean compile exec:java
 * [RLRP](https://github.com/jjbott/RocketLeagueReplayParser) - Rocket League Replay Parser
 
 
-## Versioning
-
-We do not have a versioning system yet, however it is one of our top priorities as of now.
-
 ## Initial Authors
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/xHotch/r.eplay/contributors) who participated in this project.
 
 ## License
 
